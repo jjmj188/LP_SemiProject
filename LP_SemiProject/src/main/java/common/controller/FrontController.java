@@ -18,9 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-/**
- * Servlet implementation class FrontController
- */
+
 @WebServlet(
 		description = "사용자가 웹에서 *.up 을 했을 경우 이 서블릿이 응답을 해주도록 한다.", 
 		urlPatterns = { "*.LP" }, 
