@@ -2,8 +2,7 @@ package common.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import member.domain.MemberDTO;
-import member.model.MemberDAO;
+
 
 //abstract:자식 클래스에서 상속해서 쓰라 
 //공통 구조만 잡고, 실제 로직은 자식에게 강제하는 역할
