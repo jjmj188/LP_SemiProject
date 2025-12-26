@@ -99,3 +99,4 @@ replay_pid*
 /LP_SemiProject/src/main/java/common/controller/AbstractController.java
 /LP_SemiProject/src/main/java/common/controller/FrontController.java
 /LP_SemiProject/src/main/java/common/controller/InterCommand.java
+/MyMVC/src/main/webapp/WEB-INF/Command.properties
