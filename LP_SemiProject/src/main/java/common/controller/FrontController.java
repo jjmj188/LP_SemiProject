@@ -23,8 +23,8 @@ import java.util.Properties;
 		description = "사용자가 웹에서 *.up 을 했을 경우 이 서블릿이 응답을 해주도록 한다.", 
 		urlPatterns = { "*.LP" }, 
 		initParams = { 
-				@WebInitParam(name = "propertyConfig", value = "C:/NCS/workspace_jsp/LP_SemiProject/src/main/webapp/WEB-INF/Command.properties", description = "사용자가 웹에서 *.up 을 했을 경우 이 서블릿이 응답을 해주도록 한다.")
-		})
+				@WebInitParam(name = "propertyConfig", value = "C:/git/LP_SemiProject/LP_SemiProject/src/main/webapp/WEB-INF/Command.properties", description = "사용자가 웹에서 *.up 을 했을 경우 이 서블릿이 응답을 해주도록 한다.")
+		})														
 public class FrontController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
