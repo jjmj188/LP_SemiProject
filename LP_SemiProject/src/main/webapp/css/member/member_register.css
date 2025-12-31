@@ -1,0 +1,214 @@
+/* =====================
+   RESET / BASE
+===================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  color: #222;
+  background: #fff;
+}
+
+/* =====================
+   LOGIN / REGISTER WRAPPER
+===================== */
+.login-section {
+  padding: 60px 0;               /* 🔥 공통 기준 여백 */
+  background: #ffffff;
+}
+
+/* 🔥 기준선 컨테이너 */
+.login-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  min-height: 720px;             /* 🔥 헤더 기준 맞춤 */
+  background: #fff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* =====================
+   FORM BOX
+===================== */
+.login-form {
+  width: 420px;
+  background: #fff;
+
+  padding: 40px 30px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+/* =====================
+   TITLE
+===================== */
+.login-title {
+  text-align: center;
+  margin-bottom: 30px;
+
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* =====================
+   INPUT BOX
+===================== */
+.input-box {
+  margin-bottom: 18px;
+}
+
+.input-box label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.input-box input[type="text"],
+.input-box input[type="password"],
+.input-box input[type="email"] {
+  width: 100%;
+  padding: 10px 12px;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  font-size: 14px;
+}
+
+.input-box input:focus {
+  outline: none;
+  border-color: #111;
+}
+
+/* =====================
+   ID / EMAIL CHECK ZONE
+===================== */
+.check-btn {
+  margin-top: 8px;
+  padding: 6px 10px;
+
+  font-size: 13px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+
+.check-btn:hover {
+  background: #f5f5f5;
+}
+
+.check-msg {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+/* =====================
+   PHONE NUMBER
+===================== */
+.input-box input#hp1,
+.input-box input#hp2,
+.input-box input#hp3 {
+  width: 30%;
+  display: inline-block;
+}
+
+.input-box input#hp1 {
+  margin-right: 4px;
+}
+
+.input-box input#hp2 {
+  margin: 0 4px;
+}
+
+/* =====================
+   GENDER (정렬 핵심)
+===================== */
+.input-box.gender-box {
+  display: flex;
+  align-items: center;
+}
+
+.gender-row {
+  display: flex;
+  align-items: center;
+}
+
+.gender-label {
+  width: 70px;
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.gender-option {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.gender-option input[type="radio"] {
+  width: auto;
+  margin-right: 6px;
+}
+
+/* =====================
+   DATE INPUT
+===================== */
+.input-box input#birthday {
+  background: #fff;
+  cursor: pointer;
+}
+
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  width: 100%;
+  padding-right: 36px;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+}
+
+/* =====================
+   ERROR TEXT
+===================== */
+.error {
+  font-size: 13px;
+  color: red;
+  margin-top: 6px;
+  display: block;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 768px) {
+  .login-container {
+    min-height: auto;
+    padding: 40px 0;
+  }
+
+  .login-form {
+    width: 100%;
+    margin: 0 16px;
+    padding: 30px 24px;
+  }
+}
