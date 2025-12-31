@@ -1,4 +1,4 @@
-package member.domain;
+package order.domain;
 
 // 주문
 public class OrderDTO {

@@ -1,4 +1,4 @@
-package member.domain;
+package order.domain;
 
 // 장바구니
 public class CartDTO {

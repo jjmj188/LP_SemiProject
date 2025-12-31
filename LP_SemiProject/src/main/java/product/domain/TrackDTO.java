@@ -1,4 +1,4 @@
-package member.domain;
+package product.domain;
 
 // 곡 리스트
 public class TrackDTO {

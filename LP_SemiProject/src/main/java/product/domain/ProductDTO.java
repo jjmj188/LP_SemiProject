@@ -1,4 +1,4 @@
-package member.domain;
+package product.domain;
 
 // 제품
 public class ProductDTO {
