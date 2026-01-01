@@ -5,7 +5,8 @@ import java.sql.Date;
 public class MemberDTO {
 
     // ===== tbl_member 컬럼 =====
-    private String userid;            // 회원아이디 (PK)
+	private int userseq;			  //회원번호									
+	private String userid;            // 회원아이디 (PK)
     private String pwd;               // 비밀번호 (SHA-256)
     private String name;              // 회원명
     private String email;             // 이메일 (AES-256)
@@ -13,8 +14,8 @@ public class MemberDTO {
     private String gender;            // 성별 (1 / 2)
     private String birthday;           // 생년월일 (YYYY-MM-DD)
 
-    private Date registerday;          // 가입일자
-    private Date lastpwdchangedate;    // 마지막 비밀번호 변경일
+    private String registerday;          // 가입일자
+    private String lastpwdchangedate;    // 마지막 비밀번호 변경일
 
     private int status;               // 회원상태 (1:사용, 0:탈퇴)
     private int point;                // 포인트
@@ -28,12 +29,24 @@ public class MemberDTO {
 
 
     // ===== getter / setter =====
+    		
+	public int getUserseq() {
+		return userseq;
+	}
+	public void setUserseq(int userseq) {
+		this.userseq = userseq;
+	}		
+	
+	
+    		
     public String getUserid() {
         return userid;
     }
     public void setUserid(String userid) {
         this.userid = userid;
     }
+    
+    
 
     public String getPwd() {
         return pwd;
@@ -41,6 +54,8 @@ public class MemberDTO {
     public void setPwd(String pwd) {
         this.pwd = pwd;
     }
+    
+    
 
     public String getName() {
         return name;
@@ -49,6 +64,8 @@ public class MemberDTO {
         this.name = name;
     }
 
+    
+    
     public String getEmail() {
         return email;
     }
@@ -56,6 +73,7 @@ public class MemberDTO {
         this.email = email;
     }
 
+    
     public String getMobile() {
         return mobile;
     }
@@ -63,6 +81,8 @@ public class MemberDTO {
         this.mobile = mobile;
     }
 
+    
+    
     public String getGender() {
         return gender;
     }
@@ -70,6 +90,7 @@ public class MemberDTO {
         this.gender = gender;
     }
 
+    
     public String getBirthday() {
         return birthday;
     }
@@ -77,27 +98,33 @@ public class MemberDTO {
         this.birthday = birthday;
     }
 
-    public Date getRegisterday() {
-        return registerday;
-    }
-    public void setRegisterday(Date registerday) {
-        this.registerday = registerday;
-    }
+    
+    public String getRegisterday() {
+  		return registerday;
+  	}
+      
+    public void setRegisterday(String registerday) {
+		this.registerday = registerday;
+	}
 
-    public Date getLastpwdchangedate() {
-        return lastpwdchangedate;
-    }
-    public void setLastpwdchangedate(Date lastpwdchangedate) {
-        this.lastpwdchangedate = lastpwdchangedate;
-    }
 
-    public int getStatus() {
+    public String getLastpwdchangedate() {
+		return lastpwdchangedate;
+	}
+	public void setLastpwdchangedate(String lastpwdchangedate) {
+		this.lastpwdchangedate = lastpwdchangedate;
+	}
+	
+	
+	public int getStatus() {
         return status;
     }
     public void setStatus(int status) {
         this.status = status;
     }
 
+    
+    
     public int getPoint() {
         return point;
     }
@@ -105,10 +132,22 @@ public class MemberDTO {
         this.point = point;
     }
 
+    
+    
     public int getIdle() {
         return idle;
     }
     public void setIdle(int idle) {
         this.idle = idle;
     }
+    
+    
+    
+	public boolean isRequirePwdChange() {
+		return false;
+	}
+	
+	public void setRequirePwdChange(boolean requirePwdChange) {
+		this.requirePwdChange = requirePwdChange;
+	}
 }

@@ -98,7 +98,7 @@
           <input type="text" name="hp2" id="hp2" maxlength="4">
           <input type="text" name="hp3" id="hp3" maxlength="4">
 
-          
+          <input type="hidden" name="mobile" id="mobile">
         </div>
 
         <!-- 성별 -->

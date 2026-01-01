@@ -137,8 +137,8 @@ public class MemberDAO_imple implements MemberDAO {
 			try {
 				  conn = ds.getConnection();
 				  
-				  String sql = " insert into tbl_member(userid, pwd, name, email, mobile, gender, birthday) "  
-				  		     + " values(?, ?, ?, ?, ?, ?, ? ) "; 
+				  String sql = " insert into tbl_member( userseq,userid, pwd, name, email, mobile, gender, birthday) "  
+				  		     + " values( seq_userseq.nextval, ?, ?, ?, ?, ?, ?, ? ) "; 
 				  
 				  pstmt = conn.prepareStatement(sql); 
 				  
@@ -160,6 +160,44 @@ public class MemberDAO_imple implements MemberDAO {
 			
 			return result;
 		}// end of public int registerMember(MemberDTO member) throws SQLException-------*/
+
+
+
+
+
+		//취향선택메서드 
+		@Override
+		public int insertTaste(String userid, String[] arr) throws SQLException {
+			
+			int n=0;
+			
+			String sql="insert into tbl_member_preference(fk_userid,fk_categoryno) "
+					 + " values (?, ?)";
+				  try {
+				        conn = ds.getConnection();
+				        pstmt = conn.prepareStatement(sql);
+
+				        for(String categoryNo : arr) {
+				            pstmt.setString(1, userid);
+				            pstmt.setInt(2, Integer.parseInt(categoryNo));
+				            n+= pstmt.executeUpdate();
+				        }
+				       
+				      
+				    } finally {
+				        close();
+				 }
+		return n;
+	}
+
+
+
+
+
+
+
+
+	
 
 
 
