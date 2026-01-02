@@ -1,13 +1,272 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-<h1>안녕하세요!!!!!!</h1>
+<%
+	String ctxPath = request.getContextPath();
+	// /LP_SemiProject
+%>
+ <link rel="stylesheet" href="<%= ctxPath%>/css/index.css">
 
-</body>
-</html>
+  
+  <!-- HEADER -->
+<jsp:include page="header1.jsp"></jsp:include>
+
+        <main>
+      <section class="hero">
+        <h1 class="headline">Press play,<br> analog way</h1>
+
+        <div class="side">
+          <p>
+ 			 A carefully curated vinyl collection,<br>
+  				for modern music lovers who enjoy slow, intentional listening.
+			</p>
+
+         <button class="main-btn" id="btnShowAll" type="button">Show all Records</button>
+
+        </div>
+      </section>
+
+      <section class="strip" aria-label="Showcase carousel">
+        <!-- black semicircle accents (approximation) -->
+       
+
+        <div class="rail">
+          <div class="track" id="track">
+            <!-- 1 set (JS에서 복제해서 무한루프) -->
+            <div class="card" style="--rot:-12deg">
+              <img alt="" src="./images/main_1.jpeg">
+            </div>
+
+            <div class="card" style="--rot:10deg">
+              <img alt="" src="./images/main_2.jpeg">
+            </div>
+
+            <div class="card" style="--rot:-8deg">
+              <img alt="" src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=900&q=60">
+            </div>
+
+            <div class="badge" aria-label="15K lessons badge">
+              <div style="text-align:center">
+                <strong>VINYST</strong>
+                <span>record</span>
+              </div>
+            </div>
+
+            <div class="card" style="--rot:11deg">
+              <img alt="" src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=900&q=60">
+            </div>
+
+            <div class="card" style="--rot:-10deg">
+              <img alt="" src="<%= ctxPath%>/images/main_3.jpeg">
+            </div>
+          </div>
+        </div>
+
+        <div class="scrollhint">
+          <span class="arr" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 15l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+
+          <span>Scroll to see more</span>
+          
+		  <span class="arr" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 15l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+
+        </div>
+	
+      </section>
+	  
+		  	  <img class="main-line" src="<%= ctxPath%>/images/main_line.png" alt="">
+	
+    </main>
+
+
+	
+  <!-- 장르 바 (메인에서만 사용) -->
+  <div class="genre-bar">
+  <div class="genre-bar-inner">
+    <button class="active">ALL</button>
+    <button>POP</button>
+     <button>ROCK</button>
+    <button>JAZZ</button>
+    <button>CLASSIC</button>
+    <button>ETC</button>
+  </div>
+</div>
+
+ 
+<div class="main-search">
+  <form class="main-search__form" role="search" action="#" method="get">
+    <div class="main-search__field">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+              stroke="currentColor" stroke-width="2"/>
+        <path d="M16.5 16.5 21 21"
+              stroke="currentColor" stroke-width="2"
+              stroke-linecap="round"/>
+      </svg>
+
+      <input type="search" name="q" placeholder="LP를 검색해보세요" aria-label="Search"/>
+    </div>
+
+    <button class="main-search__btn" type="submit">검색</button>
+  </form>
+</div>
+
+
+
+<!-- ===== MAIN ===== -->
+
+<div id="main-container">
+
+<!-- 신곡 추천 -->
+<section class="carousel">
+  
+ <div class="main-section-title">
+  <h2>NEW</h2>
+  <p>새로운 레코드를 만나보세요</p>
+</div>
+
+
+ 
+  <div class="carousel-wrapper">
+    <button class="btn prev">‹</button>
+
+    <div class="carousel-window">
+      <div class="carousel-track">
+
+        <!-- item -->
+        <a class="carousel-item" href="./product_Detail.html">
+          <img src="<%= ctxPath%>/images/김아름.jpg" />
+          <div class="ci-text">
+            <p class="ci-name">김아름 - 앨범명</p>
+            <p class="ci-price">₩ 39,000</p>
+          </div>
+        </a>
+	
+      </div>
+    </div>
+
+    <button class="btn next">›</button>
+  </div>
+</section>
+
+
+  <!-- 취향 추천 -->
+  <section id="lp-container">
+	<div class="lp-content">
+
+ 	<div class="main-section-title">
+   <h2>MUSIC FOR YOU</h2>
+	<p>양소라님의 취향에 맞춰 선별한 레코드입니다.</p>
+	</div>
+
+		 <div id="lpData" hidden>
+    <!--
+      DB로 바꿀 땐 이 li를 반복 출력.
+      최대 4개정도..?
+    -->
+	  
+		<li class="lp-item"
+        data-album="Pink Floyd - The Dark Side of the Moon"
+        data-emblem="legendary progressive rock"
+        data-accent="#9a9a9a"
+        data-img="<%= ctxPath%>/images/김마리.jpg"
+        data-link="../product/detail.html?productno=1">
+      
+    </li>
+
+    <li class="lp-item"
+        data-album="Pink Floyd - The Dark Side of the Moon"
+        data-emblem="legendary progressive rock"
+        data-accent="#9a9a9a"
+        data-img="<%= ctxPath%>/images/김마리.jpg"
+        data-link="../product/detail.html?productno=1">
+      
+    </li>
+
+  </div>
+
+  <section>
+    <div class="hero-img">
+      <a class="quick-link" id="quickLink" href="<%= ctxPath%>" target="_self" aria-label="바로가기"> <!--/product_detail.jsp?productno= 로 이동-->
+        <span class="dot"></span>
+        바로가기
+      </a>
+    </div>
+
+    <div class="emblem-container">
+      <div class="emblem text"></div>  
+    </div>
+
+   <h1 class="text">
+  <span class="album-title"></span>
+  <span class="LP-shop"></span>
+</h1>
+
+  </section>
+
+  <div class="button-container">
+    <button class="scroll-left nav-arrow"><span></span>Prev</button>
+    <button class="scroll-right nav-arrow">Next<span></span></button>
+  </div>
+
+	</div>
+
+ </section>
+  <!-- LP 상품 -->
+  <section class="product-list" id="product-list">
+ 
+
+	<div class="main-section-title">
+   	<h2>STORE</h2>
+	<p>다양한 레코드 상품들을 만나보세요.</p>
+	</div>
+
+<div class="sort-bar">
+  <select>
+    <option value="rating"> 별점순</option>
+    <option value="latest"> 최신순</option>
+    <option value="price_low"> 가격 낮은순</option>
+    <option value="price_high"> 가격 높은순</option>
+  </select>
+</div>
+    <div class="grid">
+      <div class="product">
+        <a href="<%= ctxPath%>">
+          <img src="images/조이.png" alt="조이 LP">
+        </a>
+        <p class="main-product-name">조이</p>
+        <p class="price">₩ 36,000</p></div>
+	  
+    </div>
+
+
+    <div class="pagination">
+      <a href="#" class="active">1</a>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <a href="#">4</a>
+      <a href="#">5</a>
+      <a href="#">6</a>
+    </div>
+  </section>
+
+
+</div>
+
+  
+  <!-- footer -->
+ <jsp:include page="footer1.jsp"></jsp:include>
+  
+  
+<!-- 캐러셀 JS -->
+<script src="js/carousel.js"></script>
+
+<script src="./js/index.js"></script>

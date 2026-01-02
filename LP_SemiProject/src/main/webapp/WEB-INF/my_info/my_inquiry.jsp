@@ -1,0 +1,157 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	String ctxPath = request.getContextPath();
+	// /LP_SemiProject
+%>
+
+  <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
+
+  <!-- 문의내역 전용(새로 만들기) -->
+  <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_inquiry_list.css">
+
+  <!-- 기존 문의작성 CSS 그대로 사용 -->
+  <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_inquiry.css">
+  
+  <!-- HEADER -->
+<jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
+  
+  
+  <main class="mypage-wrapper">
+  <div class="mypage-container">
+
+    <aside class="mypage-menu">
+      <h3>마이페이지</h3>
+      <a href="<%= ctxPath%>/my_info/my_info.lp" >프로필 수정</a>
+      <a href="<%= ctxPath%>/my_info/my_inquiry.lp" class="active">문의내역</a>
+      <a href="<%= ctxPath%>/my_info/my_wish.lp" >찜내역</a>
+      <a href="<%= ctxPath%>/my_info/my_order.lp">구매내역</a>
+      <a href="<%= ctxPath%>/my_info/my_taste.lp" >취향선택</a>
+    </aside>
+
+    <section class="mypage-content">
+
+      <div class="inquiry-top">
+        <h2>문의내역</h2>
+        <button type="button" class="btn-write" id="btnOpenInquiry">문의작성</button>
+      </div>
+
+      <!-- 목록 -->
+      <div class="inquiry-table-wrap">
+        <table class="inquiry-table">
+          <thead>
+            <tr>
+              <th style="width:140px;">작성일자</th>
+              <th>문의내용</th>
+              <th style="width:240px;">관리자 답변</th>
+              <th style="width:120px;">처리상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 예시(나중에 JSP로 반복 출력) -->
+            <tr>
+              <td>2025-12-30</td>
+              <td class="td-ellipsis">배송지 주소 변경 가능할까요? 주문번호는 12345 입니다.</td>
+              <td class="td-ellipsis">확인 후 변경 처리해드렸습니다.</td>
+              <td><span class="status done">답변완료</span></td>
+            </tr>
+
+            <tr>
+              <td>2025-12-29</td>
+              <td class="td-ellipsis">포인트 사용이 결제에서 안 보여요.</td>
+              <td class="td-ellipsis">현재 점검 중입니다. 금일 중 반영 예정입니다.</td>
+              <td><span class="status wait">접수</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    <!-- 페이징 영역 -->
+<div class="pagebar">
+  <button class="page-btn prev" disabled>
+    <i class="fa-solid fa-chevron-left"></i>
+  </button>
+
+  <button class="page-num active">1</button>
+  <button class="page-num">2</button>
+  <button class="page-num">3</button>
+  <button class="page-num">4</button>
+
+  <button class="page-btn next">
+    <i class="fa-solid fa-chevron-right"></i>
+  </button>
+</div>
+
+
+    </section>
+  </div>
+</main>
+
+<!-- 문의작성 모달 -->
+<div class="modal" id="inquiryModal" aria-hidden="true">
+  <div class="modal-dim" id="inquiryModalDim"></div>
+
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h3 id="modalTitle">문의하기</h3>
+      <button type="button" class="modal-close" id="btnCloseInquiry" aria-label="닫기">×</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- 여기 안에 네가 준 문의작성 폼을 그대로 넣으면 됨 -->
+      <form class="inquiry-form" id="inquiryForm">
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label>이름</label>
+            <input type="text" name="name" placeholder="이름 입력" value="홍길동" readonly>
+          </div>
+
+          <div class="form-group half">
+            <label>전화번호</label>
+            <input type="text" name="mobile" placeholder="010-0000-0000" value="010-1234-5678" readonly>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>이메일</label>
+          <input type="email" name="email" placeholder="example@email.com" value="test@email.com" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>문의내용</label>
+          <textarea name="content" placeholder="문의 내용을 작성해주세요" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>개인정보 수집·이용 안내</label>
+          <div class="privacy-box">
+            <p>
+              수집 항목: 이름, 전화번호, 이메일<br><br>
+              수집 목적: 고객 문의 응대 및 처리<br><br>
+              보유 기간: 문의 처리 완료 후 1년간 보관<br><br>
+              동의를 거부할 권리가 있으나, 동의하지 않을 경우
+              문의 서비스 이용이 제한될 수 있습니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-bottom">
+          <label class="agree-check">
+            <input type="checkbox" id="agree" required>
+            개인정보 수집·이용에 동의합니다
+          </label>
+
+          <button type="submit" class="btn-submit">제출하기</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<jsp:include page="/WEB-INF/footer1.jsp" />
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="<%= ctxPath%>/js/my_info/my_inquiry.js"></script>
