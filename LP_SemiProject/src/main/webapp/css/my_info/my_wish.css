@@ -1,0 +1,156 @@
+/* =========================
+   찜 목록 전용 스타일
+========================= */
+
+/* =========================
+   찜 목록
+========================= */
+.wish-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* =========================
+   찜 아이템
+========================= */
+.wish-item {
+  text-align: center;
+}
+
+/* 이미지 영역 */
+.wish-img {
+  position: relative;
+}
+
+.wish-img img {
+  width: 100%;
+  border-radius: 6px;
+  display: block;
+}
+
+/* =====================
+   위시 하트 버튼
+===================== */
+
+/* 버튼 기본 */
+.wish-heart {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+
+  background: rgba(255,255,255,0.85);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+/* 하트 기본 상태 */
+.wish-heart i {
+  color: #ccc;
+  font-size: 16px;
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+/* hover */
+.wish-heart:hover i {
+  transform: scale(1.15);
+}
+
+/* ❤️ 활성화 상태 */
+.wish-heart.active i {
+  color: #e53935;
+}
+
+/* =====================
+   PAGE BAR
+===================== */
+.pagebar {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 공통 버튼 */
+.pagebar button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 14px;
+  color: #222;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 페이지 숫자 */
+.pagebar .page-num {
+  font-weight: 500;
+}
+
+/* 활성 페이지 */
+.pagebar .page-num.active {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* 이전/다음 */
+.pagebar .page-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* hover */
+.pagebar button:not(:disabled):hover {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* 비활성 */
+.pagebar button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+
+
+
+
+
+/* =========================
+   상품명
+========================= */
+.wish-title {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* =========================
+   반응형 (찜 전용)
+========================= */
+@media (max-width: 1024px) {
+  .wish-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .wish-list {
+    grid-template-columns: 1fr;
+  }
+}

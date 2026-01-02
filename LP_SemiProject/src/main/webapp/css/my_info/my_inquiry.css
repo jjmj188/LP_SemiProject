@@ -1,0 +1,159 @@
+/* =====================
+   문의 폼 전용 스타일
+===================== */
+
+/* ===== 폼 전체 ===== */
+.inquiry-form {
+  width: 720px;
+  margin: 0 auto;
+}
+
+/* ===== 기본 입력 그룹 ===== */
+.form-group {
+  margin-bottom: 32px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #222;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* 문의 내용 */
+.form-group textarea {
+  height: 160px;
+  resize: none;   /* 🔥 줄어드는 현상 방지 */
+}
+
+/* ===== 이름 / 전화 ===== */
+.form-row {
+  display: flex;
+  gap: 48px;
+  margin-bottom: 32px;
+}
+
+.form-group.half {
+  flex: 1;
+}
+
+/* ===== 개인정보 안내 ===== */
+.privacy-box {
+  border: 1px solid #ddd;
+  padding: 22px;
+  background: #fafafa;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ===== 하단 영역 ===== */
+.form-bottom {
+  margin-top: 44px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.agree-check {
+  font-size: 13px;
+}
+
+.btn-submit {
+  padding: 12px 28px;
+  background: #222;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-submit:hover {
+  background: #000;
+}
+
+/* =====================
+   반응형 (문의 전용)
+===================== */
+@media (max-width: 767px) {
+  .inquiry-form {
+    width: 100%;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-bottom {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+}
+
+/* =====================
+   PAGE BAR
+===================== */
+.pagebar {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 공통 버튼 */
+.pagebar button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 14px;
+  color: #222;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 페이지 숫자 */
+.pagebar .page-num {
+  font-weight: 500;
+}
+
+/* 활성 페이지 */
+.pagebar .page-num.active {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* 이전/다음 */
+.pagebar .page-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* hover */
+.pagebar button:not(:disabled):hover {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* 비활성 */
+.pagebar button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

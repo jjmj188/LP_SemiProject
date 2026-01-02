@@ -1,0 +1,129 @@
+/* =========================
+   설명 텍스트
+========================= */
+.taste-desc {
+  margin-bottom: 40px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* =========================
+   GRID (기본: 데스크탑 5개)
+========================= */
+.taste-grid {
+  display: grid;
+
+  /* 🔥 데스크탑에서는 무조건 5개 */
+  grid-template-columns: repeat(5, 1fr);
+
+  gap: 32px;
+  justify-items: center;
+  align-items: start;
+
+  width: 100%;
+}
+
+/* =========================
+   ITEM
+========================= */
+.taste-item {
+  text-align: center;
+  cursor: pointer;
+}
+
+/* 이미지 래퍼 */
+.img-wrap {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: filter 0.25s ease;
+}
+
+/* hover */
+.taste-item:hover .img-wrap {
+  transform: scale(1.05);
+}
+
+/* 선택됨 */
+.taste-item.active .img-wrap {
+  transform: scale(1.12);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.25),
+    0 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+.taste-item.active img {
+  filter: brightness(1.05) contrast(1.05);
+}
+
+/* 라벨 */
+.taste-label {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* =========================
+   하단 버튼
+========================= */
+.taste-bottom {
+  margin-top: 60px;
+  text-align: right;
+}
+
+.btn-save {
+  padding: 12px 28px;
+  background: #222;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-save:hover {
+  background: #000;
+}
+
+/* =========================
+   반응형
+========================= */
+
+/* 💻 작은 노트북 / 태블릿 가로 */
+@media (max-width: 1024px) {
+  .taste-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 📱 태블릿 세로 / 모바일 */
+@media (max-width: 768px) {
+  .taste-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .taste-bottom {
+    text-align: center;
+  }
+}
+
+/* 📱 아주 작은 모바일 */
+@media (max-width: 480px) {
+  .img-wrap {
+    width: 100px;
+    height: 100px;
+  }
+
+  .taste-label {
+    font-size: 13px;
+  }
+}

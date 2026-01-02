@@ -1,0 +1,38 @@
+
+/* ===== FOOTER (SLIM & RESPONSIVE) ===== */
+.footer {
+  background: #222;
+  border-top: 1px solid #ddd;
+  padding: 16px 0;          /* 🔥 높이 최소 */
+  font-size: 12px;
+  color: #666;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+/* 기본: 데스크탑 → 가로 유지 */
+.footer-line {
+  margin: 0 0 4px;
+  line-height: 1.5;
+  white-space: nowrap;     /* 🔥 한 줄 유지 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* 넘치면 … */
+}
+
+.footer-copy {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #999;
+}
+
+/* ===== 모바일 ===== */
+@media (max-width: 768px) {
+  .footer-line {
+    white-space: normal;   /* 🔥 모바일에서 줄바꿈 허용 */
+  }
+}

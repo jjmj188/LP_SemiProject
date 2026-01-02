@@ -1,0 +1,249 @@
+  /* ====== header ====== */
+    :root{
+      --bg:#fff;
+      --ink:#0f0f10;
+      --muted:#6b6b6b;
+      --line:rgba(0,0,0,.10);
+      --card:#ffffff;
+      --btn:#121212;
+      --btnText:#ffffff;
+      --radius:18px;
+      --container:1160px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+      overflow-x:hidden;
+    }
+
+    /* ====== subtle background squiggles / circles ====== */
+    .bg-art{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-1;
+      opacity:.55;
+      background:
+        radial-gradient(circle at 18% 28%, rgba(0,0,0,.08) 0 1px, transparent 2px) 0 0/120px 120px,
+        radial-gradient(circle at 70% 34%, rgba(0,0,0,.06) 0 1px, transparent 2px) 0 0/160px 160px,
+        radial-gradient(circle at 58% 78%, rgba(0,0,0,.06) 0 1px, transparent 2px) 0 0/140px 140px;
+    }
+    .bg-art::before,
+    .bg-art::after{
+      content:"";
+      position:absolute;
+      border:1px solid rgba(0, 0, 0, 0.204);
+      border-radius:999px;
+      filter:blur(.0px);
+    }
+    .bg-art::before{
+      width:620px;height:620px;
+      left:-120px;top:120px;
+    }
+    .bg-art::after{
+      width:520px;height:520px;
+      right:-140px;top:90px;
+    }
+
+    /* ====== layout ====== */
+    .wrap{
+      width:min(var(--container), calc(100% - 48px));
+      margin:0 auto;
+      padding:18px 0 42px;
+    }
+
+    /* ====== top nav ====== */
+.topbar{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 90px;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: #fff;
+  backdrop-filter: blur(8px);
+
+  /* ✅ 보강 */
+  -webkit-backdrop-filter: blur(8px);
+  width: 100%;
+  
+  
+}
+
+    .logo img{
+      width:80px;
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      letter-spacing:.2px;
+      flex:0 0 auto;
+    }
+
+/* =====================
+   SEARCH AREA
+===================== */
+
+.main-search{
+ width: 50%;
+  margin: 18px auto 0;
+}
+
+.main-search__form{
+  display:flex;
+  align-items:center;
+  gap: 14px;              
+}
+
+.main-search__field{
+  flex:1;
+  display:flex;
+  align-items:center;
+  height:40px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.55);
+  border-radius:999px;
+  padding:0 14px;
+  gap:10px;
+  backdrop-filter: blur(6px);
+}
+
+.main-search__field svg{
+  opacity:.7;
+  flex:0 0 auto;
+}
+
+.main-search__field input{
+  flex:1;
+  border:none;
+  outline:none;
+  background:transparent;
+  font-size:14px;
+  color:var(--ink);
+}
+
+.main-search__btn{
+  flex:0 0 auto;
+  padding:10px 22px;
+  border-radius:30px;
+  border:none;
+  background:#333;
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.main-search__btn:hover{
+  background:#000;
+}
+
+
+	.search{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.55);
+  border-radius: 999px;
+  padding: 0 10px 0 14px;
+  backdrop-filter: blur(6px);
+}
+
+
+.search svg{
+  opacity: .7;
+  flex: 0 0 auto;
+  margin-right: 8px;
+}
+
+.search input{
+	
+  flex: 1;              
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+
+.search button{
+  margin-left: 16px;   
+  padding: 10px 22px;
+  border-radius: 30px;
+  border: none;
+  background: #333;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+   .navlinks{
+  	display: flex;
+  	align-items: center;
+ 	gap: 18px;
+  	margin-left: auto;	
+	}
+
+    .navlinks a{
+      text-decoration:none;
+      color:var(--ink);
+      font-size:14px;
+      opacity:.85;
+    }
+    .navlinks a:hover{opacity:1}
+    
+    
+    .nav-toggle{
+  display:none;
+  margin-left:auto;
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#f2f2f2;
+  backdrop-filter: blur(6px);
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+}
+.nav-toggle i{ font-size:18px; color:var(--ink); opacity:.85; }
+
+.navlinks-mobile{
+  display:none;
+  position:absolute;
+  left:0; right:0;
+  top:90px;
+  padding:14px 16px;
+  background: rgba(242,242,242,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom:1px solid var(--line);
+  z-index: 2000; /* ✅ 혹시 가려지면 이거도 도움됨 */
+}
+.navlinks-mobile a{
+  display:block;
+  padding:12px 10px;
+  text-decoration:none;
+  color:var(--ink);
+  font-size:15px;
+  border-radius:12px;
+  opacity:.9;
+}
+.navlinks-mobile a:hover{ background:rgba(255,255,255,.7); opacity:1; }
+.navlinks-mobile.is-open{ display:block; }
+
+@media (max-width: 768px){
+  .navlinks{ display:none; }
+  .nav-toggle{ display:flex; }
+}
+    

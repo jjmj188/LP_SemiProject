@@ -1,0 +1,45 @@
+/* ===== POPUP ===== */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.popup {
+  width: 320px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.popup img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.popup-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #222;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.popup-footer {
+  margin-top: 15px;
+  font-size: 13px;
+}
+
+.popup-footer label {
+  display: block;
+  margin-bottom: 10px;
+}
