@@ -1,0 +1,117 @@
+/* =====================
+   관리자 공통 레이아웃
+===================== */
+
+/* 바깥 래퍼: 배경 + 상하 여백 */
+.admin-wrapper {
+  padding: 60px 0;              /* 🔥 mypage / buy / cart 와 통일 */
+  background: #fafafa;
+}
+
+/* 🔥 핵심: 헤더 기준선 맞추는 컨테이너 */
+.admin-container {
+   max-width: 1200px;
+  margin: 0 auto;
+
+
+  gap: 30px;
+
+  min-height: 720px;
+  background: #fff;
+
+}
+
+/* =====================
+   관리자 메뉴바
+===================== */
+
+.admin-menu {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 14px;
+  margin-bottom: 30px;
+}
+
+.admin-menu a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+
+.admin-menu a.active {
+  font-weight: bold;
+  border-bottom: 2px solid #222;
+}
+
+/* =====================
+   콘텐츠 영역
+===================== */
+
+.admin-content {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 40px;
+  min-height: 720px;           /* 🔥 높이 기준 통일 */
+}
+
+.admin-content h2 {
+  margin: 0 0 30px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   페이지네이션 (Pagination) - Seoul Vinyl Style
+   ========================================================================== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px; /* 컨텐츠와 간격 */
+  margin-bottom: 60px; /* 푸터와 간격 */
+  gap: 8px; /* 버튼 사이 간격 */
+}
+
+/* 기본 버튼 스타일 */
+.pagination a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  
+  font-size: 13px;
+  font-family: 'Pretendard', sans-serif; /* 또는 기존 폰트 */
+  color: #888; /* 비활성 텍스트 색상 (연한 회색) */
+  text-decoration: none;
+  
+  background-color: #fff;
+  border: 1px solid #ddd; /* 연한 테두리 */
+  transition: all 0.2s ease;
+}
+
+/* 마우스 올렸을 때 */
+.pagination a:hover {
+  border-color: #333;
+  color: #333;
+}
+
+/* 현재 활성화된 페이지 (검정 배경) */
+.pagination a.active {
+  background-color: #333;
+  border-color: #333;
+  color: #fff;
+  font-weight: 600;
+  cursor: default;
+}
+
+/* 이전/다음 버튼 (화살표) */
+.pagination .prev,
+.pagination .next {
+  font-size: 16px; /* 화살표만 약간 크게 */
+  color: #333;
+  border: 1px solid #ddd;
+}

@@ -1,0 +1,211 @@
+/* =====================
+   BASE
+===================== */
+body {
+  margin: 0;
+  background: #fafafa;
+  color: #222;
+  font-family: Arial, sans-serif;
+}
+
+/* =====================
+   BUY WRAPPER
+===================== */
+.buy-wrapper {
+  padding: 60px 0;
+  background-color: #fff;
+}
+
+/* =====================
+   BUY CONTAINER
+===================== */
+.buy-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 2.3fr 1.2fr;
+  gap: 30px;
+  border: 0px #ddd solid;
+  min-height: 720px;
+}
+
+/* =====================
+   COMMON SUMMARY CARD ⭐
+===================== */
+.summary-card {
+  background: #fff;
+  padding: 36px;
+  border: 1px solid #ddd;
+  
+}
+
+/* =====================
+   BUY CARD
+===================== */
+.buy-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 36px;
+}
+
+/* =====================
+   FORM
+===================== */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.form-group label.title {
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: none;
+  height: 80px;
+}
+
+/* =====================
+   POINT
+===================== */
+/* =====================
+   POINT
+===================== */
+.point-input {
+  background: #f9f9f9;
+  text-align: right;
+}
+
+.point-check-row {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.point-check-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;   /* 🔥 줄바꿈 방지 */
+  cursor: pointer;
+}
+
+.point-check-row input[type="checkbox"] {
+  margin: 0;
+}
+/* =====================
+   ADDRESS
+===================== */
+.address-row {
+  display: flex;
+  gap: 10px;
+}
+
+.address-row button {
+  width: 20%;
+  height: 60px;
+  padding: 11px 14px;
+  border: 1px solid #222;
+  background: #fff;
+  cursor: pointer;
+}
+
+
+
+/* =====================
+   SUMMARY
+===================== */
+.summary-card {
+  background: #fff;
+  padding: 36px;
+  border: 1px solid #ddd;
+}
+
+/* =====================
+   SUMMARY TITLE / CONTENT
+===================== */
+.summary-card h3 {
+  margin: 0 0 20px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+ 
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+ 
+}
+
+.summary-row.total {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.summary-row.point {
+  font-size: 13px;
+  color: #666;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+
+/* =====================
+   ACTION BUTTONS
+===================== */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.action-buttons .buy {
+  padding: 16px;
+  background: #222;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.action-buttons .cart {
+  padding: 14px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 767px) {
+  .buy-container {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+}

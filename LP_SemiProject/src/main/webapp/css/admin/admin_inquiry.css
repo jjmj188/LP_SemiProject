@@ -1,0 +1,166 @@
+/* =====================
+   BASE & LAYOUT (기존 유지)
+===================== */
+body { margin: 0; font-family: Arial, sans-serif; background: #fafafa; color: #222; }
+.admin-wrapper { padding: 60px 0; background: #ffffff; }
+.admin-container { max-width: 1200px; margin: 0 auto; min-height: 720px; background: #fff; }
+.admin-menu { display: flex; gap: 20px; border-bottom: 1px solid #ddd; padding-bottom: 14px; margin-bottom: 30px; }
+.admin-menu a { text-decoration: none; color: #333; font-size: 14px; padding: 8px 12px; }
+.admin-menu a.active { font-weight: bold; border-bottom: 2px solid #222; }
+.admin-content { background: #fff; border: 1px solid #ddd; padding: 40px; min-height: 720px; }
+.admin-content h2 { margin: 0 0 30px; font-size: 22px; font-weight: 700; }
+
+/* =====================
+   INQUIRY TABLE
+===================== */
+.inquiry-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.inquiry-table thead th {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.inquiry-table tbody td {
+  border: 1px solid #ddd;
+  padding: 12px 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 문의내용 왼쪽 정렬 */
+.inquiry-table .content {
+  text-align: left;
+  padding-left: 16px;
+  line-height: 1.5;
+}
+
+/* [수정] 처리상태 Select Box */
+.status-select {
+  padding: 6px 8px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* [추가] 답변하기 버튼 */
+.btn-reply {
+  padding: 6px 12px;
+  font-size: 13px;
+  border: 1px solid #222;
+  background: #fff;
+  color: #222;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reply:hover {
+  background: #222;
+  color: #fff;
+}
+
+/* =====================
+   [수정] MODAL POPUP
+===================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  /* flex 정렬 속성 제거 (absolute positioning 사용) */
+}
+
+.modal-window {
+  background: #fff;
+  width: 500px; /* 답변창은 조금 더 넓게 */
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  /* [핵심] 화면 중앙 정렬 코드 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+}
+
+.modal-header h3 { margin: 0; font-size: 18px; color: #222; }
+.btn-close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+
+.modal-body { display: flex; flex-direction: column; gap: 16px; }
+
+/* 문의 내용 미리보기 박스 */
+.inquiry-preview-box {
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #555;
+  border: 1px solid #eee;
+}
+
+.preview-text { margin: 4px 0 0 0; color: #222; font-weight: 500; }
+
+/* 폼 요소 */
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group label { font-size: 14px; font-weight: bold; color: #444; }
+
+.input-textarea {
+  width: 100%;
+  height: 120px; /* 높이 넉넉하게 */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical; /* 세로 크기 조절 허용 */
+  font-size: 14px;
+  box-sizing: border-box; /* padding 포함 크기 계산 */
+}
+
+/* 하단 버튼 */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 16px;
+}
+
+.btn-cancel-modal {
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+}
+
+.btn-submit-modal {
+  padding: 8px 16px;
+  background: #222;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-submit-modal:hover { background: #000; }

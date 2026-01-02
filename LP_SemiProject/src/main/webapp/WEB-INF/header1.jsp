@@ -38,7 +38,7 @@
   <nav class="navlinks" aria-label="Primary">
     <a href="<%= ctxPath%>/index.lp">HOME</a> |
     <a href="<%= ctxPath%>">LOGIN</a> |
-    <a href="<%= ctxPath%>/order/cart.html">CART</a> |
+    <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
     <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MY PROFILE</a>
   </nav>
 
@@ -50,8 +50,8 @@
   <!-- 모바일 드롭다운 -->
   <nav class="navlinks-mobile" aria-label="Mobile Primary">
     <a href="<%= ctxPath%>/index.lp">HOME</a>
-    <a href="<%= ctxPath%>/user/login.html">LOGIN</a>
-    <a href="<%= ctxPath%>/order/cart.html">CART</a>
+    <a href="<%= ctxPath%>">LOGIN</a>
+    <a href="<%= ctxPath%>/order/cart.lp">CART</a>
     <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MY PROFILE</a>
   </nav>
 </header>

@@ -1,0 +1,177 @@
+/* =====================
+   BASE
+===================== */
+body {
+  margin: 0;
+  background: #fafafa;
+  color: #222;
+  font-family: Arial, sans-serif;
+}
+
+/* =====================
+   LOGIN WRAPPER (mypage 기준)
+===================== */
+.login-wrapper {
+  padding: 60px 0;
+  background: white;
+    
+}
+
+/* =====================
+   LOGIN CONTAINER ⭐ 핵심
+===================== */
+.login-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  min-height: 720px;          /* 🔥 mypage/cart 기준 */
+  background: #fff;
+
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* =====================
+   LOGIN BOX
+===================== */
+.login-box {
+  width: 420px;
+  background: #fff;
+  padding: 40px 32px;
+  border-radius: 14px;
+  border: 1px solid #e2e2e2;
+}
+
+/* =====================
+   TAB
+===================== */
+.login-tab {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  margin-bottom: 30px;
+}
+
+.tab-item {
+  position: relative;
+  padding: 8px 0;
+  font-size: 18px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.tab-item.active {
+  color: #222;
+  font-weight: 700;
+}
+
+.tab-item.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 2px;
+  background: #111;
+}
+
+/* =====================
+   INPUT
+===================== */
+.input-group {
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.input-group input {
+  width: 90%;
+  padding: 10px 20px;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #111;
+}
+
+/* =====================
+   OPTIONS
+===================== */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin: 20px 0 26px;
+  color: #555;
+}
+
+.find-links a {
+  text-decoration: none;
+  color: #666;
+}
+
+.find-links a:hover {
+  text-decoration: underline;
+}
+
+/* =====================
+   BUTTONS
+===================== */
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn-login:hover {
+  background: #000;
+}
+
+.btn-register {
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #111;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn-register:hover {
+  background: #111;
+  color: #fff;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 768px) {
+  .login-container {
+    min-height: auto;
+    padding: 40px 0;
+  }
+
+  .login-box {
+    width: 100%;
+    margin: 0 16px;
+    padding: 32px 24px;
+  }
+}

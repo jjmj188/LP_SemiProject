@@ -1,0 +1,340 @@
+/* =====================
+   BASE
+===================== */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #ffffff;
+  color: #222;
+}
+
+/* =====================
+   WRAPPER
+===================== */
+.admin-wrapper {
+  padding: 60px 0;
+}
+
+/* 🔥 핵심: 기준 컨테이너 */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* =====================
+   ADMIN MENU (상단 가로)
+===================== */
+.admin-menu {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 14px;
+  margin-bottom: 30px;
+}
+
+.admin-menu a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+
+.admin-menu a.active {
+  font-weight: bold;
+  border-bottom: 2px solid #222;
+}
+
+/* =====================
+   CONTENT CARD
+===================== */
+.admin-content {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 40px;
+  min-height: 720px;
+}
+
+/* =====================
+   PRODUCT CONTROL
+===================== */
+.product-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.control-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.btn-add {
+  padding: 8px 14px;
+  background: #222;
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-add:hover {
+  background: #000;
+}
+
+/* =====================
+   PRODUCT ACTION
+===================== */
+.product-action {
+  margin-bottom: 20px;
+}
+
+.btn-delete {
+  padding: 7px 14px;
+  background: #e53935;
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  background: #c62828;
+}
+
+/* =====================
+   PRODUCT LIST
+===================== */
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =====================
+   PRODUCT ITEM
+===================== */
+.product-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+.product-item img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+/* =====================
+   PRODUCT INFO
+===================== */
+.product-info {
+  flex: 1;
+}
+
+.artist-en {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.artist-kr {
+  font-size: 13px;
+  color: #666;
+}
+
+.price {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* =====================
+   BUTTONS
+===================== */
+.product-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.product-btns button {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.product-btns .btn-remove {
+  color: #e53935;
+  border-color: #e53935;
+}
+
+.product-btns .btn-remove:hover {
+  background: #e53935;
+  color: #fff;
+}
+
+/* =====================
+   [수정됨] MODAL POPUP
+===================== */
+/* 배경 (어두운 오버레이) */
+.modal-overlay {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+  z-index: 1000; /* 최상위로 올림 */
+}
+
+/* 팝업 창 본체 (스크롤 적용) */
+.modal-window {
+  background: #fff;
+  width: 450px; /* 가로폭 확장 (400 -> 450) */
+  /* padding 제거 -> header, body, footer로 분산 */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  
+  display: flex;
+  flex-direction: column;
+
+  position: fixed; /* absolute -> fixed */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* [핵심] 화면 높이 제한 및 넘침 방지 */
+  max-height: 85vh;
+  overflow: hidden; 
+}
+
+/* 헤더 (제목 + 닫기버튼) */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 20px 24px; /* 패딩 이동됨 */
+  flex-shrink: 0; /* 스크롤 시 고정 */
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #222;
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+}
+
+/* 입력 폼 영역 (여기에만 스크롤 적용) */
+.modal-body {
+  padding: 20px 24px; /* 패딩 이동됨 */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  
+  overflow-y: auto; /* 내용 길어지면 스크롤 발생 */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: bold;
+  color: #444;
+}
+
+.input-text {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.input-file {
+  font-size: 13px;
+}
+
+/* 하단 버튼 영역 */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #eee;
+  padding: 16px 24px 20px; /* 패딩 이동됨 */
+  background: #fff;
+  flex-shrink: 0; /* 스크롤 시 고정 */
+}
+
+.btn-cancel-modal {
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+}
+
+.btn-submit-modal {
+  padding: 8px 16px;
+  background: #222;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-submit-modal:hover {
+  background: #000;
+}
+
+/* =====================
+   [추가] 모달 내부 폼 확장 스타일
+   (textarea, select, number input 대응)
+===================== */
+
+/* 1. 텍스트 영역 (제품 설명) 스타일 */
+.modal-body .form-group textarea.input-text {
+  height: 100px;        /* 기본 높이 설정 */
+  resize: vertical;     /* 세로로만 크기 조절 가능하도록 제한 */
+  font-family: inherit; /* 부모 폰트 상속 */
+  line-height: 1.5;     /* 줄간격 확보 */
+}
+
+/* 2. 셀렉트 박스 (카테고리) 스타일 */
+.modal-body .form-group select.input-text {
+  cursor: pointer;      /* 마우스 올렸을 때 손가락 모양 */
+  background-color: #fff;
+}
+
+/* 3. 숫자 입력 필드 (가격, 재고) 화살표 제거 */
+/* 크롬, 사파리, 엣지용 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* 파이어폭스용 */
+input[type="number"] {
+  -moz-appearance: textfield; 
+  appearance: textfield;
+}

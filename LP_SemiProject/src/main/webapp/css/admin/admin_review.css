@@ -1,0 +1,164 @@
+/* =====================
+   BASE
+===================== */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  color: #222;
+}
+
+/* =====================
+   ADMIN WRAPPER
+===================== */
+.admin-wrapper {
+  padding: 60px 0;
+  background: #ffffff;
+}
+
+/* =====================
+   ADMIN CONTAINER (기준선만)
+===================== */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 720px;
+  background: #fff;
+}
+
+/* =====================
+   ADMIN MENU (상단 가로형)
+===================== */
+.admin-menu {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 14px;
+  margin-bottom: 30px;
+}
+
+.admin-menu a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+
+.admin-menu a.active {
+  font-weight: bold;
+  border-bottom: 2px solid #222;
+}
+
+/* =====================
+   ADMIN CONTENT
+===================== */
+.admin-content {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 40px;
+  min-height: 720px;
+}
+
+.admin-content h2 {
+  margin: 0 0 30px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* =====================
+   REVIEW CONTROL
+===================== */
+.review-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.review-control label {
+  font-size: 14px;
+}
+
+.review-control input[type="checkbox"] {
+  margin-right: 6px;
+  transform: scale(1.1);
+}
+
+.btn-delete {
+  padding: 6px 14px;
+  font-size: 13px;
+  border: 1px solid #222;
+  background: #222;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  background: #000;
+}
+
+/* =====================
+   REVIEW TABLE
+===================== */
+.review-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.review-table thead th {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.review-table tbody td {
+  border: 1px solid #ddd;
+  padding: 12px 10px;
+  text-align: center;
+}
+
+/* 상품명 */
+.review-table .product-name {
+  font-weight: 600;
+  color: #333;
+}
+
+/* 리뷰 내용 */
+.review-table .review-content {
+  text-align: left;
+  padding-left: 16px;
+  line-height: 1.5;
+}
+
+/* =====================
+   BUTTON
+===================== */
+.btn-small {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.btn-small:hover {
+  background: #f5f5f5;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 900px) {
+  .review-table {
+    font-size: 13px;
+  }
+
+  .review-control {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

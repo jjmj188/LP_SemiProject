@@ -33,8 +33,8 @@
       © 2025 SEOUL VINYL. All rights reserved.
       
     </p>
-        <a href="../admin/admin_login.html" style="text-decoration: none; color: #666;">관리자로그인</a>
-        <a href="../admin/admin_member.html">관리자페이지</a>
+        <a href="<%= ctxPath%>/admin/admin_login.lp" style="text-decoration: none; color: #666;">관리자로그인</a>
+        <a href="<%= ctxPath%>/admin/admin_member.jsp">관리자페이지</a>
   </div>
 </footer>
 
