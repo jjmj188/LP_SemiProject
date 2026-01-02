@@ -9,7 +9,7 @@
   
   
   <!-- HEADER -->
-<jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/header2.jsp"></jsp:include>
   
   <main class="admin-wrapper">
   <div class="admin-container">
@@ -77,6 +77,6 @@
 </main>
 
 <!-- FOOTER -->
-<jsp:include page="/WEB-INF/footer1.jsp" />
+<jsp:include page="/WEB-INF/footer2.jsp" />
 
 <script src="<%= ctxPath%>/js/admin/admin_account.js"></script>
