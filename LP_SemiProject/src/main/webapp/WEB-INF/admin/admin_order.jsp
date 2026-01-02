@@ -9,7 +9,7 @@
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   
   <!-- HEADER -->
-<jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/header2.jsp"></jsp:include>
   
   <main class="admin-wrapper">
   <div class="admin-container">
@@ -145,5 +145,5 @@
 </div>
 
 <!-- FOOTER -->
-<jsp:include page="/WEB-INF/footer1.jsp" />
+<jsp:include page="/WEB-INF/footer2.jsp" />
 <script src="<%= ctxPath%>/js/admin/admin_order.js">

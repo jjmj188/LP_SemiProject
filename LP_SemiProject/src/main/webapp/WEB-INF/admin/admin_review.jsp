@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="<%= ctxPath%>/css/admin/admin_review.css">
   
   <!-- HEADER -->
-<jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/header2.jsp"></jsp:include>
   
   <main class="admin-wrapper">
   <div class="admin-container">
@@ -99,4 +99,4 @@
 </main>
 
 <!-- FOOTER -->
-<jsp:include page="/WEB-INF/footer1.jsp" />
+<jsp:include page="/WEB-INF/footer2.jsp" />
