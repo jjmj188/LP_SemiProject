@@ -1,0 +1,144 @@
+/* =====================
+   WRAPPER / CONTAINER
+===================== */
+.taste-wrapper {
+  padding: 60px 0;
+  background: #ffffff;
+}
+
+.taste-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 720px;          /* mypage/cart 기준 */
+  background: #fff;
+}
+
+/* =====================
+   TITLE
+===================== */
+.taste-title {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* =====================
+   GRID (핵심)
+===================== */
+.preference-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 140px);
+  gap: 36px;
+  justify-content: center;
+}
+
+/* =====================
+   ITEM
+===================== */
+.preference-item {
+  text-align: center;
+  cursor: pointer;
+}
+
+/* =====================
+   LP 이미지
+===================== */
+.img-wrap {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* hover (선택 전 미세 확대) */
+.preference-item:hover .img-wrap {
+  transform: scale(1.05);
+}
+
+/* =====================
+   ACTIVE (선택 상태)
+===================== */
+.preference-item.active .img-wrap {
+  transform: scale(1.15);
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,0.8),
+    0 0 18px rgba(224, 227, 186, 0.55),
+    0 0 32px rgba(212, 215, 188, 0.35),
+    0 12px 26px rgba(0,0,0,0.25);
+}
+
+/* =====================
+   SPIN
+   → JS에서 class만 붙였다 떼는 구조
+   → 음악 재생 중일 때만 회전
+===================== */
+.preference-item.spin .img-wrap {
+  animation: spinAlbum 2s linear infinite;
+}
+
+@keyframes spinAlbum {
+  from {
+    transform: rotate(0deg) scale(1.15);
+  }
+  to {
+    transform: rotate(360deg) scale(1.15);
+  }
+}
+
+/* =====================
+   LABEL
+===================== */
+.preference-label {
+  margin-top: 14px;
+  font-weight: 600;
+}
+
+/* =====================
+   BUTTON
+===================== */
+.taste-btn-wrap {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.taste-btn {
+  padding: 14px 48px;
+  font-size: 15px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.taste-btn:hover {
+  background: #000;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 1199px) {
+  .preference-grid {
+    grid-template-columns: repeat(3, 140px);
+  }
+}
+
+@media (max-width: 767px) {
+  .taste-container {
+    padding: 0 20px;
+  }
+
+  .preference-grid {
+    grid-template-columns: repeat(2, 140px);
+  }
+}

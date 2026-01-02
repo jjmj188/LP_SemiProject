@@ -1,11 +1,13 @@
 let b_idcheck_click = false;
 let b_emailcheck_click = false;
-
+let checkedUserid = "";
 $(function(){
 	
+	
     /* =========================
-       아이디 중복확인 (기존 동일)
+       아이디 중복확인 
     ========================= */
+	
     $("#idcheck").click(function(){
         const userid = $("#userid").val().trim();
         const regUserid = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/;
@@ -35,13 +37,28 @@ $(function(){
                 } else {
                     $("#idCheckResult").text("사용 가능한 아이디입니다.").css("color","green");
                     b_idcheck_click = true;
+					checkedUserid = userid;
                 }
             }
         });
     });
+	/* ================================
+	   아이디 중복확인 후 수정했을 경우 중복 재확인 
+	    ================================*/
+		$("#userid").on("input", function() {
+		        const currentUserid = $(this).val().trim();
+		        
+		        // 현재 입력창의 값과 중복확인을 완료한 값이 다를 경우
+		        if (currentUserid !== checkedUserid) {
+		            b_idcheck_click = false;
+		            $("#idCheckResult")
+		                .text("아이디 중복확인을 다시 해주세요.")
+		                .css("color", "gray");
+		        }
+		});
 
     /* =========================
-       이메일 중복확인 (기존 동일)
+       이메일 중복확인 
     ========================= */
     $("#emailcheck").click(function(){
         const email = $("#email").val().trim();
@@ -76,6 +93,16 @@ $(function(){
             }
         });
     });
+	/* ================================
+	   이메일 중복확인 후 수정했을 경우 중복 재확인 
+	   ================================*/
+	
+	$("#email").on("input", function () {
+	    b_emailcheck_click = false;
+	    $("#emailCheckResult")
+	        .text("이메일 중복확인을 해주세요.")
+	        .css("color", "gray");
+	});
 	//7.핸드폰 
 		$("#hp2, #hp3").on("input", function () {
 		    this.value = this.value.replace(/[^0-9]/g, "");
@@ -108,7 +135,7 @@ function goRegister() {
 	
 
 	if (!regName.test(name)) {
-	    alert("성명은 한글 2~10자 또는 영문 2~20자만 가능합니다.");
+	    alert("성명은 공백없이 한글 2~10자 또는 영문 2~20자만 가능합니다.");
 	    $("#name").focus();
 	    return;
 	}

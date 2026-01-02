@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import common.controller.AbstractController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import member.domain.MemberDTO;
 import member.model.MemberDAO;
 import member.model.MemberDAO_imple;
@@ -52,8 +53,12 @@ public class MemberRegister extends AbstractController {
 			try {
 				int n = mdao.registerMember(member);
 				if(n==1) {
+					
+					 HttpSession session = request.getSession();
+					 session.setAttribute("userid", member.getUserid());
+					
 					message = "회원가입 성공^^";
-					loc = request.getContextPath()+"/taste_check.lp"; // 시작페이지로 이동한다.
+					loc = request.getContextPath()+"/member/taste_check.lp"; 
 				}
 			} catch(SQLException e) {
 				e.printStackTrace();
