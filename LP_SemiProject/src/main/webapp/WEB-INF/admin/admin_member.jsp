@@ -16,12 +16,12 @@
   <div class="admin-container">
 
     <aside class="admin-menu">
-      <a href="admin_member.html" class="active">회원관리</a>
-      <a href="admin_product.html">상품관리</a>
-      <a href="admin_order.html">주문·배송</a>
-      <a href="admin_review.html">리뷰관리</a>
-      <a href="admin_inquiry.html">문의내역</a>
-      <a href="admin_account.html">회계상태</a>
+      <a href="<%= ctxPath%>/admin/admin_member.lp" class="active">회원관리</a>
+      <a href="<%= ctxPath%>/admin/admin_product.lp">상품관리</a>
+      <a href="<%= ctxPath%>/admin/admin_order.lp">주문·배송</a>
+      <a href="<%= ctxPath%>/admin/admin_review.lp">리뷰관리</a>
+      <a href="<%= ctxPath%>/admin/admin_inquiry.lp">문의내역</a>
+      <a href="<%= ctxPath%>/admin/admin_account.lp">회계상태</a>
     </aside>
 
     <section class="admin-content">
