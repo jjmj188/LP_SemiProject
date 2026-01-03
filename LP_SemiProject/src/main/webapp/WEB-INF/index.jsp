@@ -261,12 +261,11 @@
 
 </div>
 
-  
   <!-- footer -->
  <jsp:include page="footer1.jsp"></jsp:include>
   
-  
 <!-- 캐러셀 JS -->
-<script src="js/carousel.js"></script>
+<script src="<%= ctxPath%>/js/carousel.js"></script>
 
-<script src="./js/index.js"></script>
+<script src="<%= ctxPath%>/js/index.js"></script>
+
