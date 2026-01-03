@@ -42,7 +42,10 @@
     </div>
   </div>
 
-
+  <div class="qty-box">
+    <button type="button" class="qty-btn" >수정하기</button>
+   
+  </div>
 </div>
 
 
