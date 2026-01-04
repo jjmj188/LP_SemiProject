@@ -5,6 +5,8 @@
 	// /LP_SemiProject
 %>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
   <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
 
   <!-- 문의내역 전용(새로 만들기) -->
@@ -16,12 +18,14 @@
   <!-- HEADER -->
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
   
+
+  
   
   <main class="mypage-wrapper">
   <div class="mypage-container">
 
     <aside class="mypage-menu">
-      <h3>마이페이지</h3>
+      <h3>마이페이지</h3>  
       <a href="<%= ctxPath%>/my_info/my_info.lp" >프로필 수정</a>
       <a href="<%= ctxPath%>/my_info/my_inquiry.lp" class="active">문의내역</a>
       <a href="<%= ctxPath%>/my_info/my_wish.lp" >찜내역</a>
@@ -98,29 +102,29 @@
     </div>
 
     <div class="modal-body">
-      <!-- 여기 안에 네가 준 문의작성 폼을 그대로 넣으면 됨 -->
+      
       <form class="inquiry-form" id="inquiryForm">
 
         <div class="form-row">
           <div class="form-group half">
             <label>이름</label>
-            <input type="text" name="name" placeholder="이름 입력" value="홍길동" readonly>
+            <input type="text" name="name" placeholder="이름 입력" value="${sessionScope.loginuser.name}" readonly>
           </div>
 
           <div class="form-group half">
             <label>전화번호</label>
-            <input type="text" name="mobile" placeholder="010-0000-0000" value="010-1234-5678" readonly>
+            <input type="text" name="mobile" placeholder="010-0000-0000" value="000-0000-0000" readonly>
           </div>
         </div>
 
         <div class="form-group">
           <label>이메일</label>
-          <input type="email" name="email" placeholder="example@email.com" value="test@email.com" readonly>
+          <input type="email" name="email" placeholder="example@email.com" value="${sessionScope.loginuser.email}" readonly>
         </div>
 
         <div class="form-group">
           <label>문의내용</label>
-          <textarea name="content" placeholder="문의 내용을 작성해주세요" required></textarea>
+          <textarea name="inquirycontent" placeholder="문의 내용을 작성해주세요" required></textarea>
         </div>
 
         <div class="form-group">
@@ -153,5 +157,5 @@
 <!-- FOOTER -->
 <jsp:include page="/WEB-INF/footer1.jsp" />
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script src="<%= ctxPath%>/js/my_info/my_inquiry.js"></script>
