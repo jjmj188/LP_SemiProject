@@ -25,11 +25,13 @@ public class MemberDTO {
     private boolean requirePwdChange=false;
 	// 마지막으로 암호를 변경한 날짜가 현재시각으로 부터 3개월이 지났으면 true
 	// 마지막으로 암호를 변경한 날짜가 현재시각으로 부터 3개월이 지나지 않았으면 false
-    		;
+    		
+    private int lastLoginGap; 
+    //마지막 로그인 날짜로부터의 갭차이 1년이 지났을 경우 휴면처리 유무확인
 
 
     // ===== getter / setter =====
-    		
+
 	public int getUserseq() {
 		return userseq;
 	}
@@ -144,10 +146,20 @@ public class MemberDTO {
     
     
 	public boolean isRequirePwdChange() {
-		return false;
+		return requirePwdChange;
+		
 	}
 	
 	public void setRequirePwdChange(boolean requirePwdChange) {
 		this.requirePwdChange = requirePwdChange;
 	}
+
+	
+public int getLastLoginGap() {
+return lastLoginGap;
+}
+public void setLastLoginGap(int lastLoginGap) {
+this.lastLoginGap = lastLoginGap;
+}
+	
 }

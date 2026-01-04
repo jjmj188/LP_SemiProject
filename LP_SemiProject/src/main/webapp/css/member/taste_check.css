@@ -2,15 +2,16 @@
    WRAPPER / CONTAINER
 ===================== */
 .taste-wrapper {
-  padding: 60px 0;
+  padding: 80px 0 100px;   /* 🔥 전체를 아래로 */
   background: #ffffff;
 }
 
 .taste-container {
   max-width: 1200px;
   margin: 0 auto;
-  min-height: 720px;          /* mypage/cart 기준 */
+  min-height: 720px;
   background: #fff;
+  border:red 0px solid;
 }
 
 /* =====================
@@ -18,18 +19,31 @@
 ===================== */
 .taste-title {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   font-size: 22px;
   font-weight: 700;
 }
 
 /* =====================
-   GRID (핵심)
+   GUIDE
+===================== */
+.taste-guide {
+  text-align: center;
+  margin-bottom: 90px; /* 🔥 카드 더 아래로 */
+}
+
+.guide-text {
+  font-size: 14px;
+  color: #666;
+}
+
+/* =====================
+   GRID
 ===================== */
 .preference-grid {
   display: grid;
   grid-template-columns: repeat(5, 140px);
-  gap: 36px;
+  gap: 42px;
   justify-content: center;
 }
 
@@ -39,17 +53,19 @@
 .preference-item {
   text-align: center;
   cursor: pointer;
+  user-select: none;
 }
 
 /* =====================
-   LP 이미지
+   LP IMAGE
 ===================== */
 .img-wrap {
   width: 120px;
   height: 120px;
   border-radius: 50%;
   margin: 0 auto;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #fff;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 .img-wrap img {
@@ -59,38 +75,42 @@
   object-fit: cover;
 }
 
-/* hover (선택 전 미세 확대) */
+/* hover */
 .preference-item:hover .img-wrap {
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 
 /* =====================
-   ACTIVE (선택 상태)
+   ACTIVE (선택)
 ===================== */
 .preference-item.active .img-wrap {
-  transform: scale(1.15);
+  transform: scale(1.18);
   box-shadow:
-    0 0 0 3px rgba(255,255,255,0.8),
-    0 0 18px rgba(224, 227, 186, 0.55),
-    0 0 32px rgba(212, 215, 188, 0.35),
-    0 12px 26px rgba(0,0,0,0.25);
+    0 0 0 3px rgba(255,255,255,0.9),
+    0 0 22px rgba(230, 233, 200, 0.65),
+    0 0 36px rgba(210, 215, 185, 0.45),
+    0 14px 28px rgba(0,0,0,0.28);
 }
 
 /* =====================
-   SPIN
-   → JS에서 class만 붙였다 떼는 구조
-   → 음악 재생 중일 때만 회전
+   SPIN (LP 효과 강화)
 ===================== */
 .preference-item.spin .img-wrap {
-  animation: spinAlbum 2s linear infinite;
+  animation: spinAlbum 2.8s linear infinite;
 }
 
 @keyframes spinAlbum {
-  from {
-    transform: rotate(0deg) scale(1.15);
+  0% {
+    transform: rotate(0deg) scale(1.18);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
   }
-  to {
-    transform: rotate(360deg) scale(1.15);
+  50% {
+    transform: rotate(180deg) scale(1.18);
+    box-shadow: 0 18px 34px rgba(0,0,0,0.38);
+  }
+  100% {
+    transform: rotate(360deg) scale(1.18);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
   }
 }
 
@@ -100,23 +120,24 @@
 .preference-label {
   margin-top: 14px;
   font-weight: 600;
+  font-size: 14px;
 }
 
 /* =====================
    BUTTON
 ===================== */
 .taste-btn-wrap {
-  margin-top: 60px;
+  margin-top: 80px;
   text-align: center;
 }
 
 .taste-btn {
-  padding: 14px 48px;
+  padding: 14px 50px;
   font-size: 15px;
   background: #111;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
@@ -134,10 +155,6 @@
 }
 
 @media (max-width: 767px) {
-  .taste-container {
-    padding: 0 20px;
-  }
-
   .preference-grid {
     grid-template-columns: repeat(2, 140px);
   }

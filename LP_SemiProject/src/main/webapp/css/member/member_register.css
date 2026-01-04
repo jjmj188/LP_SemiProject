@@ -13,21 +13,16 @@ body {
 }
 
 /* =====================
-   LOGIN / REGISTER WRAPPER
+   LAYOUT
 ===================== */
 .login-section {
-  padding: 60px 0;               /* 🔥 공통 기준 여백 */
-  background: #ffffff;
+  padding: 40px 0;
 }
 
-/* 🔥 기준선 컨테이너 */
 .login-container {
   max-width: 1200px;
   margin: 0 auto;
-
-  min-height: 720px;             /* 🔥 헤더 기준 맞춤 */
-  background: #fff;
-
+  min-height: 600px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,10 +32,9 @@ body {
    FORM BOX
 ===================== */
 .login-form {
-  width: 420px;
+  width: 560px;
   background: #fff;
-
-  padding: 40px 30px;
+  padding: 28px 32px;
   border-radius: 12px;
   border: 1px solid #ddd;
 }
@@ -50,8 +44,7 @@ body {
 ===================== */
 .login-title {
   text-align: center;
-  margin-bottom: 30px;
-
+  margin-bottom: 20px;
   font-size: 22px;
   font-weight: 600;
 }
@@ -60,14 +53,13 @@ body {
    INPUT BOX
 ===================== */
 .input-box {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .input-box label {
   display: block;
   font-size: 14px;
   margin-bottom: 6px;
-  color: #333;
 }
 
 .input-box input[type="text"],
@@ -75,10 +67,8 @@ body {
 .input-box input[type="email"] {
   width: 100%;
   padding: 10px 12px;
-
   border: 1px solid #ccc;
   border-radius: 6px;
-
   font-size: 14px;
 }
 
@@ -88,17 +78,22 @@ body {
 }
 
 /* =====================
-   ID / EMAIL CHECK ZONE
+   ID / EMAIL CHECK (아래 배치)
 ===================== */
-.check-btn {
-  margin-top: 8px;
-  padding: 6px 10px;
+.check-row {
+   
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
+.check-btn {
+  padding: 6px 12px;
+  margin-top: 13px;
   font-size: 13px;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
-
   cursor: pointer;
 }
 
@@ -107,73 +102,42 @@ body {
 }
 
 .check-msg {
-  margin-top: 6px;
   font-size: 13px;
+  min-width: 140px;
 }
 
 /* =====================
-   PHONE NUMBER
+   PHONE
 ===================== */
-.input-box input#hp1,
-.input-box input#hp2,
-.input-box input#hp3 {
+#hp1, #hp2, #hp3 {
   width: 30%;
   display: inline-block;
 }
 
-.input-box input#hp1 {
-  margin-right: 4px;
-}
-
-.input-box input#hp2 {
-  margin: 0 4px;
-}
+#hp2 { margin: 0 4px; }
 
 /* =====================
-   GENDER (정렬 핵심)
+   GENDER
 ===================== */
-.input-box.gender-box {
+.gender-box {
   display: flex;
   align-items: center;
+  gap: 16px;
 }
 
 .gender-row {
   display: flex;
-  align-items: center;
-}
-
-.gender-label {
-  width: 70px;
-  margin-bottom: 0;
-  font-size: 14px;
-}
-
-.gender-option {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 16px;
-  cursor: pointer;
-}
-
-.gender-option input[type="radio"] {
-  width: auto;
-  margin-right: 6px;
+  gap: 20px;
 }
 
 /* =====================
-   DATE INPUT
+   PASSWORD EYE
 ===================== */
-.input-box input#birthday {
-  background: #fff;
-  cursor: pointer;
-}
-
 .password-wrap {
   position: relative;
 }
 
 .password-wrap input {
-  width: 100%;
   padding-right: 36px;
 }
 
@@ -183,12 +147,10 @@ body {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  font-size: 16px;
-  user-select: none;
 }
 
 /* =====================
-   ERROR TEXT
+   ERROR
 ===================== */
 .error {
   font-size: 13px;
@@ -198,17 +160,46 @@ body {
 }
 
 /* =====================
+   REGISTER BUTTON (UPDATED)
+===================== */
+.register-btn {
+  all: unset;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 56px;                 /* 🔥 더 큼 */
+  margin: 32px auto 0;          /* 🔥 가운데 + 위 여백 */
+
+  background: #000;             /* 🔥 검정 */
+  color: #fff;
+
+  border-radius: 14px;          /* 살짝 더 둥글게 */
+  font-size: 17px;              /* 글자도 조금 키움 */
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.register-btn:hover {
+  background: #111;
+  transform: translateY(-1px);  /* 살짝 떠오르는 느낌 */
+}
+
+.register-btn:active {
+  transform: translateY(0);
+}
+
+/* =====================
    RESPONSIVE
 ===================== */
 @media (max-width: 768px) {
-  .login-container {
-    min-height: auto;
-    padding: 40px 0;
-  }
-
   .login-form {
     width: 100%;
     margin: 0 16px;
-    padding: 30px 24px;
   }
 }

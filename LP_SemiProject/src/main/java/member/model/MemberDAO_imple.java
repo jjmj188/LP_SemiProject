@@ -96,9 +96,9 @@ public class MemberDAO_imple implements MemberDAO {
 		return isExists;
 	}// end of public boolean idDuplicateCheck(String userid) throws SQLException------
 
+	
 	//==================================================================================//
-
-	// ID 중복검사 (tbl_member 테이블에서 email이 존재하면 true 를 리턴해주고, email이 존재하지 않으면 false 를 리턴한다)
+	// 비밀번호 중복검사 (tbl_member 테이블에서 email이 존재하면 true 를 리턴해주고, email이 존재하지 않으면 false 를 리턴한다)
 	@Override
 	public boolean emailDuplicateCheck(String email) throws SQLException {
 	boolean isExists = false;
@@ -127,7 +127,8 @@ public class MemberDAO_imple implements MemberDAO {
 		return isExists;		
 	}//end of public boolean emailDuplicateCheck(String email) throws SQLException
 
-//====================================================================================//
+	
+	//====================================================================================//
 	// 회원가입을 해주는 메서드(tbl_member 테이블에 insert)
 		@Override
 		public int registerMember(MemberDTO member) throws SQLException {
@@ -160,12 +161,10 @@ public class MemberDAO_imple implements MemberDAO {
 			
 			return result;
 		}// end of public int registerMember(MemberDTO member) throws SQLException-------*/
+		
 
-
-
-
-
-		//취향선택메서드 
+		//=========================================================================
+		//취향선택 메서드
 		@Override
 		public int insertTaste(String userid, String[] arr) throws SQLException {
 			
@@ -182,13 +181,302 @@ public class MemberDAO_imple implements MemberDAO {
 				            pstmt.setInt(2, Integer.parseInt(categoryNo));
 				            n+= pstmt.executeUpdate();
 				        }
-				       
-				      
+
 				    } finally {
 				        close();
 				 }
-		return n;
-	}
+		  return n;
+		}
+
+		//로그인메서드==================================================================================
+	 	@Override
+	 	public MemberDTO login(Map<String, String> paraMap) {
+	 	    MemberDTO member = null;
+
+	 	    try {
+	 	        conn = ds.getConnection();
+
+	 	        // 1. 조회 시점에 마지막 로그인 갭을 계산합니다.
+	 	        // NVL을 추가하여 신규 회원이 첫 로그인 시 에러가 나지 않도록 방어했습니다.
+	 	        String sql = " SELECT userid, name, lastpwdchangedate, registerday, idle, email, mobile, "
+	 	                   + "        TRUNC(MONTHS_BETWEEN(SYSDATE, lastpwdchangedate)) AS pwdchangegap, "
+	 	                   + "        TRUNC(MONTHS_BETWEEN(SYSDATE, "
+	 	                   + "              NVL((SELECT MAX(logindate) FROM tbl_loginhistory WHERE fk_userid = userid), registerday) "
+	 	                   + "        )) AS last_login_gap "
+	 	                   + " FROM tbl_member "
+	 	                   + " WHERE status = 1 AND userid = ? AND pwd = ? ";
+
+	 	        pstmt = conn.prepareStatement(sql);
+	 	        pstmt.setString(1, paraMap.get("userid"));
+	 	        pstmt.setString(2, Sha256.encrypt(paraMap.get("pwd")));
+	 	        
+	 	        rs = pstmt.executeQuery();
+	 	        
+	 	        if (rs.next()) {
+	 	            member = new MemberDTO();
+	 	            member.setUserid(rs.getString("userid"));
+	 	            member.setName(rs.getString("name"));
+	 	            member.setIdle(rs.getInt("idle")); // 현재 DB 저장값 (0 또는 1)
+	 	            member.setRegisterday(rs.getString("registerday"));
+	 	            member.setEmail(aes.decrypt(rs.getString("email")));
+	 	            member.setMobile(aes.decrypt(rs.getString("mobile")));
+
+	 	            // 비밀번호 변경 필요 여부 (3개월)
+	 	            member.setRequirePwdChange(rs.getInt("pwdchangegap") >= 3);
+
+	 	            // 마지막 로그인 후 경과 개월 수
+	 	            int lastLoginGap = rs.getInt("last_login_gap");
+	 	            member.setLastLoginGap(lastLoginGap);
+
+	 	            // --- 실시간 휴면 처리 추가 로직 --- //
+	 	            
+	 	            // 만약 DB에는 활동중(0)인데, 날짜 계산 결과 12개월 이상 지났다면
+	 	            if (member.getIdle() == 0 && lastLoginGap >= 12) {
+	 	                
+	 	                // 1) 자바 객체 상태를 휴면(1)으로 변경
+	 	                member.setIdle(1);
+	 	                
+	 	                // 2) DB 테이블의 idle 컬럼도 1로 즉시 업데이트
+	 	                sql = " UPDATE tbl_member SET idle = 1 WHERE userid = ? ";
+	 	                pstmt = conn.prepareStatement(sql);
+	 	                pstmt.setString(1, member.getUserid());
+	 	                pstmt.executeUpdate();
+	 	                
+	 	                // 참고: 이 경우 컨트롤러에서는 loginuser.getIdle() == 1 조건을 타서 
+	 	                // idle_release.lp 페이지로 가게 됩니다.
+	 	            }
+	 	         
+	 	        }
+	 	    } catch (SQLException | GeneralSecurityException | UnsupportedEncodingException e) {
+	 	        e.printStackTrace();
+	 	    } finally {
+	 	        close();
+	 	    }
+	 	    return member;
+	 	}
+
+	 	//==============================================================================
+		// 휴면계정 처리
+		@Override
+		public void updateIdle(String userid) throws SQLException {
+
+		    try {
+		        conn = ds.getConnection();
+
+		        String sql =
+		            " UPDATE tbl_member "
+		          + " SET idle = 1 "
+		          + " WHERE userid = ? "
+		          + "   AND idle = 0 "
+		          + "   AND ( "
+		          + "        SELECT NVL(MAX(logindate), SYSDATE) "
+		          + "        FROM tbl_loginhistory "
+		          + "        WHERE fk_userid = ? "
+		          + "       ) <= ADD_MONTHS(SYSDATE, -12) ";
+
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, userid);
+		        pstmt.setString(2, userid);
+
+		        pstmt.executeUpdate();
+
+		    } finally {
+		        close();
+		    }
+		}
+
+	//=============================================================================================//
+	// 로그인 기록 insert
+		@Override
+		public void insertLoginHistory(String userid, String clientip) throws SQLException {
+		    
+		    try {
+		        conn = ds.getConnection();
+		        
+		        String sql = " insert into tbl_loginhistory "
+		                   + " (historyno, fk_userid, logindate, clientip) "
+		                   + " values (seq_historyno.nextval, ?, sysdate, ?) ";
+		        
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, userid);
+		        pstmt.setString(2, clientip);
+		        
+		        pstmt.executeUpdate();
+		        
+		    } finally {
+		        close();
+		    }
+		}
+
+
+
+   // 비밀번호 재설정 + 휴면 해제 + 로그인 기록===============================================================
+		@Override
+		public int changePassword(String userid, String newPwd, String clientip) throws SQLException {
+
+		    int result = 0;
+
+		    try {
+		        conn = ds.getConnection();
+
+		        // 1️ 기존 비밀번호와 동일한지 검사
+		        String sql = "SELECT pwd FROM tbl_member WHERE userid = ?";
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, userid);
+		        rs = pstmt.executeQuery();
+
+		        if (rs.next()) {
+		            String oldPwd = rs.getString("pwd");
+		            String newPwdEnc = Sha256.encrypt(newPwd);
+
+		            if (oldPwd.equals(newPwdEnc)) {
+		                return -1; //  기존 비밀번호와 동일
+		            }
+		        }
+
+		        // 2️. 비밀번호 변경 + 휴면 해제
+		        sql = "UPDATE tbl_member "
+		            + " SET pwd = ?, "
+		            + "     lastpwdchangedate = SYSDATE, "
+		            + "     idle = 0 "
+		            + " WHERE userid = ?";
+
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, Sha256.encrypt(newPwd));
+		        pstmt.setString(2, userid);
+
+		        result = pstmt.executeUpdate(); // 1이면 성공
+
+		        // 3️. 로그인 기록 INSERT 
+		        if (result == 1) {
+		            sql = "INSERT INTO tbl_loginhistory "
+		                + " (historyno, fk_userid, logindate, clientip) "
+		                + " VALUES (seq_historyno.nextval, ?, SYSDATE, ?)";
+
+		            pstmt = conn.prepareStatement(sql);
+		            pstmt.setString(1, userid);
+		            pstmt.setString(2, clientip);
+
+		            pstmt.executeUpdate();
+		            
+		            conn.commit();
+		        }
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        close();
+		    }
+
+		    return result;
+		}
+
+		// 아이디 찾기(성명, 이메일을 입력받아서 해당 사용자의 아이디를 알려준다)
+		@Override
+		public String findUserid(Map<String, String> paraMap) throws SQLException {
+			
+			String userid = null;
+			
+			try {
+				 conn = ds.getConnection();
+						 
+				 String sql = " SELECT userid "
+				 		    + " FROM tbl_member "
+				 		    + " WHERE status = 1 AND name = ? AND email = ? ";
+				 
+				 pstmt = conn.prepareStatement(sql);
+				 pstmt.setString(1, paraMap.get("name"));
+				 pstmt.setString(2, aes.encrypt(paraMap.get("email")));
+				 
+				 rs = pstmt.executeQuery();
+				 
+				 if(rs.next()) {
+					 userid = rs.getString("userid");
+				 }
+				 
+			} catch(GeneralSecurityException | UnsupportedEncodingException e) {
+				  e.printStackTrace();
+			} finally {
+				close();
+			}
+			
+			return userid;
+		}// end of public String findUserid(Map<String, String> paraMap) throws SQLException-------
+
+
+		// 비밀번호 찾기(아이디, 이메일을 입력받아서 해당 사용자가 존재하는지 여부를 알려준다)
+		@Override
+		public boolean isUserExists(Map<String, String> paraMap) throws SQLException {
+			
+			boolean isUserExists = false;
+			
+			try {
+				 conn = ds.getConnection();
+						 
+				 String sql = " SELECT userid "
+				 		    + " FROM tbl_member "
+				 		    + " WHERE status = 1 AND userid = ? AND email = ? ";
+				 
+				 pstmt = conn.prepareStatement(sql);
+				 pstmt.setString(1, paraMap.get("userid"));
+				 pstmt.setString(2, aes.encrypt(paraMap.get("email")));
+				 
+				 rs = pstmt.executeQuery();
+				 
+				 isUserExists = rs.next();
+				 
+			} catch(GeneralSecurityException | UnsupportedEncodingException e) {
+				  e.printStackTrace();
+			} finally {
+				close();
+			}		
+			
+			return isUserExists;
+		}// end of public boolean isUserExists(Map<String, String> paraMap) throws SQLException------
+
+		//===========================================================================
+		// 비밀번호 찾기 시 현재 비밀번호와 같은지 여부 확인 및 update
+				@Override
+				public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
+				    int result = 0;
+				    
+				    try {
+				        conn = ds.getConnection();
+				        
+				        // 1️⃣ 먼저 기존 비밀번호를 가져와서 비교합니다.
+				        String sql = " select pwd from tbl_member where userid = ? ";
+				        
+				        pstmt = conn.prepareStatement(sql);
+				        pstmt.setString(1, paraMap.get("userid"));
+				        rs = pstmt.executeQuery();
+				        
+				        if(rs.next()) {
+				            String current_pwd = rs.getString("pwd");
+				            String new_pwd_enc = Sha256.encrypt(paraMap.get("new_pwd"));
+				            
+				            // 기존 암호와 새 암호가 같다면 업데이트를 하지 않고 -1을 리턴함
+				            if(current_pwd.equals(new_pwd_enc)) {
+				                return -1; 
+				            }
+				        }
+				        
+				        // 2️ 기존 암호와 다를 경우에만 실제로 업데이트를 진행합니다.
+				        sql = " update tbl_member set pwd = ?, lastpwdchangedate = sysdate " 
+				            + " where userid = ? ";
+				         
+				        pstmt = conn.prepareStatement(sql);
+				        pstmt.setString(1, Sha256.encrypt(paraMap.get("new_pwd")));
+				        pstmt.setString(2, paraMap.get("userid"));  
+				            
+				        result = pstmt.executeUpdate(); // 성공하면 1
+				         
+				    } finally {
+				        close();
+				    }
+				    
+				    return result;
+				}
+
 
 
 

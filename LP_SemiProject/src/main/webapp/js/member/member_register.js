@@ -1,13 +1,11 @@
 let b_idcheck_click = false;
 let b_emailcheck_click = false;
-let checkedUserid = "";
+
 $(function(){
-	
 	
     /* =========================
        아이디 중복확인 
     ========================= */
-	
     $("#idcheck").click(function(){
         const userid = $("#userid").val().trim();
         const regUserid = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/;
@@ -37,7 +35,6 @@ $(function(){
                 } else {
                     $("#idCheckResult").text("사용 가능한 아이디입니다.").css("color","green");
                     b_idcheck_click = true;
-					checkedUserid = userid;
                 }
             }
         });
@@ -45,24 +42,19 @@ $(function(){
 	/* ================================
 	   아이디 중복확인 후 수정했을 경우 중복 재확인 
 	    ================================*/
-		$("#userid").on("input", function() {
-		        const currentUserid = $(this).val().trim();
-		        
-		        // 현재 입력창의 값과 중복확인을 완료한 값이 다를 경우
-		        if (currentUserid !== checkedUserid) {
-		            b_idcheck_click = false;
-		            $("#idCheckResult")
-		                .text("아이디 중복확인을 다시 해주세요.")
-		                .css("color", "gray");
-		        }
-		});
+	$("#userid").on("input", function () {
+	    b_idcheck_click = false;
+	    $("#idCheckResult")
+	        .text("아이디 중복확인을 해주세요.")
+	        .css("color", "red");
+	});
 
     /* =========================
        이메일 중복확인 
     ========================= */
     $("#emailcheck").click(function(){
         const email = $("#email").val().trim();
-        const regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,}$/;
+        const regEmail =  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
 
         if(email === ""){
             alert("이메일을 입력하세요.");
@@ -77,7 +69,7 @@ $(function(){
         }
 
         $.ajax({
-            url: ctxPath + "/member/emailDuplicateCheck.lp", // ctxPath 추가 안전성 확보
+            url: ctxPath + "/member/emailDuplicateCheck.lp", 
             type: "post",
             data: { email },
             dataType: "json",
@@ -101,21 +93,22 @@ $(function(){
 	    b_emailcheck_click = false;
 	    $("#emailCheckResult")
 	        .text("이메일 중복확인을 해주세요.")
-	        .css("color", "gray");
+	        .css("color", "red");
 	});
 	//7.핸드폰 
 		$("#hp2, #hp3").on("input", function () {
 		    this.value = this.value.replace(/[^0-9]/g, "");
 		});
-    /* =========================
-       datepicker
-    ========================= */
-    $("#birthday").datepicker({
-        dateFormat: "yy-mm-dd",
-        changeYear: true,
-        changeMonth: true,
-        yearRange: "1900:+0"
-    });
+		/* =========================
+		   datepicker 설정 수정
+		========================= */
+		$("#birthday").datepicker({
+		    dateFormat: "yy-mm-dd",
+		    changeYear: true,
+		    changeMonth: true,
+		    yearRange: "1900:+0",
+		    maxDate: 0  // 0은 오늘을 의미하며, 오늘 이후 날짜는 선택 불가(회색 처리)
+		});
 });
 
 /* ======================================================
@@ -135,7 +128,7 @@ function goRegister() {
 	
 
 	if (!regName.test(name)) {
-	    alert("성명은 공백없이 한글 2~10자 또는 영문 2~20자만 가능합니다.");
+	    alert("성명은 한글 2~10자 또는 영문 2~20자만 가능합니다.");
 	    $("#name").focus();
 	    return;
 	}
@@ -189,24 +182,26 @@ function goRegister() {
         return;
     }
 
-    // 6. 생년월일 검사
+	// 6. 휴대폰 검사 & 조합
+		const hp1 = $("#hp1").val(); // "010"
+		const hp2 = $("#hp2").val().trim();
+		const hp3 = $("#hp3").val().trim();
+
+		if (!/^\d{4}$/.test(hp2) || !/^\d{4}$/.test(hp3)) {
+		    alert("연락처는 숫자 4자리씩 입력하세요.");
+		    $("#hp2").focus();
+		    return;
+		}
+
+		// hidden mobile 세팅
+		$("#mobile").val(hp1 + hp2 + hp3);
+	
+    // 7. 생년월일 검사
     if($("#birthday").val().trim() === ""){
         alert("생년월일을 선택하세요.");
         return;
     }
-	// 7. 휴대폰 검사 & 조합
-	const hp1 = $("#hp1").val(); // "010"
-	const hp2 = $("#hp2").val().trim();
-	const hp3 = $("#hp3").val().trim();
-
-	if (!/^\d{4}$/.test(hp2) || !/^\d{4}$/.test(hp3)) {
-	    alert("연락처는 숫자 4자리씩 입력하세요.");
-	    $("#hp2").focus();
-	    return;
-	}
-
-	// hidden mobile 세팅
-	$("#mobile").val(hp1 + hp2 + hp3);
+	
 	
 	
 	// 8. 최종 전송 (POST)

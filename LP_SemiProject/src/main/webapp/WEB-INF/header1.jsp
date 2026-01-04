@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
@@ -15,9 +17,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<%= ctxPath%>/css/common/header.css">
 
+<!-- 1. jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
    <!-- Font Awesome 6 Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
@@ -37,7 +45,15 @@
   <!-- PC 메뉴 -->
   <nav class="navlinks" aria-label="Primary">
     <a href="<%= ctxPath%>/index.lp">HOME</a> |
-    <a href="<%= ctxPath%>">LOGIN</a> |
+      <!--  비로그인 상태 -->
+    <c:if test="${empty sessionScope.loginuser}">
+      <a href="<%= ctxPath %>/login/login.lp">LOGIN</a> |
+    </c:if>
+
+    <!--  로그인 상태 -->
+    <c:if test="${not empty sessionScope.loginuser}">
+      <a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a> |
+    </c:if>
     <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
     <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MY PROFILE</a>
   </nav>
@@ -50,11 +66,23 @@
   <!-- 모바일 드롭다운 -->
   <nav class="navlinks-mobile" aria-label="Mobile Primary">
     <a href="<%= ctxPath%>/index.lp">HOME</a>
-    <a href="<%= ctxPath%>">LOGIN</a>
+    
+  <!--  비로그인 -->
+  <c:if test="${empty sessionScope.loginuser}">
+    <a href="<%= ctxPath%>/login/login.lp">LOGIN</a>
+  </c:if>
+
+  <!--  로그인 -->
+  <c:if test="${not empty sessionScope.loginuser}">
+    <a href="<%= ctxPath%>/login/logout.lp">LOGOUT</a>
+  </c:if>
+  
     <a href="<%= ctxPath%>/order/cart.lp">CART</a>
     <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MY PROFILE</a>
   </nav>
 </header>
+
+
 
 <!-- ✅ 스크립트는 CSS 텍스트 뒤에 붙이지 말고, body 끝쪽에 두는 게 안전 -->
 <script>

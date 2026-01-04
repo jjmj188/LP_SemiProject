@@ -53,17 +53,29 @@ public class MemberRegister extends AbstractController {
 			try {
 				int n = mdao.registerMember(member);
 				if(n==1) {
+					// 1. 세션 가져오기
+				    HttpSession session = request.getSession();
+				    
+				    // 2. 로그인과 동일한 '객체'와 '키값'으로 세션 저장 
+				    // 가입할 때 사용한 member 객체(MemberDTO)를 그대로 활용합니다.
+				    session.setAttribute("loginuser", member); 
+				    
+				    // 3. 로그인 기록 남기기
+				    String clientip = request.getRemoteAddr();
+				    mdao.insertLoginHistory(member.getUserid(), clientip);
+				    
+					message = "회원가입을 축하드립니다.";
+					loc = request.getContextPath()+"/member/taste_check.lp"; // 취향체크 페이지로 이동한다.
 					
-					 HttpSession session = request.getSession();
-					 session.setAttribute("userid", member.getUserid());
 					
-					message = "회원가입 성공^^";
-					loc = request.getContextPath()+"/member/taste_check.lp"; 
+				    setRedirect(true); 
+				    setViewPage(loc);
+				    return; 
 				}
 			} catch(SQLException e) {
 				e.printStackTrace();
 				
-				message = "회원가입 실패ㅜㅜ";
+				message = "회원가입 실패";
 				loc = "javascript:history.back()"; // 자바스크립트를 이용한 이전페이지로 이동하는 것.
 			}
 			

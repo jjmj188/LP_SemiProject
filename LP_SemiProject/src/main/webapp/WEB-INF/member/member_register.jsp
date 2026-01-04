@@ -1,37 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<% String ctxPath = request.getContextPath(); %>
 
-<%
-    String ctxPath = request.getContextPath();
-%>
+<jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
 
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>회원가입 | LP Shop</title>
-
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<!-- jQuery UI CSS -->
-<link rel="stylesheet"
-      href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="<%= ctxPath %>/css/member/member_register.css">
 
-<!-- jQuery UI JS -->
 <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
 
-  <!-- 회원가입 JS -->
- <script type="text/javascript">
+<script src="<%= ctxPath %>/js/member/member_register.js"></script>
+
+<script type="text/javascript">
     const ctxPath = "<%= request.getContextPath() %>";
 </script>
-  <script type="text/javascript" src="<%= ctxPath %>/js/member/member_register.js"></script>
-</head>
 
-<body>
-
-<!-- HEADER -->
-<div id="header"></div>
 
 <!-- MAIN -->
 <main class="login-section">
@@ -52,8 +34,11 @@
         <div class="input-box">
           <label>아이디</label>
           <input type="text" name="userid" id="userid">
-          <button type="button" class="check-btn" id="idcheck">중복확인</button>
-          <div id="idCheckResult" class="check-msg"></div>
+
+          <div class="check-row">
+            <button type="button" class="check-btn" id="idcheck">중복확인</button>
+            <span id="idCheckResult" class="check-msg"></span>
+          </div>
         </div>
  			
  			<!-- 비밀번호 -->
@@ -98,19 +83,21 @@
           <input type="text" name="hp2" id="hp2" maxlength="4">
           <input type="text" name="hp3" id="hp3" maxlength="4">
 
-          <input type="hidden" name="mobile" id="mobile">
+          
         </div>
 
-        <!-- 성별 -->
-        <div class="input-box">
-          <label>성별</label>
-          <label>
-            <input type="radio" name="gender" value="1"> 남
-          </label>
-          <label>
-            <input type="radio" name="gender" value="2"> 여
-          </label>
-        </div>
+        <div class="input-box gender-box">
+		  <label class="gender-label">성별</label>
+		
+		  <div class="gender-row">
+		    <label class="gender-option">
+		      <input type="radio" name="gender" value="1"> 남
+		    </label>
+		    <label class="gender-option">
+		      <input type="radio" name="gender" value="2"> 여
+		    </label>
+		  </div>
+		</div>
 
         <!-- 생년월일 -->
         <div class="input-box">
@@ -125,9 +112,6 @@
     </div>
   </section>
 </main>
-
 <!-- FOOTER -->
-<div id="footer"></div>
+<jsp:include page="/WEB-INF/footer1.jsp" />
 
-</body>
-</html>

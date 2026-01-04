@@ -1,0 +1,156 @@
+/* =====================
+   RESET & COMMON
+===================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  background: #fafafa;
+  color: #222;
+}
+
+/* =====================
+   LOGIN TABLE (테두리 빨간색 3px 고정)
+===================== */
+#loginTbl {
+  width: 420px;
+  margin: 100px auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border: eee 3px solid !important; /* 🔥 테두리 빨간색 3px 강제 적용 */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* =====================
+   TITLE
+===================== */
+#loginTbl thead th {
+  padding: 35px 0 15px 0;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+}
+
+/* =====================
+   TD 기본
+===================== */
+#loginTbl td {
+  padding: 8px 35px;
+  font-size: 14px;
+}
+
+/* =====================
+   LABEL & INPUT
+===================== */
+.label-text {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #444;
+}
+
+#loginUserid,
+#loginPwd {
+  width: 100%;
+  height: 46px;
+  padding: 0 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#loginUserid:focus,
+#loginPwd:focus {
+  outline: none;
+  border-color: #333;
+}
+
+/* =====================
+   아이디저장(왼쪽) & 찾기(오른쪽)
+===================== */
+.saveid-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0 20px 0;
+}
+
+.saveid-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.find-links a {
+  color: #777;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+/* =====================
+   BUTTONS (반전 효과)
+===================== */
+
+/* 1. 로그인 버튼: 기본 검정 -> 마우스 올리면 흰색 */
+#btnSubmit {
+  width: 100%;
+  height: 50px;
+  background: #333;       /* 기본 바탕 검정 */
+  color: #fff;            /* 글자 흰색 */
+  border: 1px solid #333;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 8px;     /* 회원가입 버튼과의 간격 축소 */
+  transition: all 0.2s ease;
+}
+
+#btnSubmit:hover {
+  background: #fff;       /* 🔥 마우스 올리면 흰색 */
+  color: #333;            /* 🔥 글자는 검정 */
+  border: 1px solid #333;
+}
+
+/* 2. 회원가입 버튼: 기본 흰색 -> 마우스 올리면 검정 */
+.btn-register {
+  width: 100%;
+  height: 50px;
+  background: #fff;       /* 기본 바탕 흰색 */
+  color: #333;            /* 글자 검정 */
+  border: 1px solid #333;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-bottom: 25px;
+}
+
+.btn-register:hover {
+  background: #333;       /* 🔥 마우스 올리면 검정 */
+  color: #fff;            /* 🔥 글자는 흰색 */
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 480px) {
+  #loginTbl {
+    width: 90%;
+  }
+}

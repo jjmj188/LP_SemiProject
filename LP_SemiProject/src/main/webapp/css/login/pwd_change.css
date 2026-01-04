@@ -1,0 +1,114 @@
+/* =====================
+   RESET
+===================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  background: #fafafa;
+  color: #222;
+  
+}
+
+/* =====================
+   WRAPPER
+===================== */
+.pwd-wrapper {
+  width: 420px;
+  margin: 120px auto;
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 28px 30px 32px;
+}
+
+/* =====================
+   TITLE
+===================== */
+.pwd-wrapper h2 {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 16px;
+}
+
+/* =====================
+   NOTICE
+===================== */
+.notice {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #444;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 22px;
+}
+
+/* =====================
+   INPUT BOX
+===================== */
+.input-box {
+  margin-bottom: 18px;
+}
+
+.input-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-box input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.input-box input:focus {
+  outline: none;
+  border-color: #333;
+}
+
+/* =====================
+   BUTTON AREA
+===================== */
+.btn-area {
+  margin-top: 24px;
+}
+
+#btnPwdChange {
+  width: 100%;
+  height: 46px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#btnPwdChange:hover {
+  background: #222;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 480px) {
+  .pwd-wrapper {
+    width: 92%;
+    margin: 80px auto;
+    padding: 24px 20px 28px;
+  }
+}
