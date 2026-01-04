@@ -6,7 +6,7 @@
 %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
   <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
 
   <!-- 문의내역 전용(새로 만들기) -->
@@ -113,7 +113,11 @@
 
           <div class="form-group half">
             <label>전화번호</label>
-            <input type="text" name="mobile" placeholder="010-0000-0000" value="000-0000-0000" readonly>
+            <div class="hp-row">
+            <input type="text" value="010" readonly> -
+            <input type="text" name="hp2" id="hp2" maxlength="4" value="${fn:substring(sessionScope.loginuser.mobile,3,7)}"> -
+            <input type="text" name="hp3" id="hp3" maxlength="4" value="${fn:substring(sessionScope.loginuser.mobile,7,11)}">
+          </div>
           </div>
         </div>
 

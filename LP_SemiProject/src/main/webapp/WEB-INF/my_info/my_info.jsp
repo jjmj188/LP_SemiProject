@@ -20,6 +20,7 @@
 <script src="<%= ctxPath %>/13_daum_address_search/js/daum_address_search.js"></script>
 <script src="<%= ctxPath %>/js/my_info/my_edit.js"></script>
 
+
 <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
 <script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 
@@ -32,13 +33,13 @@
   <div class="mypage-container">
 
     <!-- 왼쪽 메뉴 -->
-    <aside class="mypage-menu">
-      <h3>마이페이지</h3>
-      <a class="active">프로필 수정</a>
-      <a href="<%=ctxPath%>/my_info/my_inquiry.lp">문의하기</a>
-      <a href="<%=ctxPath%>/my_info/my_wish.lp">찜내역</a>
-      <a href="<%=ctxPath%>/my_info/my_orders.lp">구매내역</a>
-      <a href="<%=ctxPath%>/my_info/my_taste.lp">취향선택</a>
+       <aside class="mypage-menu">
+      <h3>마이페이지</h3>  
+      <a href="<%= ctxPath%>/my_info/my_info.lp"  class="active">프로필 수정</a>
+      <a href="<%= ctxPath%>/my_info/my_inquiry.lp">문의내역</a>
+      <a href="<%= ctxPath%>/my_info/my_wish.lp" >찜내역</a>
+      <a href="<%= ctxPath%>/my_info/my_order.lp">구매내역</a>
+      <a href="<%= ctxPath%>/my_info/my_taste.lp" >취향선택</a>
     </aside>
 
     <!-- 가운데 요약 -->
