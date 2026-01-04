@@ -13,6 +13,12 @@
 <link rel="stylesheet" type="text/css" href="<%= ctx_Path%>/css/login/login.css" />
 
 <script type="text/javascript" src="<%= ctx_Path%>/js/login/login.js"></script>
+
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
