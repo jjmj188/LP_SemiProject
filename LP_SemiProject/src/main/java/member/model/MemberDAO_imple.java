@@ -2,6 +2,7 @@ package member.model;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,14 +47,6 @@ public class MemberDAO_imple implements MemberDAO {
     	}
 	}
 	
-	
-    
-	
-	
-	
-	
-	
-	
 	// 사용한 자원을 반납하는 close() 메소드 생성하기
  	private void close() {
  		try {
@@ -64,9 +57,10 @@ public class MemberDAO_imple implements MemberDAO {
  			e.printStackTrace();
  		}
  	}// end of private void close()---------------
-	 	
-	 	
 
+ 	
+ 	
+ 
  	//================================================================================================//
 	// ID 중복검사 (tbl_member 테이블에서 userid 가 존재하면 true 를 리턴해주고, userid 가 존재하지 않으면 false 를 리턴한다) 
 	@Override
@@ -254,7 +248,8 @@ public class MemberDAO_imple implements MemberDAO {
 	 	    }
 	 	    return member;
 	 	}
-
+	 	
+	 	
 	 	//==============================================================================
 		// 휴면계정 처리
 		@Override
@@ -284,6 +279,8 @@ public class MemberDAO_imple implements MemberDAO {
 		        close();
 		    }
 		}
+
+
 
 	//=============================================================================================//
 	// 로그인 기록 insert
@@ -443,7 +440,7 @@ public class MemberDAO_imple implements MemberDAO {
 				    try {
 				        conn = ds.getConnection();
 				        
-				        // 1️⃣ 먼저 기존 비밀번호를 가져와서 비교합니다.
+				        // 1️ 먼저 기존 비밀번호를 가져와서 비교합니다.
 				        String sql = " select pwd from tbl_member where userid = ? ";
 				        
 				        pstmt = conn.prepareStatement(sql);
@@ -460,7 +457,7 @@ public class MemberDAO_imple implements MemberDAO {
 				            }
 				        }
 				        
-				        // 2️ 기존 암호와 다를 경우에만 실제로 업데이트를 진행합니다.
+				        // 2️ 기존 암호와 다를 경우에만 실제로 업데이트를 진행
 				        sql = " update tbl_member set pwd = ?, lastpwdchangedate = sysdate " 
 				            + " where userid = ? ";
 				         
@@ -477,6 +474,122 @@ public class MemberDAO_imple implements MemberDAO {
 				    return result;
 				}
 
+		
+		
+
+			//회원탈퇴시 비밀번호가 맞는지 확인========================================
+			@Override
+			public boolean checkPassword(String userid, String pwd) {
+			    boolean isCorrect = false;
+			    
+			    try {
+			        conn = ds.getConnection();
+			        
+			        // 암호화된 비밀번호와 아이디가 일치하는 회원이 있는지 확인
+			        String sql = " SELECT count(*) FROM tbl_member "
+			                   + " WHERE userid = ? AND pwd = ? AND status = 1 ";
+			        
+			        pstmt = conn.prepareStatement(sql);
+			        pstmt.setString(1, userid);
+			        pstmt.setString(2, Sha256.encrypt(pwd)); // 비밀번호 암호화 필수!
+			        
+			        rs = pstmt.executeQuery();
+			        
+			        if(rs.next()) {
+			            int n = rs.getInt(1);
+			            if(n == 1) isCorrect = true;
+			        }
+			        
+			    } catch(Exception e) {
+			        e.printStackTrace();
+			    } finally {
+			        close();
+			    }
+			    
+			    return isCorrect;
+			}
+		
+
+
+
+
+
+
+
+		//주문내역 / 리뷰 / 결제 / 로그 남아야 FK 걸린 테이블 다 깨짐 실무에서 회원 DELETE 거의 안 함
+		//비밀번호가 맞을 경우 회원탈퇴
+		
+			public int withdrawMember(String userid) {
+			    int n = 0;
+			    
+			    try {
+			        conn = ds.getConnection();
+			        
+			        // status를 0(탈퇴)으로 바꾸고 idle_date(또는 withdraw_date)를 현재 시간으로 기록
+			        // 보통 status 1: 활동, 0: 탈퇴(휴면)
+			        String sql = "UPDATE tbl_member SET status = 0 WHERE userid = ?";
+			        
+			        pstmt = conn.prepareStatement(sql);
+			        pstmt.setString(1, userid);
+			        
+			        n = pstmt.executeUpdate();
+			        
+			    } catch(Exception e) {
+			        e.printStackTrace();
+			    } finally {
+			        close();
+			    }
+			    
+			    return n;
+			}
+			
+		
+
+
+
+		//마이페이지 업데이트하기
+		@Override
+		public int updateMemberInfo(MemberDTO member) throws SQLException {
+			 int result = 0;
+
+			    try {
+			        conn = ds.getConnection();
+
+			        String sql =" update tbl_member set " +
+			          " name = ?, email = ?, mobile = ?, " +
+			          " postcode = ?, address = ?, detailaddress = ?, extraaddress = ? " +
+			          " where userid = ? ";
+
+			        pstmt = conn.prepareStatement(sql);
+			        pstmt.setString(1, member.getName());
+			        pstmt.setString(2, aes.encrypt(member.getEmail()));
+			        pstmt.setString(3, aes.encrypt(member.getMobile()));
+			        pstmt.setString(4, member.getPostcode());
+			        pstmt.setString(5, member.getAddress());
+			        pstmt.setString(6, member.getDetailaddress());
+			        pstmt.setString(7, member.getExtraaddress());
+			        pstmt.setString(8, member.getUserid());
+
+			        result = pstmt.executeUpdate(); // 1 이면 성공
+			    } catch(GeneralSecurityException | UnsupportedEncodingException e) {
+					  e.printStackTrace();
+				} finally {
+			        close();
+			    }
+
+			    return result;
+
+		}
+
+}
+
+
+
+
+
+
+
+		
 
 
 
@@ -485,11 +598,22 @@ public class MemberDAO_imple implements MemberDAO {
 
 
 
-	
+		
+			
+		
 
 
 
-}//END 
+		
+
+		
+		
+
+
+
+
+
+
 
 
 

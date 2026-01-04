@@ -1,0 +1,112 @@
+/* 카드 공통 */
+.withdraw-wrapper {
+  width: 420px;
+  margin: 120px auto;
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 28px 30px 32px;
+}
+
+/* 제목 */
+.withdraw-wrapper h2 {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 16px;
+}
+
+/* 경고 박스 */
+.warning-notice {
+  margin-bottom: 22px;
+  padding: 14px;
+  background: #fff3f3;
+  border: 1px solid #f5c6cb;
+  color: #a94442;
+  font-size: 14px;
+  line-height: 1.6;
+  border-radius: 6px;
+}
+
+/* 입력 */
+.input-box {
+  margin-bottom: 20px;
+}
+
+.input-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-box input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* 에러 */
+.pwd-error {
+  display: none;
+  margin-top: 8px;
+  color: #d9534f;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 버튼 */
+.btn-group button {
+  width: 100%;
+  height: 46px;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+}
+
+
+#btnWithdraw {
+  background: #d9534f;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+#btnWithdraw:hover {
+  background: #c9302c;
+}
+
+#btnCancel {
+  background: #aaa;
+  color: #fff;
+}
+
+#btnWithdraw {
+  background: #d9534f;
+  color: #fff;
+  margin-bottom: 10px; /* 🔥 이 줄 */
+}
+.btn-group {
+  display: flex;
+  flex-direction: column;    /* 위아래 배치 유지 */
+  align-items: center;       /* 버튼들을 가로 가운데로 정렬 */
+  gap: 12px;                 /* 버튼 사이의 수직 간격 */
+  margin-top: 24px;
+}
+
+.btn-group button {
+  /* 꽉 차는 100% 대신, 원하는 가로 사이즈를 직접 지정하세요 */
+  width: 350px;              /* ✅ 가로 길이를 280px 정도로 크게 고정 */
+  height: 52px;              /* ✅ 높이도 시원하게 크게 */
+  
+  font-size: 16px;           /* 글자 크기 */
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}

@@ -5,14 +5,22 @@
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="<%= ctxPath %>/css/member/member_register.css">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
-
-<script src="<%= ctxPath %>/js/member/member_register.js"></script>
 
 <script type="text/javascript">
     const ctxPath = "<%= request.getContextPath() %>";
 </script>
+
+<script src="<%= ctxPath %>/js/member/member_register.js"></script>
+
+
 
 
 <!-- MAIN -->

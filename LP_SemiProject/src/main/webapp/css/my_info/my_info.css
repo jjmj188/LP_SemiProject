@@ -1,0 +1,233 @@
+/* =====================
+   기본
+===================== */
+body {
+  margin: 0;
+  background: #fafafa;
+  font-family: Arial, sans-serif;
+}
+
+/* =====================
+   마이페이지 레이아웃
+===================== */
+.mypage-wrapper {
+  padding: 60px 0;
+}
+
+.mypage-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 30px;
+  background: #fff;
+}
+
+/* =====================
+   왼쪽 메뉴
+===================== */
+.mypage-menu {
+  width: 220px;
+  border: 1px solid #ddd;
+}
+
+.mypage-menu h3 {
+  margin: 0;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.mypage-menu a {
+  display: block;
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+  color: #333;
+}
+
+.mypage-menu a.active {
+  background: #f5f5f5;
+  font-weight: bold;
+}
+
+/* =====================
+   가운데 요약 영역
+===================== */
+.mypage-info {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-box {
+  border: 1px solid #ddd;
+  padding: 20px;
+}
+
+.point {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.review-item {
+  margin-top: 14px;
+  border-top: 1px solid #eee;
+  padding-top: 14px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.review-rating {
+  margin: 6px 0;
+}
+
+.review-content {
+  font-size: 13px;
+  color: #333;
+}
+
+.no-data {
+  font-size: 13px;
+  color: #777;
+}
+
+/* =====================
+   오른쪽 콘텐츠
+===================== */
+.mypage-content {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 40px 60px;
+}
+
+/* =====================
+   폼 공통
+===================== */
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* =====================
+   중복확인 버튼 (input 아래)
+===================== */
+.form-group button {
+  margin-top: 8px;           /* 🔥 input 아래로 */
+  padding: 6px 14px;
+  font-size: 13px;
+  background: #fff;
+  border: 1px solid #bbb;
+  color: #333;
+  cursor: pointer;
+}
+
+#emailCheckResult {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+/* =====================
+   휴대폰
+===================== */
+.hp-row {
+  display: flex;
+  gap: 12px;
+}
+
+.hp-row input {
+  width: 90px;
+  text-align: center;
+}
+
+/* =====================
+   주소
+===================== */
+.zipcode-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.zipcode-row input {
+  width: 160px;
+}
+
+.address-input {
+  margin-bottom: 14px;
+}
+
+/* =====================
+   버튼 공통 스타일
+===================== */
+.btn-primary,
+.btn-delete,
+.btn-outline {
+  padding: 10px 22px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+/* 저장 */
+.btn-primary {
+  background: #222;
+  color: #fff;
+  border: 1px solid #222;
+}
+
+.btn-primary:hover {
+  background: #000;
+}
+
+/* 회원탈퇴 */
+.btn-delete {
+  background: #fff;
+  color: #c00;
+  border: 1px solid #c00;
+}
+
+.btn-delete:hover {
+  background: #c00;
+  color: #fff;
+}
+
+/* 중립 버튼 */
+.btn-outline {
+  background: #fff;
+  color: #333;
+  border: 1px solid #bbb;
+}
+
+.btn-outline:hover {
+  background: #f5f5f5;
+}
+
+/* =====================
+   버튼 영역
+===================== */
+.button-area {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

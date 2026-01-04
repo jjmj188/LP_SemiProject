@@ -21,6 +21,10 @@ public class MemberDTO {
     private int point;                // 포인트
     private int idle;                 // 휴면여부 (0:활동, 1:휴면)
     
+    private String postcode;		  //우편번호
+    private String address;			  //주소
+    private String detailaddress;	  //상세주소 
+    private String extraaddress;	  //참고사항
     
     private boolean requirePwdChange=false;
 	// 마지막으로 암호를 변경한 날짜가 현재시각으로 부터 3개월이 지났으면 true
@@ -160,6 +164,32 @@ return lastLoginGap;
 }
 public void setLastLoginGap(int lastLoginGap) {
 this.lastLoginGap = lastLoginGap;
+}
+
+
+public String getPostcode() {
+	return postcode;
+}
+public void setPostcode(String postcode) {
+	this.postcode = postcode;
+}
+public String getAddress() {
+	return address;
+}
+public void setAddress(String address) {
+	this.address = address;
+}
+public String getDetailaddress() {
+	return detailaddress;
+}
+public void setDetailaddress(String detailaddress) {
+	this.detailaddress = detailaddress;
+}
+public String getExtraaddress() {
+	return extraaddress;
+}
+public void setExtraaddress(String extraaddress) {
+	this.extraaddress = extraaddress;
 }
 	
 }
