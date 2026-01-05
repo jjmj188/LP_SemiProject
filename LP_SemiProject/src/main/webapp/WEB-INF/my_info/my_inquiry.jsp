@@ -7,6 +7,8 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
   <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
 
   <!-- 문의내역 전용(새로 만들기) -->
@@ -52,21 +54,55 @@
             </tr>
           </thead>
           <tbody>
-            <!-- 예시(나중에 JSP로 반복 출력) -->
-            <tr>
-              <td>2025-12-30</td>
-              <td class="td-ellipsis">배송지 주소 변경 가능할까요? 주문번호는 12345 입니다.</td>
-              <td class="td-ellipsis">확인 후 변경 처리해드렸습니다.</td>
-              <td><span class="status done">답변완료</span></td>
-            </tr>
+  <c:if test="${not empty requestScope.inquiryList}">
+    <c:forEach var="dto" items="${requestScope.inquiryList}">
+      <tr>
+        <!-- 작성일자 -->
+        <td>
+          <fmt:formatDate value="${dto.inquirydate}" pattern="yyyy-MM-dd" />
+        </td>
 
-            <tr>
-              <td>2025-12-29</td>
-              <td class="td-ellipsis">포인트 사용이 결제에서 안 보여요.</td>
-              <td class="td-ellipsis">현재 점검 중입니다. 금일 중 반영 예정입니다.</td>
-              <td><span class="status wait">접수</span></td>
-            </tr>
-          </tbody>
+        <!-- 문의내용 -->
+        <td class="td-ellipsis">
+          <c:out value="${dto.inquirycontent}" />
+        </td>
+
+        <!-- 관리자 답변 -->
+        <td class="td-ellipsis">
+          <c:choose>
+            <c:when test="${not empty dto.adminreply}">
+              <c:out value="${dto.adminreply}" />
+            </c:when>
+            <c:otherwise>
+              -
+            </c:otherwise>
+          </c:choose>
+        </td>
+
+        <!-- 처리상태 -->
+        <td>
+          <c:choose>
+            <c:when test="${dto.inquirystatus == '답변완료'}">
+              <span class="status done">답변완료</span>
+            </c:when>
+            <c:otherwise>
+              <span class="status wait">접수</span>
+            </c:otherwise>
+          </c:choose>
+        </td>
+      </tr>
+    </c:forEach>
+  </c:if>
+
+  <c:if test="${empty requestScope.inquiryList}">
+    <tr>
+      <td colspan="4" style="text-align:center; padding:24px;">
+        문의내역이 없습니다.
+      </td>
+    </tr>
+  </c:if>
+</tbody>
+
         </table>
       </div>
 
