@@ -46,6 +46,22 @@
   flex: 1;
 }
 
+
+/* =====================
+   휴대폰
+===================== */
+.hp-row {
+  display: flex;
+  gap: 12px;
+  line-height: 40px;
+}
+
+.hp-row input {
+  width: 90px;
+  text-align: center;
+}
+
+
 /* ===== 개인정보 안내 ===== */
 .privacy-box {
   border: 1px solid #ddd;
@@ -124,6 +140,7 @@
 
   cursor: pointer;
   transition: all 0.2s ease;
+  
 }
 
 /* 페이지 숫자 */
@@ -140,7 +157,7 @@
 
 /* 이전/다음 */
 .pagebar .page-btn {
-  display: flex;
+
   align-items: center;
   justify-content: center;
 }
