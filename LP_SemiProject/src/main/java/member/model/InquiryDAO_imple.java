@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 import util.security.AES256;
 import util.security.SecretMyKey;
 
-public class MypageDAO_imple implements MypageDAO {
+public class InquiryDAO_imple implements InquiryDAO {
 
 	
 	private DataSource ds; // DataSource ds 는 아파치톰캣이 제공하는 DBCP(DB Connection Pool)이다.
@@ -25,7 +25,7 @@ public class MypageDAO_imple implements MypageDAO {
 	private AES256 aes;
 	
 	// 기본 생성자
-	public MypageDAO_imple() {
+	public InquiryDAO_imple() {
 		
 		try {
 			 Context initContext = new InitialContext();//DB커넥션플

@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import member.domain.MemberDTO;
-import member.model.MypageDAO;
-import member.model.MypageDAO_imple;
+import member.model.InquiryDAO;
+import member.model.InquiryDAO_imple;
 
 
 public class My_inquiry extends AbstractController {
 
-	private MypageDAO mpdao = new MypageDAO_imple();
+	private InquiryDAO mpdao = new InquiryDAO_imple();
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -48,7 +48,6 @@ public class My_inquiry extends AbstractController {
 
 			try {
 				int n = mpdao.insertInquiry(userid, inquirycontent);
-				System.out.println(n);
 				
 				if (n == 1) {
 					message = "문의가 정상적으로 접수되었습니다.";
