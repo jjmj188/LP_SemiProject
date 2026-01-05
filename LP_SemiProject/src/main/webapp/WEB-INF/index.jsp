@@ -240,13 +240,13 @@
     <div class="grid">
       <div class="product">
         <a href="<%= ctxPath%>">
-          <img src="<%= ctxPath%>/images/조이.png" alt="조이 LP">
+          <img src="images/조이.png" alt="조이 LP">
         </a>
         <p class="main-product-name">조이</p>
         <p class="price">₩ 36,000</p></div>
-
+	  
     </div>
-	
+
 
     <div class="pagination">
       <a href="#" class="active">1</a>
