@@ -51,8 +51,12 @@ public class TasteCheck extends AbstractController {
         int n = mdao.insertTaste(userid, arr);
 
         if (n > 0) {
-            setRedirect(true);
-            setViewPage(request.getContextPath() + "/index.lp");
+        	
+        	request.setAttribute("message", "회원가입을 축하드립니다!");
+        	request.setAttribute("loc", request.getContextPath() + "/index.lp");
+
+        	setRedirect(false);
+        	setViewPage("/WEB-INF/msg.jsp");
         } else {
             request.setAttribute("message", "취향 저장에 실패했습니다.");
             request.setAttribute("loc", "javascript:history.back()");

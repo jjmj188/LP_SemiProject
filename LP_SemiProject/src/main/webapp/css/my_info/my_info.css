@@ -231,3 +231,26 @@ body {
   justify-content: space-between;
   align-items: center;
 }
+
+
+
+.hp-row {
+  display: flex;         /* 요소들을 가로로 배치 */
+  align-items: center;   /* 인풋과 하이픈의 높낮이를 중앙으로 맞춤 */
+  gap: 8px;              /* 요소 사이의 간격 (적절히 조절하세요) */
+}
+
+.hp-row input {
+  width: 80px;           /* 인풋 너비 적절히 조절 */
+  text-align: center;    /* 숫자 가운데 정렬 */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.hyphen {
+    font-weight: bold;
+  color: #666;
+  position: relative;
+  top: 1px; 
+}

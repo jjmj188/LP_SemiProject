@@ -34,6 +34,10 @@ public class MemberRegister extends AbstractController {
 			String hp3 = request.getParameter("hp3");
 			String gender = request.getParameter("gender");
 			String birthday = request.getParameter("birthday");
+			String postcode = request.getParameter("postcode");
+			String address = request.getParameter("address");
+			String detailaddress = request.getParameter("detailaddress");
+			String extraaddress = request.getParameter("extraaddress");
 			
 			String mobile = hp1+hp2+hp3;
 			
@@ -45,6 +49,10 @@ public class MemberRegister extends AbstractController {
 			member.setMobile(mobile);
 			member.setGender(gender);
 			member.setBirthday(birthday);
+			member.setPostcode(postcode);
+			member.setAddress(address);
+			member.setDetailaddress(detailaddress);
+			member.setExtraaddress(extraaddress);
 			
 		 // ==== 회원가입이 성공되어지면 "회원가입 성공" 이라는 alert 를 띄우고 시작페이지로 이동한다. ==== //
 			String message = "";
