@@ -109,8 +109,42 @@ $(function(){
 		    yearRange: "1900:+0",
 		    maxDate: 0  // 0은 오늘을 의미하며, 오늘 이후 날짜는 선택 불가(회색 처리)
 		});
+		/* =========================
+		   주소 유효성 검사
+		========================= */
+	
+	
+	
 });
+function validateAddress() {
 
+		    const postcode = $("#postcode").val().trim();
+		    const address  = $("#address").val().trim();
+		    const detail   = $("#detailAddress").val().trim();
+
+		    // 1️ 우편번호
+		    if (postcode === "") {
+		        alert("우편번호를 입력하세요.");
+		        $("#postcode").focus();
+		        return false;
+		    }
+
+		    // 2️ 도로명 주소
+		    if (address === "") {
+		        alert("도로명 주소를 입력하세요.");
+		        $("#address").focus();
+		        return false;
+		    }
+
+		    // 3️ 상세 주소
+		    if (detail === "") {
+		        alert("상세 주소를 입력하세요.");
+		        $("#detailAddress").focus();
+		        return false;
+		    }
+
+		    return true;
+		}
 /* ======================================================
    회원가입 전송 함수 (goRegister)
    이 함수가 실행될 때 최종적으로 POST로 전송
@@ -203,7 +237,10 @@ function goRegister() {
     }
 	
 	
-	
+	// 8. 주소 유효성 검사
+	if (!validateAddress()) {
+	    return;
+	}
 	// 8. 최종 전송 (POST)
 	const frm = document.getElementById("registerForm");
 	frm.method = "post";

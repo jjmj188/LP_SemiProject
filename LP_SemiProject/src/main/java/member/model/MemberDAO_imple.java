@@ -123,38 +123,44 @@ public class MemberDAO_imple implements MemberDAO {
 
 	
 	//====================================================================================//
-	// 회원가입을 해주는 메서드(tbl_member 테이블에 insert)
-		@Override
-		public int registerMember(MemberDTO member) throws SQLException {
-			
-			int result = 0;
-			
-			try {
-				  conn = ds.getConnection();
-				  
-				  String sql = " insert into tbl_member( userseq,userid, pwd, name, email, mobile, gender, birthday) "  
-				  		     + " values( seq_userseq.nextval, ?, ?, ?, ?, ?, ?, ? ) "; 
-				  
-				  pstmt = conn.prepareStatement(sql); 
-				  
-				  pstmt.setString(1, member.getUserid());
-				  pstmt.setString(2, Sha256.encrypt(member.getPwd()) ); // 암호를 SHA256 알고리즘으로 단방향 암호화 시킨다.
-				  pstmt.setString(3, member.getName());
-				  pstmt.setString(4, aes.encrypt(member.getEmail()) );  // 이메일을 AES256 알고리즘으로 양방향 암호화 시킨다.
-				  pstmt.setString(5, aes.encrypt(member.getMobile()) ); // 휴대폰을 AES256 알고리즘으로 양방향 암호화 시킨다.
-				  pstmt.setString(6, member.getGender());
-				  pstmt.setString(7, member.getBirthday());
-				  
-				  result = pstmt.executeUpdate();
-				  
-			} catch(GeneralSecurityException | UnsupportedEncodingException e) {
-				  e.printStackTrace();
-			} finally {
-				close();
-			}
-			
-			return result;
-		}// end of public int registerMember(MemberDTO member) throws SQLException-------*/
+		// 회원가입을 해주는 메서드(tbl_member 테이블에 insert)
+			@Override
+			public int registerMember(MemberDTO member) throws SQLException {
+				
+				int result = 0;
+				
+				try {
+					  conn = ds.getConnection();
+					  
+					  String sql = " insert into tbl_member( userseq,userid, pwd, name, email, mobile, gender, birthday, "
+					  		     + " postcode ,address ,detailaddress ,extraaddress ) "  
+					  		     + " values( seq_userseq.nextval, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ) "; 
+					  
+					  pstmt = conn.prepareStatement(sql); 
+					  
+					  pstmt.setString(1, member.getUserid());
+					  pstmt.setString(2, Sha256.encrypt(member.getPwd()) ); // 암호를 SHA256 알고리즘으로 단방향 암호화 시킨다.
+					  pstmt.setString(3, member.getName());
+					  pstmt.setString(4, aes.encrypt(member.getEmail()) );  // 이메일을 AES256 알고리즘으로 양방향 암호화 시킨다.
+					  pstmt.setString(5, aes.encrypt(member.getMobile()) ); // 휴대폰을 AES256 알고리즘으로 양방향 암호화 시킨다.
+					  pstmt.setString(6, member.getGender());
+					  pstmt.setString(7, member.getBirthday());
+					  
+					  pstmt.setString(8, member.getPostcode());
+					  pstmt.setString(9, member.getAddress());
+					  pstmt.setString(10, member.getDetailaddress());
+					  pstmt.setString(11, member.getExtraaddress());
+					  
+					  result = pstmt.executeUpdate();
+					  
+				} catch(GeneralSecurityException | UnsupportedEncodingException e) {
+					  e.printStackTrace();
+				} finally {
+					close();
+				}
+				
+				return result;
+			}// end of public int registerMember(MemberDTO member) throws SQLException-------*/
 		
 
 		//=========================================================================
