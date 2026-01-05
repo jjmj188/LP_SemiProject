@@ -2776,3 +2776,22 @@ commit;
 
 select count(*)
 from tbl_track;
+
+
+SELECT *
+FROM tbl_product;
+
+UPDATE tbl_product 
+SET productimg = REPLACE(productimg, '.jpg', '.png') 
+WHERE productimg LIKE '%.jpg';
+
+COMMIT;
+
+
+SELECT productno, productname, price, productimg
+FROM ( 
+SELECT row_number() over(order by productno desc) AS rno 
+, productno, productname, price, productimg 
+  FROM tbl_product 
+) V 
+WHERE V.rno BETWEEN ? AND ? ";
