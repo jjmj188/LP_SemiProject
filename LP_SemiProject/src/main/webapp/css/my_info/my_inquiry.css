@@ -140,6 +140,7 @@
 
   cursor: pointer;
   transition: all 0.2s ease;
+  
 }
 
 /* 페이지 숫자 */
@@ -156,7 +157,7 @@
 
 /* 이전/다음 */
 .pagebar .page-btn {
-  display: flex;
+
   align-items: center;
   justify-content: center;
 }
