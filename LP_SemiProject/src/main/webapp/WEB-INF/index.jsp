@@ -245,7 +245,7 @@
         <c:if test="${not empty requestScope.productList}">
             <c:forEach var="p" items="${requestScope.productList}">
                 <div class="product">
-                    <a href="<%= ctxPath%>/product/detail.lp?productno=${p.productno}">
+                    <a href="<%= ctxPath%>/productdetail.lp?productno=${p.productno}">
                         <img src="<%= ctxPath%>${p.productimg}" alt="${p.productname}">
                     </a>
                     <p class="main-product-name">${p.productname}</p>
