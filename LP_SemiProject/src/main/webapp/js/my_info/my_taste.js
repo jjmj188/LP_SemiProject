@@ -1,7 +1,7 @@
 $(function () {
   let previewAudio = new Audio();
   let currentPreviewItem = null;
-
+  console.log("🔥 my_taste.js 로드됨");
   // 1. 아이템 클릭 이벤트 (클래스명을 preference-item으로 통일)
   $(".preference-item").on("click", function () {
     const $item = $(this);

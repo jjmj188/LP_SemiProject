@@ -180,7 +180,7 @@ body {
 /* =====================
    버튼 공통
 ===================== */
-.btn-primary,
+.btn-dark,
 .btn-delete,
 .btn-outline {
   padding: 10px 22px;
@@ -191,13 +191,13 @@ body {
 }
 
 /* 저장 */
-.btn-primary {
+.btn-dark {
   background: #222;
   color: #fff;
   border: 1px solid #222;
 }
 
-.btn-primary:hover {
+.btn-dark:hover {
   background: #000;
   transform: translateY(-1px);
 }

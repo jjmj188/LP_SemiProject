@@ -63,14 +63,14 @@
 
       <div class="info-box">
         <h4>내가 쓴 리뷰</h4>
-
-        <iframe
+        양소라올릴예정
+<!--          <iframe
 	  src="<%=ctxPath%>/my_info/my_review_iframe.lp"
 	  width="100%"
 	  height="350"
 	  frameborder="0"
 	  scrolling="auto">
-	</iframe>
+	</iframe> --> 
 
       </div>
     </section>
