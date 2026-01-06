@@ -94,15 +94,32 @@
 	
   <!-- 장르 바 (메인에서만 사용) -->
   <div class="genre-bar">
-  <div class="genre-bar-inner">
-    <button class="active">ALL</button>
-    <button>POP</button>
-     <button>ROCK</button>
-    <button>JAZZ</button>
-    <button>CLASSIC</button>
-    <button>ETC</button>
+    <div class="genre-bar-inner">
+      <button type="button" 
+              class="${(empty requestScope.categoryNo or requestScope.categoryNo == 0) ? 'active' : ''}" 
+              onclick="location.href='<%= ctxPath%>/index.lp#product-list'">ALL</button>
+      
+      <button type="button" 
+              class="${requestScope.categoryNo == 1 ? 'active' : ''}" 
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=1#product-list'">POP</button>
+      
+      <button type="button" 
+              class="${requestScope.categoryNo == 2 ? 'active' : ''}" 
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=2#product-list'">ROCK</button>
+      
+      <button type="button" 
+              class="${requestScope.categoryNo == 3 ? 'active' : ''}" 
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=3#product-list'">JAZZ</button>
+      
+      <button type="button" 
+              class="${requestScope.categoryNo == 4 ? 'active' : ''}" 
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=4#product-list'">CLASSIC</button>
+      
+      <button type="button" 
+              class="${requestScope.categoryNo == 5 ? 'active' : ''}" 
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=5#product-list'">ETC</button>
+    </div>
   </div>
-</div>
 
  
 <div class="main-search">
@@ -145,14 +162,18 @@
     <div class="carousel-window">
       <div class="carousel-track">
 
-        <!-- item -->
-        <a class="carousel-item" href="./product_Detail.html">
-          <img src="<%= ctxPath%>/images/김아름.jpg" />
-          <div class="ci-text">
-            <p class="ci-name">김아름 - 앨범명</p>
-            <p class="ci-price">₩ 39,000</p>
-          </div>
-        </a>
+		<c:if test="${not empty requestScope.newProductList}">
+            <c:forEach var="np" items="${requestScope.newProductList}">
+                <a class="carousel-item" href="<%= ctxPath%>/productdetail.lp?productno=${np.productno}">
+                  <img src="<%= ctxPath%>${np.productimg}" alt="${np.productname}" />
+                  
+                  <div class="ci-text">
+                    <p class="ci-name">${np.productname}</p>
+                    <p class="ci-price">₩ <fmt:formatNumber value="${np.price}" pattern="#,###"/></p>
+                  </div>
+                </a>
+            </c:forEach>
+        </c:if>
 	
       </div>
     </div>
@@ -161,7 +182,7 @@
   </div>
 </section>
 
-
+<c:if test="${not empty sessionScope.loginuser}">
   <!-- 취향 추천 -->
   <section id="lp-container">
 	<div class="lp-content">
@@ -224,6 +245,9 @@
 	</div>
 
  </section>
+</c:if>
+ 
+ 
   <!-- LP 상품 -->
   <section class="product-list" id="product-list">
 
@@ -271,7 +295,7 @@
                         <a class="active">${i}</a> 
                     </c:when>
                     <c:otherwise>
-                        <a href="<%= ctxPath%>/index.lp?pageNo=${i}#product-list">${i}</a>
+                        <a href="<%= ctxPath%>/index.lp?pageNo=${i}&categoryno=${requestScope.categoryNo}#product-list">${i}</a>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>

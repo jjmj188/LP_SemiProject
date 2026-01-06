@@ -63,72 +63,81 @@ public class ProductDAO_imple implements ProductDAO {
  	
 	// 페이징 처리용 전체상품 조회
 	@Override
-	public int getTotalProductCount() throws SQLException {
-		
-		int totalCount = 0;
-		
-		try {
-			conn = ds.getConnection();
-			String sql = " SELECT COUNT(*) "
-					   + " FROM tbl_product ";
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-                totalCount = rs.getInt(1);
+    public int getTotalProductCount(int categoryNo) throws SQLException {
+        int totalCount = 0;
+        try {
+            conn = ds.getConnection();
+            String sql = " SELECT COUNT(*) FROM tbl_product ";
+            
+            // 0보다 클 때만 WHERE절 추가
+            if(categoryNo > 0) {
+                sql += " WHERE fk_categoryno = ? ";
             }
-			
-		}finally {
-			close();
-		}
-		
-		return totalCount;
-	}// end of public int getTotalProductCount() throws SQLException-----------------------
+            
+            pstmt = conn.prepareStatement(sql);
+            
+            if(categoryNo > 0) {
+                pstmt.setInt(1, categoryNo); 
+            }
+            
+            rs = pstmt.executeQuery();
+            if(rs.next()) totalCount = rs.getInt(1);
+            
+        } finally {
+            close();
+        }
+        return totalCount;
+    }// end of public int getTotalProductCount() throws SQLException-----------------------
 
 	
 	// 페이지 번호에 해당하는 상품 리스트(8개)를 가져오는 메소드
 	@Override
-	public List<ProductDTO> selectPagingProduct(int currentShowPageNo, int sizePerPage) throws SQLException {
-		
-		List<ProductDTO> productList = new ArrayList<>();
-		
-		try {
+    public List<ProductDTO> selectPagingProduct(int currentShowPageNo, int sizePerPage, int categoryNo) throws SQLException {
+        List<ProductDTO> productList = new ArrayList<>();
+        try {
             conn = ds.getConnection();
-            
-            
             int startRno = ((currentShowPageNo - 1) * sizePerPage) + 1;
-            int endRno   = startRno + sizePerPage - 1;
-            
-            // 내림차순(최신)
+            int endRno = startRno + sizePerPage - 1;
+
             String sql = " SELECT productno, productname, price, productimg "
                        + " FROM ( "
-                       + "     SELECT row_number() over(order by productno desc) AS rno "
-                       + "          , productno, productname, price, productimg "
-                       + "     FROM tbl_product "
-                       + " ) V "
-                       + " WHERE V.rno BETWEEN ? AND ? ";
+                       + "    SELECT row_number() over(order by productno desc) AS rno "
+                       + "         , productno, productname, price, productimg "
+                       + "    FROM tbl_product ";
             
+            // 0보다 클 때만 WHERE절
+            if(categoryNo > 0) {
+                sql += " WHERE fk_categoryno = ? ";
+            }
+            
+            sql += " ) V WHERE V.rno BETWEEN ? AND ? ";
+
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, startRno);
-            pstmt.setInt(2, endRno);
-            
+
+          
+            if(categoryNo > 0) {
+                pstmt.setInt(1, categoryNo);
+                pstmt.setInt(2, startRno);
+                pstmt.setInt(3, endRno);
+            } else {
+                pstmt.setInt(1, startRno);
+                pstmt.setInt(2, endRno);
+            }
+
             rs = pstmt.executeQuery();
-            
             while(rs.next()) {
                 ProductDTO pdto = new ProductDTO();
-                
                 pdto.setProductno(rs.getInt("productno"));
                 pdto.setProductname(rs.getString("productname"));
                 pdto.setPrice(rs.getInt("price"));
                 pdto.setProductimg(rs.getString("productimg"));
-                
                 productList.add(pdto);
             }
         } finally {
             close();
         }
         return productList;
-	}
+    }
 	
 	// 제품 상세 보기(1개 조회)
 	@Override
@@ -215,6 +224,45 @@ public class ProductDAO_imple implements ProductDAO {
 		
 		
 		return trackList;
+	}
+
+	
+	// NEW 제품 조회(최신순으로 10개)
+	@Override
+	public List<ProductDTO> selectNewProductList() throws SQLException {
+		List<ProductDTO> newProductList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();
+			
+			// 등록일 내림차순으로 정렬 후 상위 10개 SELECT
+			String sql = " SELECT productno, productname, productimg, price "
+					   + " FROM ( "
+					   + "    SELECT productno, productname, productimg, price "
+					   + "    FROM tbl_product "
+					   + "    ORDER BY registerday DESC " // 최신순
+					   + " ) "
+					   + " WHERE ROWNUM <= 10 ";
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ProductDTO pdto = new ProductDTO();
+				
+				pdto.setProductno(rs.getInt("productno"));
+				pdto.setProductname(rs.getString("productname"));
+				pdto.setProductimg(rs.getString("productimg"));
+				pdto.setPrice(rs.getInt("price"));
+				
+				newProductList.add(pdto);
+			}
+			
+		}finally {
+			close();
+		}
+		
+		return newProductList;
 	}
   
 

@@ -9,10 +9,10 @@ import product.domain.ProductDTO;
 public interface ProductDAO {
 	
 	// 페이징 처리용 전체상품 조회
-	int getTotalProductCount() throws SQLException;
+	int getTotalProductCount(int categoryNo) throws SQLException;
 	
 	// 페이지 번호에 해당하는 상품 리스트(8개)를 가져오는 메소드
-	List<ProductDTO> selectPagingProduct(int currentShowPageNo, int sizePerPage) throws SQLException;
+	List<ProductDTO> selectPagingProduct(int currentShowPageNo, int sizePerPage, int categoryNo) throws SQLException;
 
 	// 제품 상세 보기(1개 조회)
 	ProductDTO selectOneProduct(int productno) throws SQLException;
@@ -20,8 +20,8 @@ public interface ProductDAO {
 	// 곡 리스트 조회
 	List<TrackDTO> selectTrackList(int productno) throws SQLException;
 
-	
-	
+	// NEW 제품 조회(최신순으로 10개)
+	List<ProductDTO> selectNewProductList() throws SQLException;
 	
 	
 }
