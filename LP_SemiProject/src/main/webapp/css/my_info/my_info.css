@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 /* =====================
    기본
 ===================== */
@@ -8,7 +10,7 @@ body {
 }
 
 /* =====================
-   마이페이지 레이아웃
+   마이페이지 레이아웃 (기준 유지)
 ===================== */
 .mypage-wrapper {
   padding: 60px 0;
@@ -28,6 +30,7 @@ body {
 .mypage-menu {
   width: 220px;
   border: 1px solid #ddd;
+  flex-shrink: 0;
 }
 
 .mypage-menu h3 {
@@ -50,7 +53,7 @@ body {
 }
 
 /* =====================
-   가운데 요약 영역
+   가운데 요약 영역 (포인트 / 리뷰)
 ===================== */
 .mypage-info {
   width: 240px;
@@ -62,6 +65,8 @@ body {
 .info-box {
   border: 1px solid #ddd;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .point {
@@ -69,39 +74,28 @@ body {
   font-weight: bold;
 }
 
-.review-item {
-  margin-top: 14px;
-  border-top: 1px solid #eee;
-  padding-top: 14px;
-}
-
-.review-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-}
-
-.review-rating {
-  margin: 6px 0;
-}
-
-.review-content {
-  font-size: 13px;
-  color: #333;
-}
-
-.no-data {
-  font-size: 13px;
-  color: #777;
+/* 리뷰 iframe 높이 보정 */
+.mypage-info iframe {
+  flex: 1;
+  min-height: 420px;   /* 🔥 짧아 보이던 문제 해결 */
+  border: none;
 }
 
 /* =====================
-   오른쪽 콘텐츠
+   오른쪽 콘텐츠 (프로필 수정)
 ===================== */
 .mypage-content {
   flex: 1;
   border: 1px solid #ddd;
   padding: 40px 60px;
+  box-sizing: border-box;
+}
+
+.mypage-content h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 /* =====================
@@ -123,18 +117,18 @@ body {
   padding: 10px;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  margin-bottom: 10px; /* 🔥 input 붙어있던 문제 해결 */
 }
 
 /* =====================
-   중복확인 버튼 (input 아래)
+   이메일 중복확인
 ===================== */
 .form-group button {
-  margin-top: 8px;           /* 🔥 input 아래로 */
+  margin-top: 6px;
   padding: 6px 14px;
   font-size: 13px;
   background: #fff;
   border: 1px solid #bbb;
-  color: #333;
   cursor: pointer;
 }
 
@@ -149,12 +143,20 @@ body {
 ===================== */
 .hp-row {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
 }
 
 .hp-row input {
-  width: 90px;
+  width: 80px;
   text-align: center;
+  padding: 8px;
+  margin-bottom: 0; /* input 간격 예외 */
+}
+
+.hyphen {
+  font-weight: bold;
+  color: #666;
 }
 
 /* =====================
@@ -176,27 +178,28 @@ body {
 }
 
 /* =====================
-   버튼 공통 스타일
+   버튼 공통
 ===================== */
-.btn-primary,
+.btn-dark,
 .btn-delete,
 .btn-outline {
   padding: 10px 22px;
   font-size: 14px;
   cursor: pointer;
   border-radius: 2px;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 /* 저장 */
-.btn-primary {
+.btn-dark {
   background: #222;
   color: #fff;
   border: 1px solid #222;
 }
 
-.btn-primary:hover {
+.btn-dark:hover {
   background: #000;
+  transform: translateY(-1px);
 }
 
 /* 회원탈퇴 */
@@ -209,9 +212,10 @@ body {
 .btn-delete:hover {
   background: #c00;
   color: #fff;
+  transform: translateY(-1px);
 }
 
-/* 중립 버튼 */
+/* 중립 */
 .btn-outline {
   background: #fff;
   color: #333;
@@ -219,7 +223,8 @@ body {
 }
 
 .btn-outline:hover {
-  background: #f5f5f5;
+  background: #f0f0f0;
+  border-color: #888;
 }
 
 /* =====================

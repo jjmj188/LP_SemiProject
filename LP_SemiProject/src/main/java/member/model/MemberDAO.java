@@ -1,6 +1,7 @@
 package member.model;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import member.domain.MemberDTO;
@@ -48,6 +49,11 @@ public interface MemberDAO {
 
 	//마이페이지 업데이트하기
 	int updateMemberInfo(MemberDTO member)throws SQLException;
+	
+	//내가 선택한 취향 먼저 보여주기 
+	List<Integer> getUserPreference(String userid) throws SQLException;
+	//취향선택 수정
+	boolean updateMemberPreference(String userid, String[] categoryArr) throws SQLException;
 
 
 	
