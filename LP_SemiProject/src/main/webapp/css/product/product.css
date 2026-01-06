@@ -1,137 +1,502 @@
+/* =====================
+   BASE
+===================== */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #fafafa;
+  background: #ffffff;
   color: #222;
 }
 
-/* HEADER */
-.header {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-}
-
-.header-top {
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.menu a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: #333;
-}
-
-/* PRODUCT LAYOUT */
+/* =====================
+   PRODUCT MAIN LAYOUT
+===================== */
 .product-container {
   max-width: 1100px;
-  margin: 60px auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 50px;
+  margin: 80px auto;
+  display: flex;
+  gap: 60px;
 }
 
-/* IMAGE */
+/* =====================
+   PRODUCT IMAGE
+===================== */
 .product-image img {
-  width: 100%;
+  width: 420px;
   border-radius: 12px;
 }
 
-/* INFO */
+/* =====================
+   PRODUCT INFO
+===================== */
+.product-info {
+  flex: 1;
+}
+
 .product-info h1 {
-  margin-bottom: 20px;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .delivery {
   margin-bottom: 20px;
+  color: #555;
 }
 
-/* QUANTITY */
+/* =====================
+   QUANTITY
+===================== */
 .quantity {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .quantity button {
-  width: 36px;
-  height: 36px;
-  font-size: 18px;
+  width: 32px;
+  height: 32px;
   border: 1px solid #ccc;
   background: #fff;
   cursor: pointer;
 }
 
-.quantity span {
-  font-size: 16px;
-  width: 20px;
-  text-align: center;
+/* =====================
+   WISHLIST
+===================== */
+.wishlist {
+  margin-bottom: 20px;
 }
 
-/* BUTTONS */
+.wishlist button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* =====================
+   ACTION BUTTONS
+===================== */
 .action-buttons {
   display: flex;
-  gap: 15px;
+  gap: 12px;
 }
 
 .action-buttons button {
   padding: 12px 24px;
-  font-size: 15px;
-  cursor: pointer;
   border: none;
+  cursor: pointer;
+  font-size: 15px;
 }
 
-.action-buttons .buy {
-  background: #222;
+.buy {
+  background: #111;
   color: #fff;
 }
 
-.action-buttons .cart {
+.cart {
   background: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid #111;
 }
 
-/* DETAIL */
-.product-detail {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 40px;
-  background: #fff;
-  border-radius: 12px;
+/* =====================
+   PRODUCT DESCRIPTION
+===================== */
+.product-description {
+  max-width: 700px;
+  margin: 100px auto 120px;   /* 🔥 footer 간격 */
+  text-align: center;
 }
 
-.product-detail h2 {
+.product-description h2 {
+  font-size: 26px;
   margin-bottom: 20px;
 }
 
-/* VIDEO */
-.video {
-  margin-top: 30px;
-  position: relative;
-  padding-top: 56.25%;
+.desc-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 60px;
+  word-break: keep-all;
+}
+
+/* =====================
+   TRACK LIST (CENTER)
+===================== */
+.track-list {
+  max-width: 700px;
+  margin: 80px auto;
+  text-align: center;
+}
+
+.track-list h2 {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.track-list ol {
+  display: inline-block;   /* 🔥 가운데 */
+  text-align: left;
+  padding-left: 20px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* =====================
+   YOUTUBE PREVIEW
+===================== */
+.preview-video {
+  max-width: 800px;
+  margin: 100px auto 140px;  /* 🔥 footer랑 간격 */
+  text-align: center;
+}
+
+.preview-video h2 {
+  font-size: 26px;
+  margin-bottom: 20px;
 }
 
 .video iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
+  max-width: 720px;        /* 🔥 너무 길지 않게 */
+  height: 405px;           /* 16:9 */
+  border-radius: 12px;
 }
 
-/* FOOTER */
-.footer {
-  padding: 30px;
-  background: #222;
-  color: #aaa;
-  text-align: center;
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 900px) {
+  .product-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .product-image img {
+    width: 100%;
+    max-width: 360px;
+  }
+}
+
+.benefit {
+  margin: 8px 0 12px;
   font-size: 14px;
 }
+
+.benefit .discount {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+.benefit .point {
+  color: #555;
+}
+
+.action-buttons button {
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 6px;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* 구매하기 */
+.buy {
+  background: #111;
+
+  color: #fff;
+}
+
+/* 장바구니 */
+.cart {
+  background: #fff;
+  border: 1px solid #111;
+  color: #111;
+}
+
+.buy:hover {
+  background: #565656;
+}
+
+.cart:hover {
+  background: #e5e5e5;
+  color: #000;
+}
+
+.wishlist button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.25s ease;
+}
+
+/* 기본 상태 */
+.wishlist i {
+  color: #ccc;
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+/* hover */
+.wishlist button:hover i {
+  transform: scale(1.15);
+}
+
+/* ❤️ 활성화 상태 */
+.wishlist.active i {
+  color: #e53935;
+}
+
+.wishlist.active button {
+  color: #e53935;
+}
+
+.rating-view i {
+  color: #f5b301;
+  font-size: 18px;
+}
+
+/* =====================
+   REVIEWS
+===================== */
+.reviews {
+  max-width: 800px;
+  margin: 120px auto;
+}
+
+.reviews h2 {
+  font-size: 26px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.review-item {
+  border-bottom: 1px solid #cecece;
+  padding: 20px 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-id {
+  font-weight: 600;
+  color: #222;
+}
+
+.review-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.review-rating i {
+  color: #f5b301;
+}
+
+.review-rating .score {
+  margin-left: 6px;
+  color: #555;
+  font-size: 13px;
+}
+
+.review-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* 전체보기 버튼 */
+.review-more {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.review-more button {
+  padding: 10px 24px;
+  font-size: 14px;
+  border: 1px solid #111;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.review-more button:hover {
+  background: #111;
+  color: #fff;
+}
+
+.album {
+	--album-size: 300px; /* Base size */
+	--vinyl-size: 280px; /* Base vinyl size */
+	--border-radius: 3px; /* Border radius */
+	--cover-translate: -10px; /* Translation for hover */
+	--cover-rotate: -2deg; /* Rotation for hover */
+	--vinyl-translate: 50%; /* Vinyl translation for hover */
+	--vinyl-rotate: 360deg; /* Vinyl rotation for hover */
+
+	position: relative;
+	width: var(--album-size);
+	height: var(--album-size);
+	margin: 1rem 100px;
+
+	.cover {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		border-radius: var(--border-radius);
+		overflow: hidden;
+		
+		z-index: 2;
+		transition: transform 0.5s ease-in-out; 
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 10%;
+			
+			pointer-events: none;
+			z-index: 3;
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: 
+				linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 4%),
+				linear-gradient(225deg, 
+					rgba(162, 162, 162, 0.1) 0%, 
+					rgba(162, 162, 162, 0.2) 4%,
+					rgba(255, 255, 255, 0.2) 6%,
+					rgba(255, 255, 255, 0.6) 7%,
+					rgba(255, 255, 255, 0.2) 7%,
+					rgba(218, 218, 218, 0.04) 7%,
+					transparent 6%),
+				linear-gradient(45deg, 
+					rgba(14, 14, 14, 0.7),
+					rgba(0, 0, 0, 0.5) 0%, 
+					rgba(0, 0, 0, 0.2) 4%,
+					rgba(14, 14, 14, 0.2) 6%,
+					rgba(255, 255, 255, 0.3) 7%,
+					rgba(218, 218, 218, 0.4) 7%,
+					transparent 8%);
+			pointer-events: none;
+			z-index: 3;
+		}
+	}
+
+	.vinyl {
+		position: absolute;
+		top: 10px;
+		right: 0;
+		width: var(--vinyl-size);
+		height: var(--vinyl-size);
+		border-radius: 50%;
+		background: 
+			conic-gradient(from 50deg at 50% 50%, 
+				transparent 46%, 
+				rgba(255, 255, 255, 0.1) 48%, 
+				rgba(255, 255, 255, 0.15) 51%, 
+				transparent 56%),
+			conic-gradient(from 225deg at 50% 50%, 
+				transparent 46%, 
+				rgba(255, 255, 255, 0.1) 48%, 
+				rgba(255, 255, 255, 0.15) 51%, 
+				transparent 56%),
+			repeating-radial-gradient(circle, 
+				rgba(120, 120, 120, 0.1) 0%, 
+				rgba(192, 192, 192, 0.01) 1px, 
+				transparent 1px, 
+				transparent 4px),
+			black;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		transform: translateX(0) rotate(270deg);
+		transition: transform 0.5s ease-in-out;
+		
+		z-index: 1;
+
+		.vinyl-cover {
+			width: calc(var(--vinyl-size) / 2.8);
+			height: calc(var(--vinyl-size) / 2.8);
+			background-size: cover;
+			background-position: center;
+			border-radius: 50%;
+			
+		}
+	}
+
+	&:hover .cover {
+		transform: translateX(var(--cover-translate)) rotate(var(--cover-rotate));
+	}
+
+	&:hover .vinyl {
+		transform: translateX(var(--vinyl-translate)) rotate(var(--vinyl-rotate));
+	}
+
+	&.small {
+
+		--album-size: 150px; /* Reduced size */
+		--vinyl-size: 130px; /* Reduced vinyl size */
+		--border-radius: 2px; /* Adjusted border radius */
+		--cover-translate: -5px; /* Adjusted translation for hover */
+		--cover-rotate: -1deg; /* Adjusted rotation for hover */
+		--vinyl-translate: 50%; /* Adjusted vinyl translation for hover */
+		--vinyl-rotate: 360deg; /* Same vinyl rotation */
+	}
+}
+
+.album.open {
+	.cover {
+		transform: translateX(var(--cover-translate)) rotate(var(--cover-rotate));
+	}
+
+	.vinyl {
+		transform: translateX(var(--vinyl-translate)) rotate(var(--vinyl-rotate));
+	}
+}
+
+.container-top{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* 가운데 */
+  gap: 40px;
+  margin-bottom: 40px;
+  
+}
+
+.album{
+  margin: 1rem 0;          /* (기존: 1rem 100px) 제거 */
+}
+

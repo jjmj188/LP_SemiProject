@@ -15,6 +15,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import product.domain.ProductDTO;
+import product.domain.TrackDTO;
 import util.security.AES256;
 import util.security.SecretMyKey;
 
@@ -127,6 +128,93 @@ public class ProductDAO_imple implements ProductDAO {
             close();
         }
         return productList;
+	}
+	
+	// 제품 상세 보기(1개 조회)
+	@Override
+	public ProductDTO selectOneProduct(int productno) throws SQLException {
+		
+		ProductDTO pdto = null;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " SELECT P.productno, P.fk_categoryno, P.productname, "
+					   + " 		  P.productimg, P.price, P.productdesc, P.youtubeurl, "
+					   + " 		  P.point, P.stock, "
+					   + " 	      to_char(P.registerday, 'yyyy-mm-dd') AS registerday, "
+					   + "        C.categoryname "
+					   + " FROM tbl_product P "
+					   + " JOIN tbl_category C ON P.fk_categoryno = C.categoryno "
+					   + " WHERE P.productno = ? ";
+		
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, productno);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				pdto = new ProductDTO();
+				
+				pdto.setProductno(rs.getInt("productno"));
+				pdto.setCategoryno(rs.getInt("fk_categoryno"));
+				pdto.setProductname(rs.getString("productname"));
+				pdto.setProductimg(rs.getString("productimg"));
+				pdto.setPrice(rs.getInt("price"));
+				pdto.setProductdesc(rs.getString("productdesc"));
+				pdto.setYoutubeurl(rs.getString("youtubeurl"));
+				pdto.setPoint(rs.getInt("point"));
+				pdto.setStock(rs.getInt("stock"));
+				pdto.setRegisterday(rs.getString("registerday"));
+				
+				// JOIN으로 가져온 카테고리명 (ProductDTO에 필드 추가 필요!)
+				pdto.setCategoryname(rs.getString("categoryname"));
+			}
+		
+		}finally {
+			close();
+		}
+		
+		return pdto;
+	
+	}
+
+	@Override
+	public List<TrackDTO> selectTrackList(int productno) throws SQLException {
+		
+		List<TrackDTO> trackList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " SELECT trackno, fk_productno, track_order, track_title "
+					   + " FROM tbl_track "
+					   + " WHERE fk_productno = ? "
+					   + " ORDER BY track_order ASC ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, productno);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				TrackDTO tdto = new TrackDTO();
+				
+				tdto.setProductno(rs.getInt("fk_productno"));
+				tdto.setTrackno(rs.getInt("trackno"));
+				tdto.setTrackorder(rs.getInt("track_order"));
+				tdto.setTracktitle(rs.getString("track_title"));
+				
+				trackList.add(tdto);
+			}
+			
+		}finally {
+			close();
+		}
+		
+		
+		return trackList;
 	}
   
 

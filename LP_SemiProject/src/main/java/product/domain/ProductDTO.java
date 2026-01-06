@@ -14,8 +14,17 @@ public class ProductDTO {
 	private int point; // 포인트 점수
 	
 	
+	private String categoryname;
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 	
+	public String getCategoryname() {
+        return categoryname;
+    }
+	
+    public void setCategoryname(String categoryname) {
+        this.categoryname = categoryname;
+    }
+    
 	public int getProductno() {
 		return productno;
 	}
