@@ -136,8 +136,8 @@
             <label>전화번호</label>
             <div class="hp-row">
               <input type="text" value="010" readonly> -
-              <input type="text" name="hp2" id="hp2" maxlength="4" value="${fn:substring(sessionScope.loginuser.mobile,3,7)}"> -
-              <input type="text" name="hp3" id="hp3" maxlength="4" value="${fn:substring(sessionScope.loginuser.mobile,7,11)}">
+              <input type="text" name="hp2" id="hp2" maxlength="4" value="${fn:substring(sessionScope.loginuser.mobile,3,7)}" readonly> -
+              <input type="text" name="hp3" id="hp3" maxlength="4" value="${fn:substring(sessionScope.loginuser.mobile,7,11)}" readonly>
             </div>
           </div>
         </div>

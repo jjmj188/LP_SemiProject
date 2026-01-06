@@ -102,6 +102,8 @@ public class InquiryDAO_imple implements InquiryDAO {
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 	        pstmt.setString(1, userid);
+	        
+	        
 
 	        try (ResultSet rs = pstmt.executeQuery()) {
 	            while (rs.next()) {

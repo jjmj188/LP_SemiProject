@@ -14,7 +14,7 @@
   
   <!-- HEADER -->
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
-  
+ 
   
   <!-- MAIN -->
   <main class="mypage-wrapper">
@@ -128,9 +128,19 @@
                     </button>
                   </div>
                 </div>
-
+				    	<!-- 배송 정보 -->
+					<div class="order-shipping">
+					  <h4>배송 정보</h4>
+					  <p class="receiver">받는 사람: 홍길동</p>
+					  <p class="address">
+					    주소: 서울시 강남구 테헤란로 123, 101동 202호
+					  </p>
+					</div>
               </div>
+
+           	       
             </div>
+            
           </div>
 
               <!-- 페이징 영역 -->
