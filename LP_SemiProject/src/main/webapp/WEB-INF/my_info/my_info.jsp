@@ -16,13 +16,17 @@
   const ctxPath = "<%= ctxPath %>";
 </script>
 <!-- 다음 주소 API -->
+<script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> 
 <script src="<%= ctxPath %>/13_daum_address_search/js/daum_address_search.js"></script>
 <script src="<%= ctxPath %>/js/my_info/my_edit.js"></script>
 
-<link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
-<script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 
+<link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
+
+
+ <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
+ <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
 </head>
   <!-- HEADER -->
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
@@ -32,13 +36,13 @@
   <div class="mypage-container">
 
     <!-- 왼쪽 메뉴 -->
-    <aside class="mypage-menu">
-      <h3>마이페이지</h3>
-      <a class="active">프로필 수정</a>
-      <a href="<%=ctxPath%>/my_info/my_inquiry.lp">문의하기</a>
-      <a href="<%=ctxPath%>/my_info/my_wish.lp">찜내역</a>
-      <a href="<%=ctxPath%>/my_info/my_orders.lp">구매내역</a>
-      <a href="<%=ctxPath%>/my_info/my_taste.lp">취향선택</a>
+       <aside class="mypage-menu">
+      <h3>마이페이지</h3>  
+      <a href="<%= ctxPath%>/my_info/my_info.lp"  class="active">프로필 수정</a>
+      <a href="<%= ctxPath%>/my_info/my_inquiry.lp">문의내역</a>
+      <a href="<%= ctxPath%>/my_info/my_wish.lp" >찜내역</a>
+      <a href="<%= ctxPath%>/my_info/my_order.lp">구매내역</a>
+      <a href="<%= ctxPath%>/my_info/my_taste.lp" >취향선택</a>
     </aside>
 
     <!-- 가운데 요약 -->
@@ -90,18 +94,16 @@
           <span id="emailCheckResult"></span>
         </div>
 
-        <div class="form-group">
-          <label>휴대폰</label>
-          <div class="hp-row">
-            <input type="text" value="010" readonly>
-            <input type="text" name="hp2" id="hp2"
-                   maxlength="4"
-                   value="${fn:substring(sessionScope.loginuser.mobile,3,7)}">
-            <input type="text" name="hp3" id="hp3"
-                   maxlength="4"
-                   value="${fn:substring(sessionScope.loginuser.mobile,7,11)}">
-          </div>
-        </div>
+           <div class="form-group">
+		  <label>휴대폰</label>
+		  <div class="hp-row">
+		    <input type="text" value="010" readonly>
+		    <span class="hyphen">-</span> <input type="text" name="hp2" id="hp2" maxlength="4"
+		           value="${fn:substring(sessionScope.loginuser.mobile,3,7)}">
+		    <span class="hyphen">-</span> <input type="text" name="hp3" id="hp3" maxlength="4"
+		           value="${fn:substring(sessionScope.loginuser.mobile,7,11)}">
+		  </div>
+		</div>
 
         <div class="form-group">
           <label>주소</label>
@@ -153,7 +155,7 @@
 
           <!-- 저장 -->
           <button type="button"
-                  class="btn-primary"
+                  class="btn-dark"
                   onclick="goEdit()">
             저장하기
           </button>

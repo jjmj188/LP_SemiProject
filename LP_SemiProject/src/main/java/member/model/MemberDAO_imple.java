@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -580,8 +582,86 @@ public class MemberDAO_imple implements MemberDAO {
 			    return result;
 
 		}
+		//내가 선택한 취향 먼저 보여주기 
+				@Override
+				public List<Integer> getUserPreference(String userid) throws SQLException {
 
-}
+				    List<Integer> prefList = new ArrayList<>();
+
+				    try {
+				        conn = ds.getConnection();
+
+				        String sql =
+				            " SELECT fk_categoryno " +
+				            " FROM tbl_member_preference " +
+				            " WHERE fk_userid = ? ";
+
+				        pstmt = conn.prepareStatement(sql);
+				        pstmt.setString(1, userid);
+
+				        rs = pstmt.executeQuery();
+
+				        while (rs.next()) {
+				            prefList.add(rs.getInt("fk_categoryno"));
+				        }
+
+				    } catch (SQLException e) {
+				        e.printStackTrace();
+				    } finally {
+				        close();
+				    }
+
+				    return prefList;
+				}
+				
+		
+		//취향수정하기
+		@Override
+		public boolean updateMemberPreference(String userid, String[] categoryArr) throws SQLException {
+			boolean result=false;
+			
+	  try {
+				conn=ds.getConnection();
+				conn.setAutoCommit(false);
+				//delete insert 둘다 해야하는데 하나라도 실패할 경우 하나라도 실패 → ROLLBACK
+				
+				
+				//기존취향 전부 삭제 
+			    String sql="DELETE FROM tbl_member_preference WHERE fk_userid = ?";
+				
+			    pstmt=conn.prepareStatement(sql);
+				pstmt.setString(1, userid);
+				pstmt.executeUpdate();
+					
+				 sql = "INSERT INTO tbl_member_preference (fk_userid, fk_categoryno) VALUES (?, ?)";
+				
+				 pstmt=conn.prepareStatement(sql);
+				 
+				 
+				 for(String categoryno : categoryArr) {
+					 pstmt.setString(1, userid);
+			            pstmt.setInt(2, Integer.parseInt(categoryno));
+			            pstmt.executeUpdate();
+			        }
+			    
+			    conn.commit();
+		        result = true;
+			
+	         } catch(Exception e) {
+			        e.printStackTrace();
+			  } finally {
+			        close();
+		 }
+		  return result;
+	}
+
+
+
+
+
+
+
+}//end
 
 
 
