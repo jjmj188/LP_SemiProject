@@ -38,7 +38,7 @@ $(function () {
 	// 전송 (POST)
   	const frm = document.getElementById("inquiryForm");
   	frm.method = "post";
-  	frm.action = "my_inquiry.lp";
+  	frm.action = "/my_info/my_inquiry.lp";
   	frm.submit();
 	
  

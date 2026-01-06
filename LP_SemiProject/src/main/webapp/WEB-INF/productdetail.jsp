@@ -61,7 +61,13 @@
 
             <div class="action-buttons">
                 <button type="button" class="buy" onclick="goOrder()">구매하기</button>
-                <button type="button" class="cart" onclick="goCart()">장바구니</button>
+                 
+                 <form id="cartForm"  style="display:inline;">
+			        <input type="hidden" name="productno" value="${pDto.productno}">
+			        <input type="hidden" id="cartQty" name="qty" value="1">
+			        <button type="button" class="cart" onclick="goCart()">장바구니</button>
+   				 </form>
+   				 
             </div>
         </div>
 
@@ -163,42 +169,40 @@
 
     <jsp:include page="footer1.jsp" />
 
-    <script>
-        let qty = 1;
-        const productNo = "${pDto.productno}"; // 현재 상품 번호
-        
-        function changeQty(num) {
-            qty += num;
-            if (qty < 1) qty = 1;
-            
-            // 재고 체크 (선택사항)
-            const stock = ${pDto.stock};
-            if(qty > stock) {
-                alert("죄송합니다. 재고가 " + stock + "개 남았습니다.");
-                qty = stock;
-            }
-            
-            document.getElementById("qty").innerText = qty;
+   <script>
+    let qty = 1;
+    const productNo = "${pDto.productno}";
+
+    function changeQty(num) {
+        qty += num;
+        if (qty < 1) qty = 1;
+
+        const stock = ${pDto.stock};
+        if(qty > stock) {
+            alert("죄송합니다. 재고가 " + stock + "개 남았습니다.");
+            qty = stock;
         }
 
-        function toggleWish() {
-            alert("찜하기 기능은 로그인 후 이용 가능합니다.");
-        }
+        document.getElementById("qty").innerText = qty;
+    }
+
+    function goCart() {
+        const choice = confirm("장바구니에 담으시겠습니까?");
+        if(!choice) return;
+
+        document.getElementById("cartQty").value = qty;
+       
         
-        function goOrder() {
-            // 구매 페이지로 이동 (수량 포함)
-            location.href = "<%= ctxPath%>/order/buy.lp?productno=" + productNo + "&qty=" + qty;
-        }
-        
-        function goCart() {
-            // 장바구니 페이지로 이동 (또는 AJAX)
-            const choice = confirm("장바구니에 담으시겠습니까?");
-            if(choice) {
-               // 실제 장바구니 DB insert 로직 필요
-               location.href = "<%= ctxPath%>/cart/cartAdd.lp?productno=" + productNo + "&qty=" + qty;
-            }
-        }
-    </script>
+     // 전송 (POST)
+      	const frm = document.getElementById("cartForm");
+      	frm.method = "post";
+      	frm.action = "/LP_SemiProject/order/cartAdd.lp";
+      	frm.submit();
+      	
+      	
+    }
+</script>
+   
 
 </body>
 </html>
