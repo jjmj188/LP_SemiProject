@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%
 	String ctxPath = request.getContextPath();
 	// /LP_SemiProject
@@ -222,41 +226,59 @@
  </section>
   <!-- LP 상품 -->
   <section class="product-list" id="product-list">
- 
 
-	<div class="main-section-title">
-   	<h2>STORE</h2>
-	<p>다양한 레코드 상품들을 만나보세요.</p>
-	</div>
-
-<div class="sort-bar">
-  <select>
-    <option value="rating"> 별점순</option>
-    <option value="latest"> 최신순</option>
-    <option value="price_low"> 가격 낮은순</option>
-    <option value="price_high"> 가격 높은순</option>
-  </select>
-</div>
-    <div class="grid">
-      <div class="product">
-        <a href="<%= ctxPath%>">
-          <img src="images/조이.png" alt="조이 LP">
-        </a>
-        <p class="main-product-name">조이</p>
-        <p class="price">₩ 36,000</p></div>
-	  
+    <div class="main-section-title">
+        <h2>STORE</h2>
+        <p>다양한 레코드 상품들을 만나보세요.</p>
     </div>
 
+    <div class="sort-bar">
+        <select>
+            <option value="rating"> 별점순</option>
+            <option value="latest"> 최신순</option>
+            <option value="price_low"> 가격 낮은순</option>
+            <option value="price_high"> 가격 높은순</option>
+        </select>
+    </div>
+
+    <div class="grid">
+        <c:if test="${not empty requestScope.productList}">
+            <c:forEach var="p" items="${requestScope.productList}">
+                <div class="product">
+                    <a href="<%= ctxPath%>/productdetail.lp?productno=${p.productno}">
+                        <img src="<%= ctxPath%>${p.productimg}" alt="${p.productname}">
+                    </a>
+                    <p class="main-product-name">${p.productname}</p>
+                    <p class="price">
+                        ₩ <fmt:formatNumber value="${p.price}" pattern="#,###"/>
+                    </p>
+                </div>
+            </c:forEach>
+        </c:if>
+        
+        <c:if test="${empty requestScope.productList}">
+            <div style="width:100%; text-align:center; padding: 50px;">
+                등록된 상품이 없습니다.
+            </div>
+        </c:if>
+    </div>
 
     <div class="pagination">
-      <a href="#" class="active">1</a>
-      <a href="#">2</a>
-      <a href="#">3</a>
-      <a href="#">4</a>
-      <a href="#">5</a>
-      <a href="#">6</a>
+        <c:if test="${requestScope.totalPage > 0}">
+            <c:forEach var="i" begin="1" end="${requestScope.totalPage}">
+                <c:choose>
+                    <c:when test="${i == requestScope.currentPage}">
+                        <a class="active">${i}</a> 
+                    </c:when>
+                    <c:otherwise>
+                        <a href="<%= ctxPath%>/index.lp?pageNo=${i}#product-list">${i}</a>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+        </c:if>
     </div>
-  </section>
+    
+</section>
 
 
 </div>

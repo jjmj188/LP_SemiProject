@@ -25,6 +25,8 @@
   <span class="guide-text">
     이미지를 누르면 <strong>미리듣기</strong>를 할 수 있어요
   </span>
+  <!-- 🔍 테스트용 선택 결과 표시 -->
+<div id="selectedResult" style="margin-top:15px; font-size:14px; color:#555;"></div>
 </div>
     <div class="preference-grid">
 
@@ -72,85 +74,72 @@
 <script>
 $(function () {
   let audio = new Audio();
-  let playTimer = null;
-
-  let currentItem = null;
-  let isPlaying = false;
+  let currentPlayingItem = null;
 
   $(".preference-item").on("click", function () {
-    const musicSrc = $(this).data("music");
+    const $item = $(this);
+    const musicSrc = $item.data("music");
 
     /* =========================
-       🔥 선택 토글
+       CASE 1️⃣ 선택 + 재생 중 → 음악만 정지
     ========================= */
-    if ($(this).hasClass("active")) {
-      $(this).removeClass("active");
-
-      if (currentItem && currentItem[0] === this) {
-        audio.pause();
-        audio.currentTime = 0;
-        clearTimeout(playTimer);
-        $(this).removeClass("spin");
-        isPlaying = false;
-        currentItem = null;
-      }
-      return;
-    } else {
-      $(this).addClass("active");
-    }
-
-    /* =========================
-       기존 음악 중지
-    ========================= */
-    if (currentItem && currentItem[0] !== this) {
+    if ($item.hasClass("active") && $item.hasClass("playing")) {
       audio.pause();
       audio.currentTime = 0;
-      clearTimeout(playTimer);
-      currentItem.removeClass("spin");
-      isPlaying = false;
+      $item.removeClass("playing spin");
+      currentPlayingItem = null;
+
+      updateSelectedResult(); // ✅ 추가
+      return;
     }
 
     /* =========================
-       새 음악 재생
+       CASE 2️⃣ 선택 + 정지 상태 → 선택 해제
     ========================= */
+    if ($item.hasClass("active") && !$item.hasClass("playing")) {
+      $item.removeClass("active");
+
+      updateSelectedResult(); // ✅ 추가
+      return;
+    }
+
+    /* =========================
+       CASE 3️⃣ 선택 안 됨 → 선택 + 재생
+    ========================= */
+
+    // 다른 음악 재생 중이면 정지 (선택은 유지)
+    if (currentPlayingItem) {
+      currentPlayingItem.removeClass("playing spin");
+      audio.pause();
+      audio.currentTime = 0;
+    }
+
+    $item.addClass("active playing spin");
     audio.src = musicSrc;
     audio.play();
-    $(this).addClass("spin");
 
-    currentItem = $(this);
-    isPlaying = true;
+    currentPlayingItem = $item;
 
-    playTimer = setTimeout(() => {
-      audio.pause();
-      audio.currentTime = 0;
-      if (currentItem) currentItem.removeClass("spin");
-      isPlaying = false;
-    }, 30000);
-  });
-  
-//완료 버튼 클릭 시 실행
-  $("#submitBtn").on("click", function() {
-    
-    // 1. 선택된 카테고리들을 배열에 담기
-    let selectedArr = [];
-    $(".preference-item.active").each(function() {
-      selectedArr.push($(this).data("category"));
-    });
-
-    // 2. 유효성 검사 (아무것도 안 눌렀을 때)
-    if (selectedArr.length === 0) {
-      alert("최소 하나 이상의 취향을 선택해주세요!");
-      return;
-    }
-
-    // 3. 합쳐진 문자열(예: "1,2,5")을 hidden 필드에 대입
-    const frm = document.tasteFrm; // form의 name값으로 접근
-    frm.categoryList.value = selectedArr.join(",");
-
-    // 4. 서버로 전송
-    frm.submit();
+    updateSelectedResult(); // ✅ 추가
   });
 });
+
+/* =========================
+   선택 결과 표시 함수
+========================= */
+function updateSelectedResult() {
+  let selected = [];
+
+  $(".preference-item.active").each(function () {
+    selected.push($(this).find(".preference-label").text());
+  });
+
+  if (selected.length === 0) {
+    $("#selectedResult").text("선택된 취향 없음");
+  } else {
+    $("#selectedResult").text("선택된 취향 테스트용: " + selected.join(", "));
+  }
+}
 </script>
 
 

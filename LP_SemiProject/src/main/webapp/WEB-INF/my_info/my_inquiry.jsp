@@ -1,32 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-	String ctxPath = request.getContextPath();
-	// /LP_SemiProject
+  String ctxPath = request.getContextPath();
 %>
 
-  <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-  <!-- 문의내역 전용(새로 만들기) -->
-  <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_inquiry_list.css">
+<link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
+<link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_inquiry_list.css">
+<link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_inquiry.css">
 
-  <!-- 기존 문의작성 CSS 그대로 사용 -->
-  <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_inquiry.css">
-  
-  <!-- HEADER -->
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
-  
-  
-  <main class="mypage-wrapper">
+
+<main class="mypage-wrapper">
   <div class="mypage-container">
 
     <aside class="mypage-menu">
       <h3>마이페이지</h3>
-      <a href="<%= ctxPath%>/my_info/my_info.lp" >프로필 수정</a>
+      <a href="<%= ctxPath%>/my_info/my_info.lp">프로필 수정</a>
       <a href="<%= ctxPath%>/my_info/my_inquiry.lp" class="active">문의내역</a>
-      <a href="<%= ctxPath%>/my_info/my_wish.lp" >찜내역</a>
+      <a href="<%= ctxPath%>/my_info/my_wish.lp">찜내역</a>
       <a href="<%= ctxPath%>/my_info/my_order.lp">구매내역</a>
-      <a href="<%= ctxPath%>/my_info/my_taste.lp" >취향선택</a>
+      <a href="<%= ctxPath%>/my_info/my_taste.lp">취향선택</a>
     </aside>
 
     <section class="mypage-content">
@@ -47,47 +44,77 @@
               <th style="width:120px;">처리상태</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- 예시(나중에 JSP로 반복 출력) -->
-            <tr>
-              <td>2025-12-30</td>
-              <td class="td-ellipsis">배송지 주소 변경 가능할까요? 주문번호는 12345 입니다.</td>
-              <td class="td-ellipsis">확인 후 변경 처리해드렸습니다.</td>
-              <td><span class="status done">답변완료</span></td>
-            </tr>
 
-            <tr>
-              <td>2025-12-29</td>
-              <td class="td-ellipsis">포인트 사용이 결제에서 안 보여요.</td>
-              <td class="td-ellipsis">현재 점검 중입니다. 금일 중 반영 예정입니다.</td>
-              <td><span class="status wait">접수</span></td>
-            </tr>
+          <tbody>
+            <c:if test="${not empty requestScope.inquiryList}">
+              <c:forEach var="dto" items="${requestScope.inquiryList}">
+                <tr>
+                  <td><c:out value="${dto.inquirydate}" /></td>
+
+                  <td class="td-ellipsis">
+                    <c:out value="${dto.inquirycontent}" />
+                  </td>
+
+                  <td class="td-ellipsis">
+                    <c:choose>
+                      <c:when test="${not empty dto.adminreply}">
+                        <c:out value="${dto.adminreply}" />
+                      </c:when>
+                      <c:otherwise>-</c:otherwise>
+                    </c:choose>
+                  </td>
+
+                  <td>
+                    <c:choose>
+                      <c:when test="${dto.inquirystatus == '답변완료'}">
+                        <span class="status done">답변완료</span>
+                      </c:when>
+                      <c:otherwise>
+                        <span class="status wait"><c:out value="${dto.inquirystatus}" /></span>
+                      </c:otherwise>
+                    </c:choose>
+                  </td>
+                </tr>
+              </c:forEach>
+            </c:if>
+
+            <c:if test="${empty requestScope.inquiryList}">
+              <tr>
+                <td colspan="4" style="text-align:center; padding:24px;">
+                  문의내역이 없습니다.
+                </td>
+              </tr>
+            </c:if>
           </tbody>
         </table>
       </div>
 
-    <!-- 페이징 영역 -->
+     <!-- ✅ 페이징바 (회원목록 방식 그대로) -->
+      <div class="pagebar">
+		  <ul class="pagination" style="margin:0;">
+		    ${requestScope.pageBar}
+		  </ul>
+	</div> 
+	
+<%-- 	    <!-- 페이징 영역 -->
 <div class="pagebar">
   <button class="page-btn prev" disabled>
     <i class="fa-solid fa-chevron-left"></i>
   </button>
 
-  <button class="page-num active">1</button>
-  <button class="page-num">2</button>
-  <button class="page-num">3</button>
-  <button class="page-num">4</button>
+  <button class="page-num">${requestScope.pageBar}</button>
 
   <button class="page-btn next">
     <i class="fa-solid fa-chevron-right"></i>
   </button>
-</div>
+</div> --%>
 
 
     </section>
   </div>
 </main>
 
-<!-- 문의작성 모달 -->
+<!-- 문의작성 모달(그대로) -->
 <div class="modal" id="inquiryModal" aria-hidden="true">
   <div class="modal-dim" id="inquiryModalDim"></div>
 
@@ -98,29 +125,31 @@
     </div>
 
     <div class="modal-body">
-      <!-- 여기 안에 네가 준 문의작성 폼을 그대로 넣으면 됨 -->
-      <form class="inquiry-form" id="inquiryForm">
-
+      <form class="inquiry-form" id="inquiryForm" method="post" action="<%=ctxPath%>/my_info/my_inquiry.lp">
         <div class="form-row">
           <div class="form-group half">
             <label>이름</label>
-            <input type="text" name="name" placeholder="이름 입력" value="홍길동" readonly>
+            <input type="text" name="name" value="${sessionScope.loginuser.name}" readonly>
           </div>
 
           <div class="form-group half">
             <label>전화번호</label>
-            <input type="text" name="mobile" placeholder="010-0000-0000" value="010-1234-5678" readonly>
+            <div class="hp-row">
+              <input type="text" value="010" readonly> -
+              <input type="text" name="hp2" id="hp2" maxlength="4" value="${fn:substring(sessionScope.loginuser.mobile,3,7)}"> -
+              <input type="text" name="hp3" id="hp3" maxlength="4" value="${fn:substring(sessionScope.loginuser.mobile,7,11)}">
+            </div>
           </div>
         </div>
 
         <div class="form-group">
           <label>이메일</label>
-          <input type="email" name="email" placeholder="example@email.com" value="test@email.com" readonly>
+          <input type="email" name="email" value="${sessionScope.loginuser.email}" readonly>
         </div>
 
         <div class="form-group">
           <label>문의내용</label>
-          <textarea name="content" placeholder="문의 내용을 작성해주세요" required></textarea>
+          <textarea name="inquirycontent" placeholder="문의 내용을 작성해주세요" required></textarea>
         </div>
 
         <div class="form-group">
@@ -144,14 +173,10 @@
 
           <button type="submit" class="btn-submit">제출하기</button>
         </div>
-
       </form>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
 <jsp:include page="/WEB-INF/footer1.jsp" />
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="<%= ctxPath%>/js/my_info/my_inquiry.js"></script>

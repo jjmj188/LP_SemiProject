@@ -22,6 +22,12 @@
 <script src="<%= ctxPath %>/js/my_info/my_edit.js"></script>
 
 
+
+
+<link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
+
+
+
 <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
 
 
