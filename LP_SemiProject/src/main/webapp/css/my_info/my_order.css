@@ -313,23 +313,68 @@
   cursor: default;
 }
     
-    .order-shipping {
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid #e5e5e5;
-}
+ 
 
 .order-shipping h4 {
-  margin-bottom: 10px;
-  font-size: 15px;
+
+  font-size: 16px;
   font-weight: 600;
 }
 
-.map-box {
-  margin-top: 12px;
-  width: 100%;
-  height: 240px;
-  background: #f3f3f3;
-  border-radius: 8px;
+.order-shipping p{
+	font-size: 14px;
 }
+
+
+
+    /* =========================
+   배송상태 영역 레이아웃 고정 (버튼 유무 상관없이 줄 안 바뀜)
+========================= */
+
+/* order-status를 세로 정렬 + 간격 통일 */
+.order-status{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  /* ✅ 핵심: 날짜/상태 + 버튼 1개 들어갈 최소 높이 확보 */
+  min-height: 92px;
+}
+
+/* 날짜/상태 문단 여백 정리 (브라우저 기본 margin 때문에 더 흔들림) */
+.order-status p{
+  margin: 0;
+}
+
+/* 네가 버튼에 btn-toggle 클래스를 쓰고 있으니, order-status 안에서는 폭/정렬만 통일 */
+.order-status .btn-toggle{
+  margin-top: 2px;
+  width: 160px;          /* 버튼 유무 비교 시 가로 폭도 흔들리지 않게 */
+  min-height: 34px;      /* 버튼 높이 고정 */
+  line-height: 1;
+  padding: 8px 12px;
+}
+
+/* 버튼이 없는 주문에 대비: 
+   만약 JSP에서 버튼 자체를 아예 렌더 안 하면 min-height로 해결되고,
+   버튼은 렌더하지만 숨김처리 할 계획이면 이 클래스로 자리 유지 가능 */
+.order-status .btn-toggle.is-placeholder{
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 모바일에서는 1열이라 크게 상관 없지만, 높이 너무 커 보이면 줄이기 */
+@media (max-width: 767px){
+  .order-status{
+    min-height: 0;
+  }
+  .order-status .btn-toggle{
+    width: 100%;
+    max-width: 220px;
+  }
+}
+    
     
