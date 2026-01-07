@@ -60,25 +60,30 @@
             </div>
 
             <div class="action-buttons">
-                <button type="button" class="buy" onclick="goOrder()">구매하기</button>
-                 
-                 <form id="cartForm"  style="display:inline;">
-			        <input type="hidden" name="productno" value="${pDto.productno}">
-			        <input type="hidden" id="cartQty" name="qty" value="1">
-			        <button type="button" class="cart" onclick="goCart()">장바구니</button>
-   				 </form>
-					
-					<c:if test="${not empty param.cartno}">
-					  <form method="post" action="<%= request.getContextPath() %>/order/cartUpdate.lp">
-					    <input type="hidden" name="cartno" value="${param.cartno}">
-					    <input type="hidden" name="qty" id="updateQty" value="1">
-					    <button type="submit">장바구니 수정</button>
-					  </form>
-					</c:if>
-					
+  				<button type="button" class="buy" onclick="goOrder()">구매하기</button>
 
-   				 
-            </div>
+				  <c:choose>
+				    <%-- 장바구니에서 수정하기로 들어온 경우: 수정 버튼만 --%>
+				    <c:when test="${not empty param.cartno}">
+				      <form id="cartUpdateForm" method="post" action="<%= ctxPath %>/order/cartUpdate.lp" style="display:inline;">
+				        <input type="hidden" name="cartno" value="${param.cartno}">
+				        <input type="hidden" name="qty" id="updateQty" value="1">
+				        <button type="submit" class="cart">장바구니 수정</button>
+				      </form>
+				    </c:when>
+				
+				    <%-- 일반 상품상세 접근: 담기 버튼만 --%>
+				    <c:otherwise>
+				      <form id="cartForm" style="display:inline;">
+				        <input type="hidden" name="productno" value="${pDto.productno}">
+				        <input type="hidden" id="cartQty" name="qty" value="1">
+				        <button type="button" class="cart" onclick="submitCart()">장바구니</button>
+
+				      </form>
+				    </c:otherwise>
+				  </c:choose>
+		</div>
+
         </div>
 
     </main>
@@ -181,80 +186,77 @@
 	
 <script>
 const ctxPath = "<%= request.getContextPath() %>";
-     let qty = 1;
-     const productNo = "${pDto.productno}"; // 현재 상품 번호
-     
-     const unitPrice = ${pDto.price}; 
-     const isLogin = ${not empty sessionScope.loginuser};
-     
-     const loginUrl = "<%= ctxPath%>/login/login.lp";
-     
-     function changeQty(num) {
-         qty += num;
-         if (qty < 1) qty = 1;
-         
-         // 재고 체크
-         const stock = ${pDto.stock};
-         if(qty > stock) {
-             alert("죄송합니다. 재고가 " + stock + "개 남았습니다.");
-             qty = stock;
-         }
-         
-         // 수량 화면 업데이트
-         document.getElementById("qty").innerText = qty;
+let qty = 1;
 
-         // 가격 화면 업데이트 (단가 * 수량)
-         const total = unitPrice * qty;
-         document.getElementById("totalPrice").innerText = "₩ " + total.toLocaleString();
-         
-        //담기용 hidden
-         document.getElementById("cartQty").value = qty;
+const unitPrice = ${pDto.price};
+const isLogin = ${not empty sessionScope.loginuser};
+const loginUrl = "<%= ctxPath%>/login/login.lp";
 
-         // 수정용 hidden (있을 때만)
-         const u = document.getElementById("updateQty");
-         if (u) u.value = qty;
-     }
+function changeQty(num) {
+  qty += num;
+  if (qty < 1) qty = 1;
 
-  // 찜하기
-     function toggleWish() {
-         if(!isLogin) {
-             alert("로그인이 필요한 서비스입니다.");
-             location.href = loginUrl;
-             return;
-         }
-         alert("찜 목록에 추가합니다 (기능 구현 예정)");
-     }
-     
-     // 바로 구매하기 (POST 전송)
-     function goOrder() {
-         if(!isLogin) {
-             alert("로그인이 필요한 서비스입니다.");
-             location.href = loginUrl;
-             return;
-         }
-         // 구매 페이지로 POST 전송
-         goPost("<%= ctxPath%>/order/buy.lp");
-     }
-     
+  const stock = ${pDto.stock};
+  if (qty > stock) {
+    alert("죄송합니다. 재고가 " + stock + "개 남았습니다.");
+    qty = stock;
+  }
 
-function goCart() {
-        const choice = confirm("장바구니에 담으시겠습니까?");
-        if(!choice) return;
+  document.getElementById("qty").innerText = qty;
 
-        document.getElementById("cartQty").value = qty;
-       
-        
-     // 전송 (POST)
-      	const frm = document.getElementById("cartForm");
-      	frm.method = "post";
-      	frm.action = ctxPath +"/order/cartAdd.lp";
-      	frm.submit();
-      	
-      
-    }
+  const total = unitPrice * qty;
+  document.getElementById("totalPrice").innerText = "₩ " + total.toLocaleString();
 
-     
- </script>
+  // ✅ 담기용 hidden (있을 때만)
+  const c = document.getElementById("cartQty");
+  if (c) c.value = qty;
+
+  // ✅ 수정용 hidden (있을 때만)
+  const u = document.getElementById("updateQty");
+  if (u) u.value = qty;
+}
+
+// 찜하기
+function toggleWish() {
+  if (!isLogin) {
+    alert("로그인이 필요한 서비스입니다.");
+    location.href = loginUrl;
+    return;
+  }
+  alert("찜 목록에 추가합니다 (기능 구현 예정)");
+}
+
+// 바로 구매하기
+function goOrder() {
+  if (!isLogin) {
+    alert("로그인이 필요한 서비스입니다.");
+    location.href = loginUrl;
+    return;
+  }
+  goPost("<%= ctxPath%>/order/buy.lp");
+}
+
+function submitCart() {
+  const updateForm = document.getElementById("cartUpdateForm");
+  const addForm = document.getElementById("cartForm");
+
+  if (updateForm) {
+    const choice = confirm("장바구니 수량을 수정하시겠습니까?");
+    if (!choice) return;
+    updateForm.submit();
+    return;
+  }
+
+  // 담기 모드
+  const choice = confirm("장바구니에 담으시겠습니까?");
+  if (!choice) return;
+
+  addForm.method = "post";
+  addForm.action = ctxPath + "/order/cartAdd.lp";
+  addForm.submit();
+}
+</script>
+
    
 
 </body>
