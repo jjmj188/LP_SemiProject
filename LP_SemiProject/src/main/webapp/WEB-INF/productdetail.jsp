@@ -67,6 +67,8 @@
 			        <input type="hidden" id="cartQty" name="qty" value="1">
 			        <button type="button" class="cart" onclick="goCart()">장바구니</button>
    				 </form>
+
+
    				 
             </div>
         </div>
@@ -218,6 +220,24 @@
          goPost("<%= ctxPath%>/order/buy.lp");
      }
      
+<<<<<<< HEAD
+=======
+function goCart() {
+        const choice = confirm("장바구니에 담으시겠습니까?");
+        if(!choice) return;
+
+        document.getElementById("cartQty").value = qty;
+       
+        
+     // 전송 (POST)
+      	const frm = document.getElementById("cartForm");
+      	frm.method = "post";
+      	frm.action = "/LP_SemiProject/order/cartAdd.lp";
+      	frm.submit();
+      	
+      	
+    }
+>>>>>>> refs/heads/joung
      
  </script>
    
