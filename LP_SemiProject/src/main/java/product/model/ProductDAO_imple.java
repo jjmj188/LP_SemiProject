@@ -171,7 +171,9 @@ public class ProductDAO_imple implements ProductDAO {
             close();
         }
         return productList;
-    }
+    }// end of public List<ProductDTO> selectPagingProduct(int currentShowPageNo, int sizePerPage, int categoryNo, String searchWord, String sortType) throws SQLException {
+	
+	
 	
 	// 제품 상세 보기(1개 조회)
 	@Override
@@ -220,7 +222,7 @@ public class ProductDAO_imple implements ProductDAO {
 		
 		return pdto;
 	
-	}
+	}// end of public ProductDTO selectOneProduct(int productno) throws SQLException---------
 
 	@Override
 	public List<TrackDTO> selectTrackList(int productno) throws SQLException {
@@ -258,7 +260,7 @@ public class ProductDAO_imple implements ProductDAO {
 		
 		
 		return trackList;
-	}
+	}// end of public List<TrackDTO> selectTrackList(int productno) throws SQLException
 
 	
 	// NEW 제품 조회(최신순으로 10개)
@@ -297,7 +299,74 @@ public class ProductDAO_imple implements ProductDAO {
 		}
 		
 		return newProductList;
-	}
+	}// end of public List<ProductDTO> selectNewProductList() throws SQLException--------------
   
 
+	// ... (기존 코드 하단에 추가) ...
+
+    // 로그아웃용 (각 카테고리 1개씩)
+    @Override
+    public List<ProductDTO> selectRandomRecommendation() throws SQLException {
+        List<ProductDTO> list = new ArrayList<>();
+        try {
+            conn = ds.getConnection();
+            // 카테고리 1~5번에서 각각 랜덤 1개씩 뽑아서 합침 (UNION ALL)
+            String sql = "";
+            for(int i=1; i<=5; i++) {
+                sql += " (SELECT productno, productname, price, productimg, fk_categoryno "
+                     + "  FROM (SELECT * FROM tbl_product WHERE fk_categoryno = ? ORDER BY DBMS_RANDOM.VALUE) "
+                     + "  WHERE ROWNUM = 1) ";
+                if(i < 5) sql += " UNION ALL ";
+            }
+            
+            pstmt = conn.prepareStatement(sql);
+            for(int i=1; i<=5; i++) {
+                pstmt.setInt(i, i); // ? 에 1, 2, 3, 4, 5 바인딩
+            }
+            
+            rs = pstmt.executeQuery();
+            while(rs.next()) {
+                ProductDTO pdto = new ProductDTO();
+                pdto.setProductno(rs.getInt("productno"));
+                pdto.setProductname(rs.getString("productname"));
+                pdto.setPrice(rs.getInt("price"));
+                pdto.setProductimg(rs.getString("productimg"));
+                pdto.setCategoryno(rs.getInt("fk_categoryno"));
+                list.add(pdto);
+            }
+        } finally {
+            close();
+        }
+        return list;
+    }
+
+    // 로그인용 (특정 카테고리 n개)
+    @Override
+    public List<ProductDTO> selectProductsByCategory(int categoryNo, int count) throws SQLException {
+        List<ProductDTO> list = new ArrayList<>();
+        try {
+            conn = ds.getConnection();
+            String sql = " SELECT productno, productname, price, productimg, fk_categoryno "
+                       + " FROM (SELECT * FROM tbl_product WHERE fk_categoryno = ? ORDER BY DBMS_RANDOM.VALUE) "
+                       + " WHERE ROWNUM <= ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, categoryNo);
+            pstmt.setInt(2, count);
+            
+            rs = pstmt.executeQuery();
+            while(rs.next()) {
+                ProductDTO pdto = new ProductDTO();
+                pdto.setProductno(rs.getInt("productno"));
+                pdto.setProductname(rs.getString("productname"));
+                pdto.setPrice(rs.getInt("price"));
+                pdto.setProductimg(rs.getString("productimg"));
+                pdto.setCategoryno(rs.getInt("fk_categoryno"));
+                list.add(pdto);
+            }
+        } finally {
+            close();
+        }
+        return list;
+    }
 }

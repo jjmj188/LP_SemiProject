@@ -23,5 +23,9 @@ public interface ProductDAO {
 	// NEW 제품 조회(최신순으로 10개)
 	List<ProductDTO> selectNewProductList() throws SQLException;
 	
-	
+	// 로그아웃 상태용 랜덤추천 : 각 카테고리별로 1개씩 총 5개 랜덤 추출
+    List<ProductDTO> selectRandomRecommendation() throws SQLException;
+
+    // 로그인 상태용 랜덤추천 : 특정 카테고리에서 지정된 개수(count)만큼 랜덤 추출
+    List<ProductDTO> selectProductsByCategory(int categoryNo, int count) throws SQLException;
 }

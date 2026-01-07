@@ -187,70 +187,69 @@
   </div>
 </section>
 
-<c:if test="${not empty sessionScope.loginuser}">
-  <!-- 취향 추천 -->
-  <section id="lp-container">
-	<div class="lp-content">
+<section id="lp-container">
+    <div class="lp-content">
 
- 	<div class="main-section-title">
-   <h2>MUSIC FOR YOU</h2>
-	<p>양소라님의 취향에 맞춰 선별한 레코드입니다.</p>
-	</div>
+      <div class="main-section-title">
+        <h2>MUSIC FOR YOU</h2>
+        <c:choose>
+            <c:when test="${not empty sessionScope.loginuser}">
+                <p>${sessionScope.loginuser.name}님의 취향을 분석하여 선별한 레코드입니다.</p>
+            </c:when>
+            <c:otherwise>
+                <p>다양한 장르의 추천 레코드를 만나보세요.</p>
+            </c:otherwise>
+        </c:choose>
+      </div>
 
-		 <div id="lpData" hidden>
-    <!--
-      DB로 바꿀 땐 이 li를 반복 출력.
-      최대 4개정도..?
-    -->
-	  
-		<li class="lp-item"
-        data-album="Pink Floyd - The Dark Side of the Moon"
-        data-emblem="legendary progressive rock"
-        data-accent="#9a9a9a"
-        data-img="<%= ctxPath%>/images/김마리.jpg"
-        data-link="../product/detail.html?productno=1">
-      
-    </li>
+      <div id="lpData" hidden>
+         <c:if test="${not empty requestScope.recommendList}">
+            <c:forEach var="item" items="${requestScope.recommendList}">
+               <li class="lp-item"
+                   data-album="${item.productname}"
+                   data-emblem="￦ <fmt:formatNumber value='${item.price}' pattern='#,###'/>"
+                   data-accent="#d0d0d0" 
+                   data-img="<%= ctxPath%>${item.productimg}"
+                   data-link="<%= ctxPath%>/productdetail.lp?productno=${item.productno}">
+               </li>
+            </c:forEach>
+         </c:if>
+         
+         <c:if test="${empty requestScope.recommendList}">
+            <li class="lp-item"
+                data-album="Ready for Music"
+                data-emblem="Vinyl Shop"
+                data-accent="#9a9a9a"
+                data-img="<%= ctxPath%>/images/logo.png"
+                data-link="#">
+            </li>
+         </c:if>
+      </div>
 
-    <li class="lp-item"
-        data-album="Pink Floyd - The Dark Side of the Moon"
-        data-emblem="legendary progressive rock"
-        data-accent="#9a9a9a"
-        data-img="<%= ctxPath%>/images/김마리.jpg"
-        data-link="../product/detail.html?productno=1">
-      
-    </li>
+      <section>
+        <div class="hero-img">
+          <a class="quick-link" id="quickLink" href="#" target="_self" aria-label="바로가기">
+            <span class="dot"></span>
+            바로가기
+          </a>
+        </div>
 
-  </div>
+        <div class="emblem-container">
+          <div class="emblem text"></div>  
+        </div>
 
-  <section>
-    <div class="hero-img">
-      <a class="quick-link" id="quickLink" href="<%= ctxPath%>" target="_self" aria-label="바로가기"> <!--/product_detail.jsp?productno= 로 이동-->
-        <span class="dot"></span>
-        바로가기
-      </a>
-    </div>
+        <h1 class="text">
+          <span class="album-title"></span>
+          <span class="LP-shop"></span>
+        </h1>
+      </section>
 
-    <div class="emblem-container">
-      <div class="emblem text"></div>  
-    </div>
-
-   <h1 class="text">
-  <span class="album-title"></span>
-  <span class="LP-shop"></span>
-</h1>
-
+      <div class="button-container">
+        <button class="scroll-left nav-arrow"><span></span>Prev</button>
+        <button class="scroll-right nav-arrow">Next<span></span></button>
+      </div>
+      </div>
   </section>
-
-  <div class="button-container">
-    <button class="scroll-left nav-arrow"><span></span>Prev</button>
-    <button class="scroll-right nav-arrow">Next<span></span></button>
-  </div>
-
-	</div>
-
- </section>
-</c:if>
  
  
   <!-- LP 상품 -->
