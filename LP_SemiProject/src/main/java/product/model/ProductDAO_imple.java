@@ -63,21 +63,28 @@ public class ProductDAO_imple implements ProductDAO {
  	
 	// 페이징 처리용 전체상품 조회
 	@Override
-    public int getTotalProductCount(int categoryNo) throws SQLException {
+    public int getTotalProductCount(int categoryNo, String searchWord) throws SQLException {
         int totalCount = 0;
         try {
             conn = ds.getConnection();
-            String sql = " SELECT COUNT(*) FROM tbl_product ";
+            String sql = " SELECT COUNT(*) FROM tbl_product WHERE 1=1 ";
             
             // 0보다 클 때만 WHERE절 추가
             if(categoryNo > 0) {
-                sql += " WHERE fk_categoryno = ? ";
+            	sql += " AND fk_categoryno = ? ";
+            }
+            if(searchWord != null && !searchWord.trim().isEmpty()) {
+                sql += " AND lower(productname) LIKE '%' || lower(?) || '%' ";
             }
             
             pstmt = conn.prepareStatement(sql);
             
+            int idx = 1;
             if(categoryNo > 0) {
-                pstmt.setInt(1, categoryNo); 
+                pstmt.setInt(idx++, categoryNo); 
+            }
+            if(searchWord != null && !searchWord.trim().isEmpty()) {
+                pstmt.setString(idx++, searchWord);
             }
             
             rs = pstmt.executeQuery();
@@ -92,39 +99,66 @@ public class ProductDAO_imple implements ProductDAO {
 	
 	// 페이지 번호에 해당하는 상품 리스트(8개)를 가져오는 메소드
 	@Override
-    public List<ProductDTO> selectPagingProduct(int currentShowPageNo, int sizePerPage, int categoryNo) throws SQLException {
+    public List<ProductDTO> selectPagingProduct(int currentShowPageNo, int sizePerPage, int categoryNo, String searchWord, String sortType) throws SQLException {
         List<ProductDTO> productList = new ArrayList<>();
         try {
             conn = ds.getConnection();
             int startRno = ((currentShowPageNo - 1) * sizePerPage) + 1;
             int endRno = startRno + sizePerPage - 1;
 
-            String sql = " SELECT productno, productname, price, productimg "
-                       + " FROM ( "
-                       + "    SELECT row_number() over(order by productno desc) AS rno "
-                       + "         , productno, productname, price, productimg "
-                       + "    FROM tbl_product ";
+            String orderBy = "productno DESC";
             
-            // 0보다 클 때만 WHERE절
-            if(categoryNo > 0) {
-                sql += " WHERE fk_categoryno = ? ";
+            if(sortType != null && !sortType.isEmpty()) {
+                switch (sortType) {
+                    case "price_low":  
+                    	orderBy = "price ASC";  break; // 낮은 가격순
+                    case "price_high": 
+                    	orderBy = "price DESC"; break; // 높은 가격순
+                    case "latest":     
+                    	orderBy = "productno DESC"; break; // 최신순
+                    case "rating":     
+                    	orderBy = "productno DESC"; break; // (임시) 별점순
+                    default:           
+                    	orderBy = "productno DESC"; break;
+                }
             }
             
-            sql += " ) V WHERE V.rno BETWEEN ? AND ? ";
-
+            String sql = " SELECT productno, productname, price, productimg "
+                       + " FROM ( "
+                       + "     SELECT row_number() over(order by " + orderBy + ") AS rno "
+                       + "          , productno, productname, price, productimg "
+                       + "     FROM tbl_product "
+                       + "     WHERE 1=1 "; 
+            
+            // 조건: 카테고리
+            if(categoryNo > 0) {
+                sql += " AND fk_categoryno = ? ";
+            }
+            
+            // 조건: 검색어
+            if(searchWord != null && !searchWord.trim().isEmpty()) {
+            	sql += " AND lower(productname) LIKE '%' || lower(?) || '%' ";
+            }
+            
+            sql += " ) V "
+                 + " WHERE V.rno BETWEEN ? AND ? ";
+            
             pstmt = conn.prepareStatement(sql);
 
           
+            int idx = 1;
             if(categoryNo > 0) {
-                pstmt.setInt(1, categoryNo);
-                pstmt.setInt(2, startRno);
-                pstmt.setInt(3, endRno);
-            } else {
-                pstmt.setInt(1, startRno);
-                pstmt.setInt(2, endRno);
+                pstmt.setInt(idx++, categoryNo);
             }
-
+            if(searchWord != null && !searchWord.trim().isEmpty()) {
+                pstmt.setString(idx++, searchWord);
+            }
+            
+            pstmt.setInt(idx++, startRno);
+            pstmt.setInt(idx++, endRno);
+            
             rs = pstmt.executeQuery();
+            
             while(rs.next()) {
                 ProductDTO pdto = new ProductDTO();
                 pdto.setProductno(rs.getInt("productno"));

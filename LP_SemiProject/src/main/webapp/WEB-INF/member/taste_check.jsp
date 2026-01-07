@@ -140,6 +140,34 @@ function updateSelectedResult() {
     $("#selectedResult").text("선택된 취향 테스트용: " + selected.join(", "));
   }
 }
+
+$(function () {
+	  // ... 기존 오디오 관련 코드 생략 ...
+
+	  // 완료 버튼 클릭 이벤트 추가
+	  $("#submitBtn").on("click", function() {
+	    
+	    let selectedCategories = [];
+
+	    // active 클래스가 붙은 아이템들의 data-category 값을 가져옴
+	    $(".preference-item.active").each(function() {
+	        selectedCategories.push($(this).data("category"));
+	    });
+
+	    // 1개 이상 선택했는지 유효성 검사
+	    if(selectedCategories.length === 0) {
+	        alert("최소 1개 이상의 취향을 선택하셔야 합니다.");
+	        return;
+	    }
+
+	    // 콤마(,)로 연결하여 hidden 필드인 #categoryList에 대입
+	    $("#categoryList").val(selectedCategories.join(","));
+
+	    // 폼 전송
+	    const frm = document.tasteFrm;
+	    frm.submit();
+	  });
+	});
 </script>
 
 

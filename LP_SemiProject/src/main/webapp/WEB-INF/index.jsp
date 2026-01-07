@@ -97,33 +97,33 @@
     <div class="genre-bar-inner">
       <button type="button" 
               class="${(empty requestScope.categoryNo or requestScope.categoryNo == 0) ? 'active' : ''}" 
-              onclick="location.href='<%= ctxPath%>/index.lp#product-list'">ALL</button>
+              onclick="location.href='<%= ctxPath%>/index.lp?sort=${requestScope.sort}#product-list'">ALL</button>
       
       <button type="button" 
               class="${requestScope.categoryNo == 1 ? 'active' : ''}" 
-              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=1#product-list'">POP</button>
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=1&sort=${requestScope.sort}#product-list'">POP</button>
       
       <button type="button" 
               class="${requestScope.categoryNo == 2 ? 'active' : ''}" 
-              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=2#product-list'">ROCK</button>
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=2&sort=${requestScope.sort}#product-list'">ROCK</button>
       
       <button type="button" 
               class="${requestScope.categoryNo == 3 ? 'active' : ''}" 
-              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=3#product-list'">JAZZ</button>
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=3&sort=${requestScope.sort}#product-list'">JAZZ</button>
       
       <button type="button" 
               class="${requestScope.categoryNo == 4 ? 'active' : ''}" 
-              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=4#product-list'">CLASSIC</button>
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=4&sort=${requestScope.sort}#product-list'">CLASSIC</button>
       
       <button type="button" 
               class="${requestScope.categoryNo == 5 ? 'active' : ''}" 
-              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=5#product-list'">ETC</button>
+              onclick="location.href='<%= ctxPath%>/index.lp?categoryno=5&sort=${requestScope.sort}#product-list'">ETC</button>
     </div>
   </div>
 
  
 <div class="main-search">
-  <form class="main-search__form" role="search" action="#" method="get">
+  <form class="main-search__form" role="search" action="<%= ctxPath%>/index.lp#product-list" method="get">
     <div class="main-search__field">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
@@ -133,7 +133,12 @@
               stroke-linecap="round"/>
       </svg>
 
-      <input type="search" name="q" placeholder="LP를 검색해보세요" aria-label="Search"/>
+      <input type="search" name="q" value="${requestScope.searchWord}" placeholder="LP를 검색해보세요" aria-label="Search"/>
+      
+      <c:if test="${not empty requestScope.categoryNo and requestScope.categoryNo != 0}">
+          <input type="hidden" name="categoryno" value="${requestScope.categoryNo}" />
+      </c:if>
+      <input type="hidden" name="sort" value="${requestScope.sort}" />
     </div>
 
     <button class="main-search__btn" type="submit">검색</button>
@@ -257,14 +262,24 @@
     </div>
 
     <div class="sort-bar">
-        <select>
-            <option value="rating"> 별점순</option>
-            <option value="latest"> 최신순</option>
-            <option value="price_low"> 가격 낮은순</option>
-            <option value="price_high"> 가격 높은순</option>
+        <select id="sortSelect" onchange="sortProduct()">
+            <option value="latest"     ${requestScope.sort == 'latest'     ? 'selected' : ''}>최신순</option>
+            <option value="rating"     ${requestScope.sort == 'rating'     ? 'selected' : ''}>별점순</option>
+            <option value="price_low"  ${requestScope.sort == 'price_low'  ? 'selected' : ''}>가격 낮은순</option>
+            <option value="price_high" ${requestScope.sort == 'price_high' ? 'selected' : ''}>가격 높은순</option>
         </select>
     </div>
 
+	<script>
+        function sortProduct() {
+            const sortVal = document.getElementById("sortSelect").value;
+            const categoryNo = "${requestScope.categoryNo}"; 
+            const searchWord = "${requestScope.searchWord}";
+            
+            location.href = "<%= ctxPath%>/index.lp?categoryno=" + categoryNo + "&q=" + searchWord + "&sort=" + sortVal + "#product-list";
+        }
+    </script>
+    
     <div class="grid">
         <c:if test="${not empty requestScope.productList}">
             <c:forEach var="p" items="${requestScope.productList}">
@@ -295,7 +310,7 @@
                         <a class="active">${i}</a> 
                     </c:when>
                     <c:otherwise>
-                        <a href="<%= ctxPath%>/index.lp?pageNo=${i}&categoryno=${requestScope.categoryNo}#product-list">${i}</a>
+                        <a href="<%= ctxPath%>/index.lp?pageNo=${i}&categoryno=${requestScope.categoryNo}&q=${requestScope.searchWord}&sort=${requestScope.sort}#product-list">${i}</a>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
