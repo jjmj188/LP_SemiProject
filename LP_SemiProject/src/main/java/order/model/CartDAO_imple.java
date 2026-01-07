@@ -5,12 +5,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import order.domain.CartDTO;
 import util.security.AES256;
 import util.security.SecretMyKey;
 
@@ -105,7 +108,7 @@ public class CartDAO_imple implements CartDAO {
 				pstmt.setInt(3, qty);
 				
 				result = pstmt.executeUpdate();
-				
+					
 			}
 			
 		} finally {
@@ -113,6 +116,59 @@ public class CartDAO_imple implements CartDAO {
 		}
 		
 		return (result == 1? 1:0);
+	}
+
+	//장바구니 조회
+	@Override
+	public List<CartDTO> selectCartList(String userid) throws SQLException {
+		
+		 List<CartDTO> list = new ArrayList<>();
+		 
+		 String sql =
+		            " SELECT tbl_cart.cartno, " +
+		            "        tbl_cart.fk_productno, " +
+		            "        tbl_cart.qty, " +
+		            "        tbl_product.productname, " +
+		            "        tbl_product.productimg, " +
+		            "        tbl_product.price AS price, " +
+		            "        (tbl_product.price * tbl_cart.qty) AS total_price, " +
+		            "        tbl_product.point AS point, " +
+		            "        (tbl_product.point * tbl_cart.qty) AS total_point " +
+		            " FROM tbl_cart " +
+		            " JOIN tbl_product " +
+		            "   ON tbl_cart.fk_productno = tbl_product.productno " +
+		            " WHERE tbl_cart.fk_userid = ? " +
+		            " ORDER BY tbl_cart.cartno DESC ";
+		 
+		 try (Connection conn = ds.getConnection();
+	             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	            pstmt.setString(1, userid);
+
+	            try (ResultSet rs = pstmt.executeQuery()) {
+	                while (rs.next()) {
+	                    CartDTO cdto = new CartDTO();
+	                    cdto.setCartno(rs.getInt("cartno"));
+	                    cdto.setProductno(rs.getInt("fk_productno"));
+	                    cdto.setQty(rs.getInt("qty"));
+
+	                    cdto.setProductname(rs.getString("productname"));
+	                    cdto.setProductimg(rs.getString("productimg"));
+
+	                    cdto.setPrice(rs.getInt("price"));
+	                    cdto.setTotalPrice(rs.getInt("total_price"));
+
+	                    cdto.setPoint(rs.getInt("point"));
+	                    cdto.setTotalPoint(rs.getInt("total_point"));
+
+	                    list.add(cdto);
+	                }
+	            }
+	        }
+
+	        return list;
+		
+		
 	}
 	
 
