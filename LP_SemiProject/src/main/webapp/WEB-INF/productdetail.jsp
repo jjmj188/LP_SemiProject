@@ -45,7 +45,7 @@
                 <p class="point">적립 포인트 <b><fmt:formatNumber value="${pDto.point}" pattern="#,###"/>P</b></p>
             </div>
             
-            <p class="delivery">배송비 <b>2,500원</b></p>
+            <p class="delivery">배송비 <b>3,000원</b></p>
 
             <div class="quantity">
                 <button type="button" onclick="changeQty(-1)">−</button>
@@ -67,7 +67,15 @@
 			        <input type="hidden" id="cartQty" name="qty" value="1">
 			        <button type="button" class="cart" onclick="goCart()">장바구니</button>
    				 </form>
-
+					
+					<c:if test="${not empty param.cartno}">
+					  <form method="post" action="<%= request.getContextPath() %>/order/cartUpdate.lp">
+					    <input type="hidden" name="cartno" value="${param.cartno}">
+					    <input type="hidden" name="qty" id="updateQty" value="1">
+					    <button type="submit">장바구니 수정</button>
+					  </form>
+					</c:if>
+					
 
    				 
             </div>
@@ -170,8 +178,9 @@
     </section>
 
     <jsp:include page="footer1.jsp" />
-
+	
 <script>
+const ctxPath = "<%= request.getContextPath() %>";
      let qty = 1;
      const productNo = "${pDto.productno}"; // 현재 상품 번호
      
@@ -197,6 +206,13 @@
          // 가격 화면 업데이트 (단가 * 수량)
          const total = unitPrice * qty;
          document.getElementById("totalPrice").innerText = "₩ " + total.toLocaleString();
+         
+        //담기용 hidden
+         document.getElementById("cartQty").value = qty;
+
+         // 수정용 hidden (있을 때만)
+         const u = document.getElementById("updateQty");
+         if (u) u.value = qty;
      }
 
   // 찜하기
@@ -231,10 +247,10 @@ function goCart() {
      // 전송 (POST)
       	const frm = document.getElementById("cartForm");
       	frm.method = "post";
-      	frm.action = "/LP_SemiProject/order/cartAdd.lp";
+      	frm.action = ctxPath +"/order/cartAdd.lp";
       	frm.submit();
       	
-      	
+      
     }
 
      

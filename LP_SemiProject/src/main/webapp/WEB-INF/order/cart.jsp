@@ -44,11 +44,17 @@
           </div>
 
           <div class="qty-box">
-            <!-- 예: 수정하기 버튼에 cartno 달기 -->
-            <button type="button" class="qty-btn"
-                    onclick="location.href='<%= ctxPath%>/order/cartEdit.lp?cartno=${dto.cartno}'">
-              수정하기
-            </button>
+            
+           <form method="get" action="<%= ctxPath %>/productdetail.lp" style="display:inline;">
+			  <input type="hidden" name="productno" value="${dto.productno}">
+			  <input type="hidden" name="cartno" value="${dto.cartno}">
+			  <button type="submit" class="qty-btn">수정하기</button>
+			</form>
+
+
+
+
+
           </div>
         </div>
       </c:forEach>
@@ -92,7 +98,7 @@
       </div>
 
       <div class="action-buttons">
-        <button class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">더 담으러가기</button>
+        <button class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">쇼핑 계속하기</button>
         <button class="buy" onclick="location.href='<%= ctxPath%>/order/buy.lp'">구매하기</button>
       </div>
     </section>
@@ -101,3 +107,6 @@
 </main>
 
 <jsp:include page="/WEB-INF/footer1.jsp" />
+<script src="<%= ctxPath%>/js/order/cart.js"></script>
+
+

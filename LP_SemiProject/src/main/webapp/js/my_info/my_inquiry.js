@@ -34,11 +34,14 @@ $(function () {
       alert("개인정보 수집·이용 동의가 필요합니다.");
       return;
     }
+	
+	const ctxPath = "<%= request.getContextPath() %>";
+	  
 
 	// 전송 (POST)
   	const frm = document.getElementById("inquiryForm");
   	frm.method = "post";
-  	frm.action = "/my_info/my_inquiry.lp";
+	frm.action = ctxPath + "/my_info/my_inquiry.lp";
   	frm.submit();
 	
  

@@ -12,5 +12,10 @@ public interface CartDAO {
 
 	//장바구니 조회
 	List<CartDTO> selectCartList(String userid)throws SQLException;
+
+	//장바구니 수정
+	int updateCartQty(String loginuserid, int cartno, int qty)throws SQLException;
+
+	
 	
 }

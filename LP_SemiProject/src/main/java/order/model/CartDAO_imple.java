@@ -122,6 +122,8 @@ public class CartDAO_imple implements CartDAO {
 	@Override
 	public List<CartDTO> selectCartList(String userid) throws SQLException {
 		
+		conn = ds.getConnection();
+		
 		 List<CartDTO> list = new ArrayList<>();
 		 
 		 String sql =
@@ -140,9 +142,8 @@ public class CartDAO_imple implements CartDAO {
 		            " WHERE tbl_cart.fk_userid = ? " +
 		            " ORDER BY tbl_cart.cartno DESC ";
 		 
-		 try (Connection conn = ds.getConnection();
-	             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+		 try  {
+			 	pstmt = conn.prepareStatement(sql);
 	            pstmt.setString(1, userid);
 
 	            try (ResultSet rs = pstmt.executeQuery()) {
@@ -165,11 +166,46 @@ public class CartDAO_imple implements CartDAO {
 	                }
 	            }
 	        }
+		 	finally {
+				close();
+			}
+		 
 
 	        return list;
 		
 		
 	}
+	
+	
+	//장바구니 수정
+	@Override
+	public int updateCartQty(String loginuserid, int cartno, int qty) throws SQLException {
+		 int result = 0;
+
+		    try {
+		        conn = ds.getConnection();
+
+		        String sql =
+		              " update tbl_cart "
+		            + " set qty = ? "
+		            + " where cartno = ? "
+		            + "   and fk_userid = ? ";
+
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setInt(1, qty);
+		        pstmt.setInt(2, cartno);
+		        pstmt.setString(3, loginuserid);
+
+		        result = pstmt.executeUpdate();
+
+		    } finally {
+		        close();
+		    }
+
+		    return (result == 1 ? 1 : 0);
+	}
+
+	
 	
 
 }
