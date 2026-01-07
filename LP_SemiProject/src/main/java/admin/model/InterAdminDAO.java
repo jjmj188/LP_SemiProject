@@ -36,4 +36,5 @@ public interface InterAdminDAO {
     // 10. 질문 전체 목록 조회 
 	List<InquiryVO> getInquiryList(Map<String, String> paraMap) throws SQLException;
     
+	// 11. 깃허브 업로드 테스트
 }
