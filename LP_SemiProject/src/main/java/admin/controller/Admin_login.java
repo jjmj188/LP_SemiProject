@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class Admin_login extends AbstractController {
-
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
