@@ -5,6 +5,7 @@
 
 <%
     String ctxPath = request.getContextPath();
+    // /LP_SemiProject
 %>
 
 <!DOCTYPE html>
@@ -50,28 +51,39 @@
 
       <div class="product-list">
         
+        <%-- 상품이 없을 경우 --%>
         <c:if test="${empty requestScope.productList}">
             <div style="text-align: center; padding: 50px; width: 100%; color: #666;">
                 등록된 상품이 없습니다.
             </div>
         </c:if>
 
+        <%-- 상품 리스트 반복 출력 --%>
         <c:forEach var="pvo" items="${requestScope.productList}">
             <div class="product-item">
               <input type="checkbox" name="pseq" value="${pvo.productno}">
               
-              <img src="<%= ctxPath%>/images/productimg/${pvo.productimg}" 
+              <%-- [중요] 이미지 경로 수정됨: DB에 이미 경로가 포함되어 있으므로 ctxPath 바로 뒤에 변수 사용 --%>
+              <img src="<%= ctxPath%>${pvo.productimg}" 
                    onerror="this.src='<%= ctxPath%>/images/no_image.png'" 
                    alt="${pvo.productname}"
                    style="width: 80px; height: 80px; object-fit: cover;">
+                   
               <div class="product-info">
-                <p class="artist-en">[${pvo.categoryname}]</p>
+                <%-- 카테고리명 --%>
+                <p class="artist-en" style="font-weight: bold; color: #555;">[${pvo.categoryname}]</p>
+                
+                <%-- 상품명 --%>
                 <p class="artist-kr">${pvo.productname}</p>
+                
+                <%-- 가격 (천단위 콤마) --%>
                 <p class="price">
                     <fmt:formatNumber value="${pvo.price}" pattern="#,###" />원
                 </p>
+                
+                <%-- 재고 및 포인트 --%>
                 <p class="stock" style="font-size: 12px; color: #888;">
-                    재고: ${pvo.stock}개 | 포인트: ${pvo.point}P
+                    재고: ${pvo.stock}개 | 포인트: <fmt:formatNumber value="${pvo.point}" pattern="#,###" />P
                 </p>
               </div>
 
@@ -165,6 +177,16 @@
 <jsp:include page="/WEB-INF/footer2.jsp" />
 
 <script src="<%= ctxPath%>/js/admin/admin_product.js"></script>
+
+<script>
+    function openModal() {
+        document.getElementById('productModal').style.display = 'flex';
+    }
+    
+    function closeModal() {
+        document.getElementById('productModal').style.display = 'none';
+    }
+</script>
 
 </body>
 </html>
