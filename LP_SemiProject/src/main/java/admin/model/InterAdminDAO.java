@@ -30,4 +30,10 @@ public interface InterAdminDAO {
     // 8. 주문 및 배송 전체 목록 조회 (페이징 처리는 생략, 전체 조회)
     List<Map<String, String>> getOrderList(Map<String, String> paraMap) throws SQLException;
     
+    // 9. 리뷰 전체 목록 조회
+    List<Map<String, String>> getReviewList(Map<String, String> paraMap) throws SQLException;
+    
+    // 10. 질문 전체 목록 조회 
+	List<InquiryVO> getInquiryList(Map<String, String> paraMap) throws SQLException;
+    
 }
