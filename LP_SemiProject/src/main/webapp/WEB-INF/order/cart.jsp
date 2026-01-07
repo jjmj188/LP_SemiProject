@@ -1,109 +1,103 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-	String ctxPath = request.getContextPath();
-	// /LP_SemiProject
+  String ctxPath = request.getContextPath();
 %>
-  <!-- CSS -->
-  <link rel="stylesheet" href="<%= ctxPath%>/css/order/cart.css">
-  
-  <!-- HEADER -->
+
+<link rel="stylesheet" href="<%= ctxPath%>/css/order/cart.css">
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
-  
-  <!-- MAIN -->
+
 <main class="cart-wrapper">
   <div class="cart-container">
 
-<!-- 왼쪽: 장바구니 상품 -->
-<section class="cart-items">
+    <section class="cart-items">
 
-  <div class="cart-header">
-    <label>
-      <input type="checkbox">
-      전체선택
-    </label>
-  </div>
+      <div class="cart-header">
+        <label>
+          <input type="checkbox" id="checkAll">
+          전체선택
+        </label>
+      </div>
 
- 
-<!-- 상품 1 -->
-<div class="cart-item">
-  <input type="checkbox">
+      <c:if test="${empty cartList}">
+        <div style="padding:20px;">장바구니가 비어있습니다.</div>
+      </c:if>
 
-  <img src="<%= ctxPath%>/images/리사.png" alt="리사 LP">
+      <c:forEach var="dto" items="${cartList}">
+        <div class="cart-item">
+          <input type="checkbox" class="chkItem" value="${dto.cartno}">
 
-  <div class="item-info">
-    <p class="item-name">리사 LP</p>
-   	<span class="item-point">수량: 1개</span>
+          <img src="<%= ctxPath%>${dto.productimg}" alt="${dto.productname}">
 
-    <div class="item-meta">
-      <p class="item-price">₩ 42,000</p>
-      
-      <p class="item-point">적립 <span>10P</span></p>
-    </div>
-  </div>
+          <div class="item-info">
+            <p class="item-name">${dto.productname}</p>
+            <span class="item-point">수량: ${dto.qty}개</span>
 
-  <div class="qty-box">
-    <button type="button" class="qty-btn" >수정하기</button>
-   
-  </div>
-</div>
+            <div class="item-meta">
+              <p class="item-price">
+                ₩ <fmt:formatNumber value="${dto.totalPrice}" pattern="#,###"/>
+              </p>
 
+              <p class="item-point">적립 <span>${dto.totalPoint}P</span></p>
+            </div>
+          </div>
 
+          <div class="qty-box">
+            <!-- 예: 수정하기 버튼에 cartno 달기 -->
+            <button type="button" class="qty-btn"
+                    onclick="location.href='<%= ctxPath%>/order/cartEdit.lp?cartno=${dto.cartno}'">
+              수정하기
+            </button>
+          </div>
+        </div>
+      </c:forEach>
 
-  <!-- 하단 버튼 -->
-  <div class="cart-actions">
-    <button>선택상품 삭제</button>
-    <button class="danger">전체삭제</button>
-  </div>
+      <div class="cart-actions">
+        <button type="button" id="btnDeleteSelected">선택상품 삭제</button>
+        <button type="button" class="danger" id="btnDeleteAll">전체삭제</button>
+      </div>
 
-</section>
+    </section>
 
-<!-- 오른쪽: 결제 요약 -->
-<section class="summary-card">
+    <section class="summary-card">
+      <h3>결제 정보</h3>
 
-  <h3>결제 정보</h3>
+      <div class="summary-row">
+        <span>주문금액</span>
+        <span>₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
+      </div>
 
-  <div class="summary-row">
-    <span>주문금액</span>
-    <span>₩ 82,000</span>
-  </div>
+      <!-- 할인/배송비는 아직 로직 없으니 일단 0 처리하거나 너 로직에 맞게 -->
+      <div class="summary-row">
+        <span>할인금액</span>
+        <span>- ₩ 0</span>
+      </div>
 
-  <div class="summary-row">
-    <span>할인금액</span>
-    <span>- ₩ 5,000</span>
-  </div>
+      <div class="summary-row">
+        <span>배송비</span>
+        <span>₩ <fmt:formatNumber value="3000" pattern="#,###"/></span>
+      </div>
 
-  <div class="summary-row">
-    <span>배송비</span>
-    <span>₩ 3,000</span>
-  </div>
+      <hr>
 
-  <hr>
+      <div class="summary-row total">
+        <span>총 결제금액</span>
+        <span>₩ <fmt:formatNumber value="${sumTotalPrice + 3000}" pattern="#,###"/></span>
+      </div>
 
-  <div class="summary-row total">
-    <span>총 결제금액</span>
-    <span>₩ 80,000</span>
-  </div>
+      <div class="summary-row point">
+        <span>적립 포인트</span>
+        <span><fmt:formatNumber value="${sumTotalPoint}" pattern="#,###"/>P</span>
+      </div>
 
-  <div class="summary-row point">
-    <span>적립 포인트</span>
-    <span>800P</span>
-  </div>
-
-  <div class="action-buttons">
-    <button class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">
-      더 담으러가기
-    </button>
-    <button class="buy" onclick="location.href='<%= ctxPath%>/order/buy.lp'">
-      구매하기
-    </button>
-  </div>
-
-</section>
-
+      <div class="action-buttons">
+        <button class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">더 담으러가기</button>
+        <button class="buy" onclick="location.href='<%= ctxPath%>/order/buy.lp'">구매하기</button>
+      </div>
+    </section>
 
   </div>
 </main>
 
-<!-- FOOTER -->
 <jsp:include page="/WEB-INF/footer1.jsp" />
