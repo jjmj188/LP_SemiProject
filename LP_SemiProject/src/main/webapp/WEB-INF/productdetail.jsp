@@ -220,8 +220,7 @@
          goPost("<%= ctxPath%>/order/buy.lp");
      }
      
-<<<<<<< HEAD
-=======
+
 function goCart() {
         const choice = confirm("장바구니에 담으시겠습니까?");
         if(!choice) return;
@@ -237,7 +236,7 @@ function goCart() {
       	
       	
     }
->>>>>>> refs/heads/joung
+
      
  </script>
    
