@@ -34,7 +34,7 @@
         <div class="product-info">
             <h1>${pDto.productname}</h1>
             
-            <p class="price">
+            <p class="price" id="totalPrice">
                 ₩ <fmt:formatNumber value="${pDto.price}" pattern="#,###"/>
             </p>
             
@@ -67,6 +67,8 @@
 			        <input type="hidden" id="cartQty" name="qty" value="1">
 			        <button type="button" class="cart" onclick="goCart()">장바구니</button>
    				 </form>
+
+
    				 
             </div>
         </div>
@@ -169,24 +171,56 @@
 
     <jsp:include page="footer1.jsp" />
 
-   <script>
-    let qty = 1;
-    const productNo = "${pDto.productno}";
+<script>
+     let qty = 1;
+     const productNo = "${pDto.productno}"; // 현재 상품 번호
+     
+     const unitPrice = ${pDto.price}; 
+     const isLogin = ${not empty sessionScope.loginuser};
+     
+     const loginUrl = "<%= ctxPath%>/login/login.lp";
+     
+     function changeQty(num) {
+         qty += num;
+         if (qty < 1) qty = 1;
+         
+         // 재고 체크
+         const stock = ${pDto.stock};
+         if(qty > stock) {
+             alert("죄송합니다. 재고가 " + stock + "개 남았습니다.");
+             qty = stock;
+         }
+         
+         // 수량 화면 업데이트
+         document.getElementById("qty").innerText = qty;
 
-    function changeQty(num) {
-        qty += num;
-        if (qty < 1) qty = 1;
+         // 가격 화면 업데이트 (단가 * 수량)
+         const total = unitPrice * qty;
+         document.getElementById("totalPrice").innerText = "₩ " + total.toLocaleString();
+     }
 
-        const stock = ${pDto.stock};
-        if(qty > stock) {
-            alert("죄송합니다. 재고가 " + stock + "개 남았습니다.");
-            qty = stock;
-        }
-
-        document.getElementById("qty").innerText = qty;
-    }
-
-    function goCart() {
+  // 찜하기
+     function toggleWish() {
+         if(!isLogin) {
+             alert("로그인이 필요한 서비스입니다.");
+             location.href = loginUrl;
+             return;
+         }
+         alert("찜 목록에 추가합니다 (기능 구현 예정)");
+     }
+     
+     // 바로 구매하기 (POST 전송)
+     function goOrder() {
+         if(!isLogin) {
+             alert("로그인이 필요한 서비스입니다.");
+             location.href = loginUrl;
+             return;
+         }
+         // 구매 페이지로 POST 전송
+         goPost("<%= ctxPath%>/order/buy.lp");
+     }
+     
+function goCart() {
         const choice = confirm("장바구니에 담으시겠습니까?");
         if(!choice) return;
 
@@ -201,7 +235,8 @@
       	
       	
     }
-</script>
+     
+ </script>
    
 
 </body>
