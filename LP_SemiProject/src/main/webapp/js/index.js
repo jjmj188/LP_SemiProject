@@ -1,5 +1,4 @@
-
-    // 무한 스크롤 카루셀 (스크린샷 느낌)
+// 무한 스크롤 카루셀 (스크린샷 느낌)
     const track = document.getElementById('track');
 
     // track의 첫 세트를 복제해서 끝에 붙여, 끊김 없이 루프
@@ -178,21 +177,5 @@ document.getElementById("btnShowAll").addEventListener("click", () => {
     return spans;
   };
 
-  //검색 버튼 누를 때 맨 상단 이동 금지
+  // 초기화 (앨범 있으면 첫 번째 보여주기)
   if (albums.length > 0) updateDisplay(index);
-
-  const searchForm = document.querySelector(".main-search__form");
-
-  searchForm.addEventListener("submit", (e) => {
-    e.preventDefault(); // ✅ 위로 튀는 원인(폼 제출) 막기
-
-    const q = searchForm.querySelector('input[name="q"]').value.trim();
-
-    // 여기서 필터링/검색 로직(AJAX, DOM필터 등) 넣기
-    console.log("search:", q);
-
-    
-  });
-
-
-
