@@ -28,14 +28,60 @@
 <script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
 
 <style type="text/css">
-  /* 부트스트랩이 안 먹을 때를 대비한 수동 스타일 */
-  .btn-dark {
-    background-color: #343a40 !important;
-    color: white !important;
-    border: none !important;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
+ /* 전체 페이지 스크롤 방지 */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* 폼 전체 여백 최소화 */
+form[name="pwdUpdateEndFrm"] {
+  padding-top: 20px;   /* 🔽 기존 60px → 20px */
+}
+
+/* 각 입력 줄 */
+.div_pwd {
+  margin-bottom: 8px !important; /* 🔽 간격 줄임 */
+  text-align: center;
+}
+
+/* 라벨 텍스트 */
+.div_pwd span {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-weight: bold;
+  font-size: 12px;     /* 🔽 폰트 줄임 */
+}
+
+/* 비밀번호 입력창 */
+.div_pwd input {
+  display: block;
+  margin: 0 auto;
+  width: 220px;        /* size=25 대신 CSS */
+  height: 30px;        /* 🔽 높이 줄임 */
+  padding: 4px 6px;
+  font-size: 13px;     /* 🔽 폰트 줄임 */
+  box-sizing: border-box;
+}
+
+/* 버튼 영역 */
+form[name="pwdUpdateEndFrm"] > div:last-child {
+  margin-top: 25px !important;   /* 🔽 기존 50px → 25px */
+  text-align: center;
+  padding-bottom: 20px;          /* 🔽 기존 50px → 20px */
+}
+
+/* 버튼 자체 */
+.btn-dark {
+  background-color: #343a40 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 28px !important;  /* 🔽 버튼 작게 */
+  font-size: 13px;               /* 🔽 폰트 줄임 */
+  border-radius: 4px;
+  font-weight: bold;
+}
 </style>
 <script type="text/javascript">
     $(function(){

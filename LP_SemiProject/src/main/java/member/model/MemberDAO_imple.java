@@ -415,34 +415,41 @@ public class MemberDAO_imple implements MemberDAO {
 
 
 		// 비밀번호 찾기(아이디, 이메일을 입력받아서 해당 사용자가 존재하는지 여부를 알려준다)
-		@Override
-		public boolean isUserExists(Map<String, String> paraMap) throws SQLException {
-			
-			boolean isUserExists = false;
-			
-			try {
-				 conn = ds.getConnection();
+				@Override
+				public boolean isUserExists(Map<String, String> paraMap) throws SQLException {
+					
+					boolean isUserExists = false;
+					
+					try {
+						 conn = ds.getConnection();
+								 
+						 String sql = " SELECT userid "
+						 		    + " FROM tbl_member "
+						 		    + " WHERE status = 1 AND userid = ? AND (email = ? OR mobile = ?) ";
 						 
-				 String sql = " SELECT userid "
-				 		    + " FROM tbl_member "
-				 		    + " WHERE status = 1 AND userid = ? AND email = ? ";
-				 
-				 pstmt = conn.prepareStatement(sql);
-				 pstmt.setString(1, paraMap.get("userid"));
-				 pstmt.setString(2, aes.encrypt(paraMap.get("email")));
-				 
-				 rs = pstmt.executeQuery();
-				 
-				 isUserExists = rs.next();
-				 
-			} catch(GeneralSecurityException | UnsupportedEncodingException e) {
-				  e.printStackTrace();
-			} finally {
-				close();
-			}		
-			
-			return isUserExists;
-		}// end of public boolean isUserExists(Map<String, String> paraMap) throws SQLException------
+						 pstmt = conn.prepareStatement(sql);
+						 
+						 pstmt.setString(1, paraMap.get("userid"));
+						 // 1. 이메일 암호화 처리 (이메일이 없으면 null이 들어가도록 처리)
+					        String email = paraMap.get("email");
+					        pstmt.setString(2, (email != null) ? aes.encrypt(email) : ""); 
+					        
+					        // 2. 세 번째 파라미터(mobile) 추가 (누락되었던 부분)
+					        String mobile = paraMap.get("mobile");
+					        pstmt.setString(3, (mobile != null) ? aes.encrypt(mobile) : "");
+						 
+						 rs = pstmt.executeQuery();
+						 
+						 isUserExists = rs.next();
+						 
+					} catch(GeneralSecurityException | UnsupportedEncodingException e) {
+						  e.printStackTrace();
+					} finally {
+						close();
+					}		
+					
+					return isUserExists;
+				}// end of public boolean isUserExists(Map<String, String> paraMap) throws SQLException------
 
 		//===========================================================================
 		// 비밀번호 찾기 시 현재 비밀번호와 같은지 여부 확인 및 update
