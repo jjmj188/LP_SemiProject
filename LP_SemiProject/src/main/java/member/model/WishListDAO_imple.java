@@ -159,7 +159,7 @@ public class WishListDAO_imple implements WishListDAO {
 			pstmt.setString(1, userid);
 			rs = pstmt.executeQuery();
 			
-			if(rs.next()) {
+			while(rs.next()) {
 				ProductDTO pdto = new ProductDTO();
 				pdto.setProductno(rs.getInt("productno"));
                 pdto.setProductname(rs.getString("productname"));

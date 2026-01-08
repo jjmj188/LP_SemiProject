@@ -245,13 +245,11 @@
                     
                     if(json.result == 1) { // 찜 추가됨
                         icon.removeClass("fa-regular").addClass("fa-solid").css("color", "red");
-                        text.text("찜취소");
-                        alert("찜 목록에 추가되었습니다.");
+                        text.text("찜취소"); 
                     } 
                     else { // 찜 삭제됨
                         icon.removeClass("fa-solid").addClass("fa-regular").css("color", "");
                         text.text("찜하기");
-                        alert("찜 목록에서 삭제되었습니다.");
                     }
                 } 
                 else {
