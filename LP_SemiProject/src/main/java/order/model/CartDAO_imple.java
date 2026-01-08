@@ -205,6 +205,61 @@ public class CartDAO_imple implements CartDAO {
 		    return (result == 1 ? 1 : 0);
 	}
 
+	//장바구니 개별 삭제
+	@Override
+	public int deleteSelected(String userid, String[] cartnoArr) throws SQLException {
+		
+		StringBuilder sb = new StringBuilder();
+		for(int i =0; i<cartnoArr.length; i++) {
+			sb.append("?");
+			if(i<cartnoArr.length -1) {
+				sb.append(",");
+			}
+		}
+		conn=ds.getConnection();
+		
+		String sql =" delete from tbl_cart "
+				+ " where fk_userid = ? "
+				+ " and cartno in ("+sb.toString()+") ";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			int idx=1;
+			pstmt.setString(idx++, userid);
+			
+			for(String cartno : cartnoArr) {
+				pstmt.setInt(idx++, Integer.parseInt(cartno));
+			}
+			
+			return pstmt.executeUpdate();
+			
+		} finally {
+			close();
+		}
+		
+	}
+
+	//장바구니 전체삭제
+	@Override
+	public int deleteAll(String userid) throws SQLException {
+		
+		
+		conn=ds.getConnection();
+		
+		String sql =" delete from tbl_cart "
+				+ " where fk_userid = ? ";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userid);
+			
+			return pstmt.executeUpdate();
+			
+		} finally {
+			close();
+		}
+	}
+
 	
 	
 
