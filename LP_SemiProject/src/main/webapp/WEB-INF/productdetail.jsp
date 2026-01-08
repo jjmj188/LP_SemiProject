@@ -199,7 +199,7 @@
     let qty = 1;
 
     const unitPrice = ${pDto.price};
-    const productNo = "${pDto.productno}"; // [추가] 상품번호 변수
+    const productNo = "${pDto.productno}";
     const isLogin = ${not empty sessionScope.loginuser};
     const loginUrl = "<%= ctxPath%>/login/login.lp";
 
@@ -225,7 +225,7 @@
       if (u) u.value = qty;
     }
 
-    // [수정] 찜하기 (AJAX 비동기 통신)
+    // 찜하기 (AJAX 비동기 통신)
     function toggleWish() {
       if (!isLogin) {
         alert("로그인이 필요한 서비스입니다.");
@@ -245,7 +245,7 @@
                     
                     if(json.result == 1) { // 찜 추가됨
                         icon.removeClass("fa-regular").addClass("fa-solid").css("color", "red");
-                        text.text("찜취소"); 
+                        text.text("찜취소");
                     } 
                     else { // 찜 삭제됨
                         icon.removeClass("fa-solid").addClass("fa-regular").css("color", "");
