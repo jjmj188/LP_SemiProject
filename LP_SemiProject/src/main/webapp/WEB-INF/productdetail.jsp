@@ -3,8 +3,28 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<%@ page import="member.model.WishListDAO, member.model.WishListDAO_imple" %>
+<%@ page import="member.domain.MemberDTO" %>
+<%@ page import="product.domain.ProductDTO" %>
+
 <%
     String ctxPath = request.getContextPath();
+    
+    boolean isLiked = false;
+    MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
+    ProductDTO pDto = (ProductDTO) request.getAttribute("pDto");
+
+    if(loginuser != null && pDto != null) {
+        WishListDAO wdao = new WishListDAO_imple();
+        try {
+            int n = wdao.checkWishStatus(loginuser.getUserid(), pDto.getProductno());
+            if(n == 1) {
+                isLiked = true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 %>
 
 <!DOCTYPE html>
@@ -55,34 +75,39 @@
 
             <div class="wishlist">
                 <button type="button" id="wishBtn" onclick="toggleWish()">
-                    <i class="fa-solid fa-heart"></i> 찜하기
+                    <% if(isLiked) { %>
+                        <i class="fa-solid fa-heart" id="heartIcon" style="color: red;"></i>
+                        <span id="wishText">찜취소</span>
+                    <% } else { %>
+                        <i class="fa-regular fa-heart" id="heartIcon"></i>
+                        <span id="wishText">찜하기</span>
+                    <% } %>
                 </button>
             </div>
 
             <div class="action-buttons">
-  				<button type="button" class="buy" onclick="goOrder()">구매하기</button>
+                <button type="button" class="buy" onclick="goOrder()">구매하기</button>
 
-				  <c:choose>
-				    <%-- 장바구니에서 수정하기로 들어온 경우: 수정 버튼만 --%>
-				    <c:when test="${not empty param.cartno}">
-				      <form id="cartUpdateForm" method="post" action="<%= ctxPath %>/order/cartUpdate.lp" style="display:inline;">
-				        <input type="hidden" name="cartno" value="${param.cartno}">
-				        <input type="hidden" name="qty" id="updateQty" value="1">
-				        <button type="submit" class="cart">장바구니 수정</button>
-				      </form>
-				    </c:when>
-				
-				    <%-- 일반 상품상세 접근: 담기 버튼만 --%>
-				    <c:otherwise>
-				      <form id="cartForm" style="display:inline;">
-				        <input type="hidden" name="productno" value="${pDto.productno}">
-				        <input type="hidden" id="cartQty" name="qty" value="1">
-				        <button type="button" class="cart" onclick="submitCart()">장바구니</button>
-
-				      </form>
-				    </c:otherwise>
-				  </c:choose>
-		</div>
+                  <c:choose>
+                    <%-- 장바구니에서 수정하기로 들어온 경우 --%>
+                    <c:when test="${not empty param.cartno}">
+                      <form id="cartUpdateForm" method="post" action="<%= ctxPath %>/order/cartUpdate.lp" style="display:inline;">
+                        <input type="hidden" name="cartno" value="${param.cartno}">
+                        <input type="hidden" name="qty" id="updateQty" value="1">
+                        <button type="submit" class="cart">장바구니 수정</button>
+                      </form>
+                    </c:when>
+                
+                    <%-- 일반 상품상세 접근 --%>
+                    <c:otherwise>
+                      <form id="cartForm" style="display:inline;">
+                        <input type="hidden" name="productno" value="${pDto.productno}">
+                        <input type="hidden" id="cartQty" name="qty" value="1">
+                        <button type="button" class="cart" onclick="submitCart()">장바구니</button>
+                      </form>
+                    </c:otherwise>
+                  </c:choose>
+            </div>
 
         </div>
 
@@ -106,14 +131,12 @@
 
     <section class="track-list">
         <h2>TRACK LIST</h2>
-
         <ol>
             <c:if test="${not empty requestScope.trackList}">
                 <c:forEach var="track" items="${requestScope.trackList}">
                     <li>${track.tracktitle}</li>
                 </c:forEach>
             </c:if>
-            
             <c:if test="${empty requestScope.trackList}">
                 <li>등록된 트랙 정보가 없습니다.</li>
             </c:if>
@@ -123,38 +146,27 @@
     <c:if test="${not empty pDto.youtubeurl}">
         <section class="preview-video">
             <h2>미리 듣기</h2>
-    
             <c:set var="videoUrl" value="${pDto.youtubeurl}" />
             <c:set var="youtubeId" value="" />
-            
             <c:choose>
-                <%-- 케이스 A: 긴 주소 (youtube.com/watch?v=ID) --%>
                 <c:when test="${fn:contains(videoUrl, 'v=')}">
                     <c:set var="youtubeId" value="${fn:substringAfter(videoUrl, 'v=')}" />
                 </c:when>
-                <%-- 케이스 B: 짧은 주소 (youtu.be/ID) - 지금 회원님 상황! --%>
                 <c:when test="${fn:contains(videoUrl, 'youtu.be/')}">
                     <c:set var="youtubeId" value="${fn:substringAfter(videoUrl, 'youtu.be/')}" />
                 </c:when>
-                <%-- 케이스 C: 임베드 주소 (youtube.com/embed/ID) --%>
                  <c:when test="${fn:contains(videoUrl, 'embed/')}">
                     <c:set var="youtubeId" value="${fn:substringAfter(videoUrl, 'embed/')}" />
                 </c:when>
             </c:choose>
-            
             <c:if test="${fn:contains(youtubeId, '&')}">
                 <c:set var="youtubeId" value="${fn:substringBefore(youtubeId, '&')}" />
             </c:if>
             <c:if test="${fn:contains(youtubeId, '?')}">
                 <c:set var="youtubeId" value="${fn:substringBefore(youtubeId, '?')}" />
             </c:if>
-    
             <div class="video">
-                <iframe
-                    src="https://www.youtube.com/embed/${youtubeId}"
-                    title="${pDto.productname}"
-                    allowfullscreen>
-                </iframe>
+                <iframe src="https://www.youtube.com/embed/${youtubeId}" title="${pDto.productname}" allowfullscreen></iframe>
             </div>
         </section>
     </c:if>
@@ -173,9 +185,7 @@
                     <span class="score">5.0 / 5.0</span>
                 </div>
             </div>
-            <p class="review-text">
-                배송도 빠르고 노래도 너무 좋아요! (임시 리뷰입니다)
-            </p>
+            <p class="review-text">배송도 빠르고 노래도 너무 좋아요! (임시 리뷰입니다)</p>
         </div>
         <div class="review-more">
             <button type="button">전체보기</button>
@@ -183,81 +193,113 @@
     </section>
 
     <jsp:include page="footer1.jsp" />
-	
+    
 <script>
-const ctxPath = "<%= request.getContextPath() %>";
-let qty = 1;
+    const ctxPath = "<%= request.getContextPath() %>";
+    let qty = 1;
 
-const unitPrice = ${pDto.price};
-const isLogin = ${not empty sessionScope.loginuser};
-const loginUrl = "<%= ctxPath%>/login/login.lp";
+    const unitPrice = ${pDto.price};
+    const productNo = "${pDto.productno}"; // [추가] 상품번호 변수
+    const isLogin = ${not empty sessionScope.loginuser};
+    const loginUrl = "<%= ctxPath%>/login/login.lp";
 
-function changeQty(num) {
-  qty += num;
-  if (qty < 1) qty = 1;
+    function changeQty(num) {
+      qty += num;
+      if (qty < 1) qty = 1;
 
-  const stock = ${pDto.stock};
-  if (qty > stock) {
-    alert("죄송합니다. 재고가 " + stock + "개 남았습니다.");
-    qty = stock;
-  }
+      const stock = ${pDto.stock};
+      if (qty > stock) {
+        alert("죄송합니다. 재고가 " + stock + "개 남았습니다.");
+        qty = stock;
+      }
 
-  document.getElementById("qty").innerText = qty;
+      document.getElementById("qty").innerText = qty;
 
-  const total = unitPrice * qty;
-  document.getElementById("totalPrice").innerText = "₩ " + total.toLocaleString();
+      const total = unitPrice * qty;
+      document.getElementById("totalPrice").innerText = "₩ " + total.toLocaleString();
 
-  // ✅ 담기용 hidden (있을 때만)
-  const c = document.getElementById("cartQty");
-  if (c) c.value = qty;
+      const c = document.getElementById("cartQty");
+      if (c) c.value = qty;
 
-  // ✅ 수정용 hidden (있을 때만)
-  const u = document.getElementById("updateQty");
-  if (u) u.value = qty;
-}
+      const u = document.getElementById("updateQty");
+      if (u) u.value = qty;
+    }
 
-// 찜하기
-function toggleWish() {
-  if (!isLogin) {
-    alert("로그인이 필요한 서비스입니다.");
-    location.href = loginUrl;
-    return;
-  }
-  alert("찜 목록에 추가합니다 (기능 구현 예정)");
-}
+    // [수정] 찜하기 (AJAX 비동기 통신)
+    function toggleWish() {
+      if (!isLogin) {
+        alert("로그인이 필요한 서비스입니다.");
+        location.href = loginUrl;
+        return;
+      }
+      
+      $.ajax({
+            url: "<%= ctxPath%>/wishToggle.lp",
+            type: "POST",
+            data: { "productno": productNo },
+            dataType: "json",
+            success: function(json) {
+                if(json.isSuccess) {
+                    const icon = $("#heartIcon");
+                    const text = $("#wishText");
+                    
+                    if(json.result == 1) { // 찜 추가됨
+                        icon.removeClass("fa-regular").addClass("fa-solid").css("color", "red");
+                        text.text("찜취소");
+                        alert("찜 목록에 추가되었습니다.");
+                    } 
+                    else { // 찜 삭제됨
+                        icon.removeClass("fa-solid").addClass("fa-regular").css("color", "");
+                        text.text("찜하기");
+                        alert("찜 목록에서 삭제되었습니다.");
+                    }
+                } 
+                else {
+                    if(json.requireLogin) {
+                        alert("로그인이 필요합니다.");
+                        location.href = loginUrl;
+                    } else {
+                        alert(json.message);
+                    }
+                }
+            },
+            error: function(e) {
+                alert("에러 발생: " + e.status);
+            }
+      });
+    }
 
-// 바로 구매하기
-function goOrder() {
-  if (!isLogin) {
-    alert("로그인이 필요한 서비스입니다.");
-    location.href = loginUrl;
-    return;
-  }
-  goPost("<%= ctxPath%>/order/buy.lp");
-}
+    // 바로 구매하기
+    function goOrder() {
+      if (!isLogin) {
+        alert("로그인이 필요한 서비스입니다.");
+        location.href = loginUrl;
+        return;
+      }
+      // buy.lp 구현 시 post 방식으로 변경 등 고려
+      location.href = "<%= ctxPath%>/order/buy.lp?productno=" + productNo + "&qty=" + qty;
+    }
 
-function submitCart() {
-  const updateForm = document.getElementById("cartUpdateForm");
-  const addForm = document.getElementById("cartForm");
+    function submitCart() {
+      const updateForm = document.getElementById("cartUpdateForm");
+      const addForm = document.getElementById("cartForm");
 
-  if (updateForm) {
-    const choice = confirm("장바구니 수량을 수정하시겠습니까?");
-    if (!choice) return;
-    updateForm.submit();
-    return;
-  }
+      if (updateForm) {
+        const choice = confirm("장바구니 수량을 수정하시겠습니까?");
+        if (!choice) return;
+        updateForm.submit();
+        return;
+      }
 
-  // 담기 모드
-  const choice = confirm("장바구니에 담으시겠습니까?");
-  if (!choice) return;
+      // 담기 모드
+      const choice = confirm("장바구니에 담으시겠습니까?");
+      if (!choice) return;
 
-  addForm.method = "post";
-  addForm.action = ctxPath + "/order/cartAdd.lp";
-  addForm.submit();
-}
+      addForm.method = "post";
+      addForm.action = ctxPath + "/order/cartAdd.lp";
+      addForm.submit();
+    }
 </script>
-
-   
 
 </body>
 </html>
