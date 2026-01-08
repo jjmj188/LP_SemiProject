@@ -60,10 +60,12 @@
       </c:forEach>
 
       <div class="cart-actions">
+      <form id="cartDeleteForm" >
         <button type="button" id="btnDeleteSelected">선택상품 삭제</button>
         <button type="button" class="danger" id="btnDeleteAll">전체삭제</button>
       </div>
-
+	 </form>
+	
     </section>
 
     <section class="summary-card">
