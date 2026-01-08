@@ -39,7 +39,7 @@
     <a href="<%= ctxPath%>/index.lp">HOME</a> |
     <a href="<%= ctxPath%>">LOGIN</a> |
     <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
-    <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MY PROFILE</a>
+    <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MYPAGE</a>
   </nav>
 
   <!-- 모바일 햄버거 버튼 -->

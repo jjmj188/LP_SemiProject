@@ -49,7 +49,7 @@
       <a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a> |
     </c:if>
     <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
-    <a href="<%= ctxPath%>/my_info/my_info.lp">MY PROFILE</a>
+    <a href="<%= ctxPath%>/my_info/my_info.lp">MYPAGE</a>
   </nav>
 
   <!-- 모바일 햄버거 버튼 -->
