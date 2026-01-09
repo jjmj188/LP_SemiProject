@@ -86,27 +86,40 @@
             </div>
 
             <div class="action-buttons">
-                <button type="button" class="buy" onclick="goOrder()">구매하기</button>
-
-                  <c:choose>
-                    <%-- 장바구니에서 수정하기로 들어온 경우 --%>
-                    <c:when test="${not empty param.cartno}">
-                      <form id="cartUpdateForm" method="post" action="<%= ctxPath %>/order/cartUpdate.lp" style="display:inline;">
-                        <input type="hidden" name="cartno" value="${param.cartno}">
-                        <input type="hidden" name="qty" id="updateQty" value="1">
-                        <button type="submit" class="cart">장바구니 수정</button>
-                      </form>
+                <c:choose>
+                    <%-- 1. 재고가 있을 경우 (기존 버튼 표시) --%>
+                    <c:when test="${pDto.stock > 0}">
+                        <button type="button" class="buy" onclick="goOrder()">구매하기</button>
+        
+                        <c:choose>
+                            <%-- 장바구니 수정 모드 --%>
+                            <c:when test="${not empty param.cartno}">
+                                <form id="cartUpdateForm" method="post" action="<%= ctxPath %>/order/cartUpdate.lp" style="display:inline;">
+                                    <input type="hidden" name="cartno" value="${param.cartno}">
+                                    <input type="hidden" name="qty" id="updateQty" value="1">
+                                    <button type="submit" class="cart">장바구니 수정</button>
+                                </form>
+                            </c:when>
+                        
+                            <%-- 일반 장바구니 담기 모드 --%>
+                            <c:otherwise>
+                                <form id="cartForm" style="display:inline;">
+                                    <input type="hidden" name="productno" value="${pDto.productno}">
+                                    <input type="hidden" id="cartQty" name="qty" value="1">
+                                    <button type="button" class="cart" onclick="submitCart()">장바구니</button>
+                                </form>
+                            </c:otherwise>
+                        </c:choose>
                     </c:when>
-                
-                    <%-- 일반 상품상세 접근 --%>
+                    
+                    <%-- 재고가 0일 경우 (품절 표시) --%>
                     <c:otherwise>
-                      <form id="cartForm" style="display:inline;">
-                        <input type="hidden" name="productno" value="${pDto.productno}">
-                        <input type="hidden" id="cartQty" name="qty" value="1">
-                        <button type="button" class="cart" onclick="submitCart()">장바구니</button>
-                      </form>
+                        <div class="soldout-box">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>일시품절</span>
+                        </div>
                     </c:otherwise>
-                  </c:choose>
+                </c:choose>
             </div>
 
         </div>
@@ -146,6 +159,7 @@
     <c:if test="${not empty pDto.youtubeurl}">
         <section class="preview-video">
             <h2>미리 듣기</h2>
+            <p class="desc-text" style="white-space: pre-wrap;"> 전체 5곡 중 맨 처음 1곡을 들려드립니다</p>
             <c:set var="videoUrl" value="${pDto.youtubeurl}" />
             <c:set var="youtubeId" value="" />
             <c:choose>
