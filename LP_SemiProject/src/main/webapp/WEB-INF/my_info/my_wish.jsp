@@ -57,6 +57,13 @@
             </c:forEach>
         </c:if>
         
+        <c:if test="${empty requestScope.wishList}">
+            <div class="no-wish">
+                <i class="fa-regular fa-face-sad-tear"></i>
+                <p>찜한 상품이 없습니다.</p>
+            </div>
+        </c:if>
+        
       </div>
 
        </section>
@@ -70,23 +77,44 @@
 
 <script>
     function removeWish(productNo) {
-        
+    	if( !confirm("정말 삭제하시겠습니까?") ) {
+            return; 
+        }
 
-        $.ajax({
+    	$.ajax({
             url: "<%= ctxPath%>/wishToggle.lp", 
             type: "POST",
             data: { "productno": productNo },
             dataType: "json",
             success: function(json) {
                 if(json.isSuccess) {
-                	const item = $("#item-" + productNo);
-                    item.remove();
+                    // 3. 성공 시 화면에서 해당 박스(div) 즉시 제거
+                    const targetItem = $("#item-" + productNo);
+                    targetItem.remove(); 
                     
-                    if($("#wishContainer").children(".wish-item").length == 0) {
-                        $("#wishContainer").html('<div style="width: 100%; text-align: center; padding: 50px 0; color: #999;">찜한 상품이 없습니다.</div>');
+                    // 4. 남은 개수 확인하기
+                    // #wishContainer 안에 .wish-item 클래스를 가진 요소가 몇 개인지 셉니다.
+                    const remainingItems = $("#wishContainer").find(".wish-item").length;
+
+                    // 5. 하나도 없으면 "찜한 상품이 없습니다" 메시지 띄우기
+                    if(remainingItems === 0) {
+                        const emptyHtml = `
+                            <div class="no-wish">
+                                <i class="fa-regular fa-face-sad-tear"></i>
+                                <p>찜한 상품이 없습니다.</p>
+                            </div>
+                        `;
+                        $("#wishContainer").html(emptyHtml);
                     }
-                } else {
-                    alert(json.message);
+                } 
+                else {
+                    // 로그인 풀림 등 에러 처리
+                    if(json.requireLogin) {
+                        alert("로그인이 필요합니다.");
+                        location.href = "<%= ctxPath%>/login/login.lp";
+                    } else {
+                        alert(json.message);
+                    }
                 }
             },
             error: function(e) {
