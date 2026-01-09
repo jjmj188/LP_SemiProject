@@ -76,3 +76,24 @@ function updateCartQty(form) {
   form.action = ctxPath + "/order/cartUpdate.lp";
   form.submit();
 }
+
+document.getElementById("goBuyForm").addEventListener("submit", function(e){
+  const checked = document.querySelectorAll(".chkItem:checked");
+  if (checked.length === 0) {
+    alert("주문할 상품을 선택해주세요.");
+    e.preventDefault();
+    return;
+  }
+
+  // 기존 hidden 제거(중복 방지)
+  this.querySelectorAll("input[name='cartno']").forEach(x => x.remove());
+
+  checked.forEach(chk => {
+    const hidden = document.createElement("input");
+    hidden.type = "hidden";
+    hidden.name = "cartno";
+    hidden.value = chk.value;  // cartno
+    this.appendChild(hidden);
+  });
+});
+

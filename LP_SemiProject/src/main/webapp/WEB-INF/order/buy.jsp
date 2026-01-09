@@ -6,10 +6,11 @@
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!-- 다음 주소 API -->
 <script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> 
+<script src="<%= ctxPath %>/13_daum_address_search/js/daum_address_search.js"></script>
 
   <!-- BUY 전용 -->
   <link rel="stylesheet" href="<%= ctxPath%>/css/order/buy.css">
@@ -23,6 +24,7 @@
   <div class="buy-container">
 
     <!-- ================= LEFT ================= -->
+    
     <section class="buy-left">
 
       <div class="buy-card">
@@ -51,38 +53,52 @@
 
         <!-- 포인트 -->
         <div class="form-group">
-          <label class="title">포인트 사용</label>
-          <input type="text" class="point-input" value="1,200 P" readonly>
+	  		<label class="title">포인트 사용</label>
+	  		<input type="text" class="point-input" value="0 P" id="pointInput"
+       data-max-point="${sessionScope.loginuser.point}">
 
-          <div class="point-check-row">
-            <label>
-              <input type="checkbox">
-              포인트 전부 사용하기
-            </label>
-          </div>
-        </div>
+	  		<div class="point-check-row">
+		    		<label>
+		      	<input type="checkbox" id="chkUseAllPoint">
+
+		      	포인트 전부 사용하기
+		    		</label>
+	  		</div>
+		</div>
+
 
         <hr>
 
         <!-- 주소 -->
-        <div class="form-group">
-          <label>배송 주소</label>
+       <div class="form-group">
+          <label>주소</label>
+
           <div class="address-row">
-            <input type="text" placeholder="우편번호" readonly>
-            <button type="button">우편번호 찾기</button>
+           <input type="text" id="postcode" name="postcode"
+	       placeholder="우편번호" readonly
+	       value="${sessionScope.loginuser.postcode}">
+
+            <button type="button"
+                    class="btn-outline"
+                    onclick="openDaumPOST()">
+              우편번호 찾기
+            </button>
           </div>
-        </div>
 
-        <div class="form-group">
-          <input type="text" placeholder="주소">
-        </div>
+	        <input type="text" id="address" name="address"
+	       class="form-group"
+	       placeholder="도로명 주소" readonly
+	       value="${sessionScope.loginuser.address}">
 
-        <div class="form-group">
-          <input type="text" placeholder="상세주소">
-        </div>
-
-        <div class="form-group">
-          <input type="text" placeholder="참고항목">
+	         <input type="text" id="detailAddress" name="detailaddress"
+	       class="form-group"
+	       placeholder="상세 주소"
+	       value="${sessionScope.loginuser.detailaddress}">
+          
+         <input type="text" id="extraAddress" name="extraaddress"
+	      class="form-group"
+	       placeholder="참고 항목"
+	       value="${sessionScope.loginuser.extraaddress}">
         </div>
 
         <!-- 요청사항 -->
@@ -120,38 +136,39 @@
 
   <div class="summary-row">
     <span>주문금액</span>
-    <span>₩82,000</span>
+    <span>₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
   </div>
 
   <div class="summary-row">
     <span>할인금액</span>
-    <span>- ₩5,000</span>
+    <span>- ₩0</span>
   </div>
 
   <div class="summary-row">
     <span>배송비</span>
-    <span>₩3,000</span>
+    <span>₩ <fmt:formatNumber value="3000" pattern="#,###"/></span>
   </div>
 
   <hr>
 
   <div class="summary-row total">
     <span>총 결제금액</span>
-    <span>₩80,000</span>
+    <span>₩ <fmt:formatNumber value="${sumTotalPrice + 3000}" pattern="#,###"/></span>
   </div>
 
   <div class="summary-row point">
     <span>적립 포인트</span>
-    <span>800P</span>
+    <span><fmt:formatNumber value="${sumTotalPoint}" pattern="#,###"/>P</span>
   </div>
 
   <div class="action-buttons">
     <button class="cart" onclick="location.href='../main_page.html'">
       더 담으러가기
     </button>
-    <button class="buy" onclick="location.href='buy.html'">
-      구매하기
-    </button>
+    <button type="button" class="buy" id="btnBuy">
+  	구매하기
+	</button>
+
   </div>
 
 </section>

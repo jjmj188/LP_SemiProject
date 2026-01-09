@@ -100,7 +100,11 @@
 
       <div class="action-buttons">
         <button class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">쇼핑 계속하기</button>
-        <button class="buy" onclick="location.href='<%= ctxPath%>/order/buy.lp'">주문자 정보 입력하러 가기</button>
+        
+         <form id="goBuyForm" method="post" action="<%= ctxPath %>/order/buy.lp">
+	  		<!-- JS로 체크된 cartno들을 hidden으로 추가 -->
+	  		<button type="submit" class="buy">주문자 정보 입력하러 가기</button>
+		</form>
       </div>
     </section>
 

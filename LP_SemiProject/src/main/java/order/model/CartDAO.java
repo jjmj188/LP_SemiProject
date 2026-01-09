@@ -22,5 +22,8 @@ public interface CartDAO {
 	//장바구니 전체삭제
 	int deleteAll(String userid)throws SQLException;
 
+	//DB에서 선택 cartno들에 해당하는 장바구니 목록 조회
+	List<CartDTO> selectCartListByCartnoArr(String userid, String[] cartnoArr)throws SQLException;
+
 	
 }

@@ -260,6 +260,73 @@ public class CartDAO_imple implements CartDAO {
 		}
 	}
 
+	//DB에서 선택 cartno들에 해당하는 장바구니 목록 조회
+	@Override
+	public List<CartDTO> selectCartListByCartnoArr(String userid, String[] cartnoArr) throws SQLException {
+
+	    List<CartDTO> list = new java.util.ArrayList<>();
+
+	    if (cartnoArr == null || cartnoArr.length == 0) return list;
+
+	    // IN (?, ?, ?, ...) 동적 생성
+	    StringBuilder in = new StringBuilder();
+	    for (int i = 0; i < cartnoArr.length; i++) {
+	        if (i > 0) in.append(",");
+	        in.append("?");
+	    }
+
+	    String sql =
+	        " select tbl_cart.cartno, tbl_cart.fk_userid, tbl_cart.qty, " +
+	        "        tbl_product.productno, tbl_product.productname, tbl_product.productimg, " +
+	        "        tbl_product.price, tbl_product.point " +
+	        " from tbl_cart join tbl_product " +
+	        "   on tbl_cart.fk_productno = tbl_product.productno " +
+	        " where tbl_cart.fk_userid = ? " +
+	        "   and tbl_cart.cartno in (" + in.toString() + ") " +
+	        " order by tbl_cart.cartno desc ";
+
+	    try (java.sql.Connection conn = ds.getConnection();
+	         java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        int idx = 1;
+	        pstmt.setString(idx++, userid);
+
+	        for (String cartno : cartnoArr) {
+	            pstmt.setInt(idx++, Integer.parseInt(cartno));
+	        }
+
+	        try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                CartDTO dto = new CartDTO();
+
+	                dto.setCartno(rs.getInt("cartno"));
+	                dto.setUserid(rs.getString("fk_userid"));
+	                dto.setQty(rs.getInt("qty"));
+
+	                dto.setProductno(rs.getInt("productno"));
+	                dto.setProductname(rs.getString("productname"));
+	                dto.setProductimg(rs.getString("productimg"));
+
+	                int price = rs.getInt("price");
+	                int point = rs.getInt("point");
+	                int qty = dto.getQty();
+
+	                dto.setPrice(price);
+	                dto.setPoint(point);
+
+	                // qty 반영된 합계 값 세팅(너 cart.jsp에서 dto.totalPrice/dto.totalPoint 쓰고 있음)
+	                dto.setTotalPrice(price * qty);
+	                dto.setTotalPoint(point * qty);
+
+	                list.add(dto);
+	            }
+	        }
+	    }
+
+	    return list;
+	}
+
+
 	
 	
 
