@@ -139,7 +139,7 @@ public class CartDAO_imple implements CartDAO {
 		            " FROM tbl_cart " +
 		            " JOIN tbl_product " +
 		            "   ON tbl_cart.fk_productno = tbl_product.productno " +
-		            " WHERE tbl_cart.fk_userid = ? " +
+		            " WHERE tbl_cart.fk_userid = ? AND tbl_product.stock > 0 " +
 		            " ORDER BY tbl_cart.cartno DESC ";
 		 
 		 try  {
