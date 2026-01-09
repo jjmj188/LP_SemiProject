@@ -76,7 +76,6 @@
         <span>₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
       </div>
 
-      <!-- 할인/배송비는 아직 로직 없으니 일단 0 처리하거나 너 로직에 맞게 -->
       <div class="summary-row">
         <span>할인금액</span>
         <span>- ₩ 0</span>
@@ -101,7 +100,7 @@
 
       <div class="action-buttons">
         <button class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">쇼핑 계속하기</button>
-        <button class="buy" onclick="location.href='<%= ctxPath%>/order/buy.lp'">구매하기</button>
+        <button class="buy" onclick="location.href='<%= ctxPath%>/order/buy.lp'">주문자 정보 입력하러 가기</button>
       </div>
     </section>
 
