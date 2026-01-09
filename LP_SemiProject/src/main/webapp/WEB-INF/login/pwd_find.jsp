@@ -15,15 +15,11 @@
 <!-- 1. jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Bootstrap CSS -->
+<script src="<%= ctxPath %>/css/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Bootstrap CSS (반드시 필요) -->
 <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Optional JavaScript -->
-<script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script> 
+      href="<%= ctxPath %>/css/bootstrap-4.6.2-dist/css/bootstrap.min.css">
 
 
 <!--인증하기버튼 -->

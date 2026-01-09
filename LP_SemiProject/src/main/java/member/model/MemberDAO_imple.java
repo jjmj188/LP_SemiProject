@@ -200,7 +200,7 @@ public class MemberDAO_imple implements MemberDAO {
 
 	 	        // 1. 조회 시점에 마지막 로그인 갭을 계산합니다.
 	 	        // NVL을 추가하여 신규 회원이 첫 로그인 시 에러가 나지 않도록 방어했습니다.
-	 	        String sql = " SELECT userid, name, lastpwdchangedate, registerday, idle, email, mobile, "
+	 	        String sql = " SELECT userid, name, lastpwdchangedate, registerday, point , idle, email, mobile, "
 	 	        		   + "        postcode, address, detailaddress, extraaddress, "
 	 	                   + "        TRUNC(MONTHS_BETWEEN(SYSDATE, lastpwdchangedate)) AS pwdchangegap, "
 	 	                   + "        TRUNC(MONTHS_BETWEEN(SYSDATE, "
@@ -219,11 +219,12 @@ public class MemberDAO_imple implements MemberDAO {
 	 	            member = new MemberDTO();
 	 	            member.setUserid(rs.getString("userid"));
 	 	            member.setName(rs.getString("name"));
+	 	            member.setPoint(rs.getInt("point"));
 	 	            member.setIdle(rs.getInt("idle")); // 현재 DB 저장값 (0 또는 1)
 	 	            member.setRegisterday(rs.getString("registerday"));
 	 	            member.setEmail(aes.decrypt(rs.getString("email")));
 	 	            member.setMobile(aes.decrypt(rs.getString("mobile")));
-                    
+	 	            
 	 	            member.setPostcode(rs.getString("postcode"));
 		 	        member.setAddress(rs.getString("address"));
 		 	        member.setDetailaddress(rs.getString("detailaddress"));
@@ -261,7 +262,6 @@ public class MemberDAO_imple implements MemberDAO {
 	 	    }
 	 	    return member;
 	 	}
-	 	
 	 	
 	 	//==============================================================================
 		// 휴면계정 처리

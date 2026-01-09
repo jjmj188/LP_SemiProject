@@ -167,14 +167,36 @@ body {
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
+  /* border: 2px solid red; (확인 후 제거) */
+}
+
+.zipcode-row input,
+.zipcode-row .btn-outline {
+  /* 1. 높이를 동일하게 설정 (예: 40px) */
+  height: 40px; 
+  
+  /* 2. 테두리와 패딩이 높이에 영향을 주지 않도록 설정 */
+  box-sizing: border-box; 
+  
+  /* 3. 텍스트 수직 중앙 정렬 */
+  display: flex;
+  align-items: center;
+  
+  /* 기존 스타일 유지 */
+  margin: 0; 
+  padding: 0 12px; /* 좌우 여백만 조절 */
 }
 
 .zipcode-row input {
   width: 160px;
+  border: 1px solid #ddd; /* 통일감을 위해 보더 추가 */
+  border-radius: 4px;
 }
 
-.address-input {
-  margin-bottom: 14px;
+.zipcode-row .btn-outline {
+  cursor: pointer;
+  white-space: nowrap; /* 글자가 줄바꿈되지 않게 */
+  justify-content: center;
 }
 
 /* =====================
