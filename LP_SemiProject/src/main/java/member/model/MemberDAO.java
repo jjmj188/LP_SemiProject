@@ -54,6 +54,8 @@ public interface MemberDAO {
 	List<Integer> getUserPreference(String userid) throws SQLException;
 	//취향선택 수정
 	boolean updateMemberPreference(String userid, String[] categoryArr) throws SQLException;
+	 //새로고침 할 때마다 DB에서 최신 정보를 가져와서 세션을 갱신함
+	MemberDTO getMemberByUserid(String userid) throws SQLException;
 
 
 	

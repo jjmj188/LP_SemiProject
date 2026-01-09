@@ -65,7 +65,49 @@ public class GoogleMail {
     	msg.addRecipient(Message.RecipientType.TO, toAddr);
     	        
     	// 메시지 본문의 내용과 형식, 캐릭터 셋 설정
-    	msg.setContent("발송된 인증코드 : <span style='font-size:14pt; color:red;'>"+certification_code+"</span>", "text/html;charset=UTF-8"); 
+    	  String htmlContent = 
+    		        "<!DOCTYPE html>" +
+    		        "<html lang='ko'>" +
+    		        "<body style='margin:0; padding:0; background:#f4f4f4;'>" +
+
+    		        "<table width='100%' cellpadding='0' cellspacing='0' style='padding:40px 0;'>" +
+    		        "<tr><td align='center'>" +
+
+    		        "<table width='420' cellpadding='0' cellspacing='0' " +
+    		        "style='background:#ffffff; border-radius:10px; overflow:hidden; " +
+    		        "font-family:Arial, sans-serif; box-shadow:0 4px 12px rgba(0,0,0,0.1);'>" +
+
+    		        // 헤더
+    		        "<tr>" +
+    		        "<td style='background:#000; color:#fff; padding:18px; text-align:center; font-size:16px; font-weight:bold;'>" +
+    		        "VINYST 인증코드입니다" +
+    		        "</td>" +
+    		        "</tr>" +
+
+    		        // 본문
+    		        "<tr><td style='padding:30px; color:#222; font-size:14px; line-height:1.6;'>" +
+
+    		        "<p>안녕하세요, VINYST입니다.</p>" +
+    		        "<p>요청하신 인증 절차를 진행하기 위해<br>아래 인증코드를 입력해 주세요.</p>" +
+
+    		        "<div style='text-align:center; margin:30px 0;'>" +
+    		        "<span style='display:inline-block; padding:14px 28px; border:1px solid #000; " +
+    		        "border-radius:6px; font-size:22px; letter-spacing:4px; font-weight:bold;'>" +
+    		        certification_code +
+    		        "</span>" +
+    		        "</div>" +
+
+    		        //"<p style='font-size:13px; color:#555;'>※ 인증코드는 <strong>5분간</strong> 유효합니다.</p>" +
+   
+
+    		        "</td></tr>" +
+    		        "</table>" +
+
+    		        "</td></tr></table>" +
+    		        "</body></html>";
+
+    		        // ✅ HTML 메일 설정
+    		        msg.setContent(htmlContent, "text/html; charset=UTF-8");
     	        
     	// 메일 발송하기
     	Transport.send(msg);

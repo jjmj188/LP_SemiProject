@@ -53,7 +53,7 @@ public class My_taste extends AbstractController {
 		boolean isSuccess=mdao.updateMemberPreference(loginuser.getUserid(),categoryArr);
 		
 		if (isSuccess) {
-		    request.setAttribute("message", "취향이 저장되었습니다 🎧");
+		    request.setAttribute("message", "취향이 수정되었습니다 🎧");
 		    request.setAttribute("loc", request.getContextPath() + "/my_info/my_taste.lp");
 		} else {
 		    request.setAttribute("message", "취향 저장에 실패했습니다.");
