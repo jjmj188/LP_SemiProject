@@ -23,5 +23,4 @@ public interface CartDAO {
 	int deleteAll(String userid)throws SQLException;
 
 	
-	
 }

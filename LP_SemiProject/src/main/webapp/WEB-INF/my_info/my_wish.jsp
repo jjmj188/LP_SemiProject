@@ -59,7 +59,7 @@
         
         <c:if test="${empty requestScope.wishList}">
             <div class="no-wish">
-                <i class="fa-regular fa-face-sad-tear"></i>
+            	<%-- 애초에 찜이 하나도 없을때 --%>
                 <p>찜한 상품이 없습니다.</p>
             </div>
         </c:if>
@@ -88,19 +88,18 @@
             dataType: "json",
             success: function(json) {
                 if(json.isSuccess) {
-                    // 3. 성공 시 화면에서 해당 박스(div) 즉시 제거
+                    // 성공 시 화면에서 해당 박스(div) 즉시 제거
                     const targetItem = $("#item-" + productNo);
                     targetItem.remove(); 
                     
-                    // 4. 남은 개수 확인하기
-                    // #wishContainer 안에 .wish-item 클래스를 가진 요소가 몇 개인지 셉니다.
+                    // 남은 개수 확인하기
+                    // #wishContainer 안에 .wish-item 클래스를 가진 요소가 몇 개 카운트
                     const remainingItems = $("#wishContainer").find(".wish-item").length;
 
-                    // 5. 하나도 없으면 "찜한 상품이 없습니다" 메시지 띄우기
+                    // 하트해제하다가 하나도 없으면 "찜한 상품이 없습니다" 메시지 띄우기
                     if(remainingItems === 0) {
                         const emptyHtml = `
                             <div class="no-wish">
-                                <i class="fa-regular fa-face-sad-tear"></i>
                                 <p>찜한 상품이 없습니다.</p>
                             </div>
                         `;
