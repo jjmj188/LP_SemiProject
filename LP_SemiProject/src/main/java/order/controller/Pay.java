@@ -65,7 +65,6 @@ public class Pay extends AbstractController {
 
         String userid = loginuser.getUserid();
 
-        // JSON body 읽기
         StringBuilder sb = new StringBuilder();
         try (BufferedReader br = request.getReader()) {
             String line;
@@ -147,7 +146,6 @@ public class Pay extends AbstractController {
 
             CartDAO cdao = new CartDAO_imple();
 
-            // ✅ 선택한 cartno만 조회
             List<CartDTO> cartList = cdao.selectCartListByCartnoArr(userid, cartnoArr);
 
             if (cartList == null || cartList.isEmpty()) {
@@ -173,7 +171,7 @@ public class Pay extends AbstractController {
                 odto.setDeliveryrequest(deliveryrequest);
 
                 try {
-                    // ✅ 선택 cartnoArr도 넘겨서 "선택한 것만 삭제"하도록
+                    // 구매하기(저장, 업데이트)
                     int orderno = odao.insertOrderPay(odto, userid, cartList, cartnoArr);
 
                     if (orderno > 0) {

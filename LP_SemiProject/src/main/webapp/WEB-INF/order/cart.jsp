@@ -29,7 +29,6 @@
 
       <c:forEach var="dto" items="${cartList}">
         <div class="cart-item">
-          <!-- ✅ 선택 합산용 data 속성 추가 -->
           <input type="checkbox"
                  class="chkItem"
                  value="${dto.cartno}"
@@ -52,7 +51,6 @@
           </div>
 
           <div class="qty-box">
-            <!-- 상품 상세로 이동해서 수정 -->
             <form method="get" action="<%= ctxPath %>/productdetail.lp" style="display:inline;">
               <input type="hidden" name="productno" value="${dto.productno}">
               <input type="hidden" name="cartno" value="${dto.cartno}">
@@ -62,7 +60,6 @@
         </div>
       </c:forEach>
 
-      <!-- ✅ form 구조 정상화 -->
       <form id="cartDeleteForm">
         <div class="cart-actions">
           <button type="button" id="btnDeleteSelected">선택상품 삭제</button>
@@ -72,7 +69,6 @@
 
     </section>
 
-    <!-- ✅ 결제 정보: JSP 합계 출력 제거 / JS가 선택된 항목 기준으로 출력 -->
     <section class="summary-card">
       <h3>결제 정보</h3>
 
@@ -102,7 +98,6 @@
         <button type="button" class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">쇼핑 계속하기</button>
 
         <form id="goBuyForm" method="post" action="<%= ctxPath %>/order/buy.lp">
-          <!-- JS로 체크된 cartno들을 hidden으로 추가 -->
           <button type="submit" class="buy">주문자 정보 입력하러 가기</button>
         </form>
       </div>

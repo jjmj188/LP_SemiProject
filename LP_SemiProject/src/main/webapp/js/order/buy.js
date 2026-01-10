@@ -1,7 +1,7 @@
 $(function () {
 
   // =========================
-  // 배송 요청사항 select -> textarea
+  // 배송 요청사항 
   // =========================
   $("#requestSelect").on("change", function () {
     const val = $(this).val();
@@ -15,7 +15,7 @@ $(function () {
 
 
   // =========================
-  // ✅ 선택 cartno 읽기
+  //  선택 cartno 읽기
   // =========================
   function getCartnoList() {
     const arr = [];
@@ -126,7 +126,7 @@ $(function () {
 
 
   // =========================
-  // 구매하기 버튼: 필수값 검증
+  // 구매하기 버튼
   // =========================
   const btnBuy = document.getElementById("btnBuy");
 
@@ -141,7 +141,6 @@ $(function () {
   }
 
   function validateBeforePay() {
-    // ✅ 선택 cartno 존재 검사
     const cartnoList = getCartnoList();
     if (!cartnoList || cartnoList.length === 0) {
       alert("주문할 상품이 없습니다. 장바구니에서 상품을 선택 후 다시 시도해주세요.");
@@ -232,7 +231,7 @@ $(function () {
         return;
       }
 
-      // ✅ 선택 cartno
+      // 선택 cartno
       const cartnoList = getCartnoList();
 
       // 금액 계산 (서버에서도 재검증해야 함)

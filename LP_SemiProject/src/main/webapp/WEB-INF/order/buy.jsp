@@ -155,12 +155,10 @@
         </div>
       </section>
 
-      <!-- ✅ 선택된 cartno들을 JS가 읽을 수 있도록 출력 -->
       <c:forEach var="cno" items="${cartnoArr}">
         <input type="hidden" class="selectedCartno" value="${cno}">
       </c:forEach>
 
-      <!-- hidden -->
       <input type="hidden" id="ctxPath" value="<%=ctxPath%>">
 
       <!-- sumTotalPrice: 상품합계 -->

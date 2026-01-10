@@ -51,11 +51,7 @@ public class OrderDAO_imple implements OrderDAO {
         }
     }
 
-    /**
-     * 결제 성공 후 주문 저장 (tbl_order + tbl_orderdetail)
-     * + 회원 포인트 DB 갱신(point = point - usepoint + totalpoint)
-     * + 장바구니 선택삭제(선택된 cartno만 삭제)
-     */
+    
     @Override
     public int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList, String[] cartnoArr) throws Exception {
 
@@ -68,7 +64,7 @@ public class OrderDAO_imple implements OrderDAO {
             conn = ds.getConnection();
             conn.setAutoCommit(false);
 
-            // 1) 주문번호 채번
+            // 주문번호 채번
             String sql = " select seq_orderno.nextval AS orderno from dual ";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -82,7 +78,6 @@ public class OrderDAO_imple implements OrderDAO {
             rs.close(); rs = null;
             pstmt.close(); pstmt = null;
 
-            // 2) tbl_order insert
             sql = " insert into tbl_order( "
                 + " orderno, fk_userid, totalprice, usepoint, totalpoint, "
                 + " postcode, address, detailaddress, extraaddress, deliveryrequest "
@@ -110,7 +105,6 @@ public class OrderDAO_imple implements OrderDAO {
                 return 0;
             }
 
-            // 3) tbl_orderdetail insert
             sql = " insert into tbl_orderdetail( "
                 + " orderdetailno, fk_orderno, fk_productno, qty, unitprice "
                 + " ) values( "
@@ -138,7 +132,7 @@ public class OrderDAO_imple implements OrderDAO {
             }
             pstmt.close(); pstmt = null;
 
-            // 4) ✅ 회원 포인트 DB 갱신
+            // 회원 포인트 DB 갱신
             // point = point - usepoint + totalpoint
             sql = " update tbl_member "
                 + " set point = point - ? + ? "
@@ -157,8 +151,8 @@ public class OrderDAO_imple implements OrderDAO {
                 return 0;
             }
 
-            // 5) ✅ 장바구니 선택삭제: 선택한 cartno만 삭제
-            // delete from tbl_cart where fk_userid = ? and cartno in (?,?,...)
+            // 장바구니 선택삭제: 선택한 cartno만 삭제
+            
             StringBuilder in = new StringBuilder();
             for (int i = 0; i < cartnoArr.length; i++) {
                 if (i > 0) in.append(",");

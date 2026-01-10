@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  /* =========================
-     ctxPath 안전하게 얻기
-  ========================= */
   function getContextPath() {
     // 1) meta ctxPath 우선
     const meta = document.querySelector('meta[name="ctxPath"]');
@@ -43,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
       sumPoint += parseInt(chk.dataset.point || "0", 10);
     });
 
-    // 정책: 선택 없으면 배송비 0, 선택 있으면 3000
+    
     const shipFee = (checked.length > 0) ? 3000 : 0;
     const payTotal = sumPrice + shipFee;
 
@@ -97,7 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // hidden 중복 방지: 기존 hidden만 제거 (form 통째로 비우면 버튼까지 사라짐)
       form.querySelectorAll("input[name='cartno']").forEach(x => x.remove());
 
       form.method = "post";
@@ -130,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* =========================
-     주문 폼 제출: 선택된 cartno만 전송
+     주문 폼 제출
   ========================= */
   const goBuyForm = document.getElementById("goBuyForm");
 
@@ -143,7 +139,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // 기존 hidden 제거(중복 방지)
       this.querySelectorAll("input[name='cartno']").forEach(x => x.remove());
 
       checked.forEach(chk => {
@@ -156,15 +151,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
-  // 첫 로드 시(기본 0 표시)
   updateSummary();
 });
 
 
 /* =========================
-   수량 수정 (별도 함수)
-   - 현재 페이지에서는 사용 안 하면 제거해도 됨
+   수량 수정 
 ========================= */
 function updateCartQty(form) {
   // ctxPath 확보
