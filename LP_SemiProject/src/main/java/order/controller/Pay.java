@@ -164,7 +164,7 @@ public class Pay extends AbstractController {
 					loginuser.setPoint(loginuser.getPoint() - usepoint + odto.getTotalpoint());
 
 					message = "주문이 완료되었습니다.";
-					loc = request.getContextPath() + "/WEB-INF/my_info/my_order.jsp?orderno=" + orderno;
+					loc = request.getContextPath() + "/WEB-INF/my_info/my_order.jsp";
 
 					// 디버깅 필요하면 로그 찍어도 됨
 					System.out.println("[PAY] imp_uid=" + imp_uid + ", merchant_uid=" + merchant_uid + ", paid_amount=" + paid_amount);
