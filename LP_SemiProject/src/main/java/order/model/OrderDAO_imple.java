@@ -52,18 +52,18 @@ public class OrderDAO_imple implements OrderDAO {
     }
 
     /**
-     * 결제 성공 후 주문 저장 (tbl_order + tbl_orderdetail) + 장바구니 전체삭제
-     * @return 성공 시 orderno, 실패 시 0
+     * 결제 성공 후 주문 저장 (tbl_order + tbl_orderdetail)
+     * + 회원 포인트 DB 갱신(point = point - usepoint + totalpoint)
+     * + 장바구니 선택삭제(선택된 cartno만 삭제)
      */
     @Override
-    public int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList) throws Exception {
+    public int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList, String[] cartnoArr) throws Exception {
 
         int orderno = 0;
 
         try {
-            if (cartList == null || cartList.size() == 0) {
-                return 0;
-            }
+            if (cartList == null || cartList.size() == 0) return 0;
+            if (cartnoArr == null || cartnoArr.length == 0) return 0;
 
             conn = ds.getConnection();
             conn.setAutoCommit(false);
@@ -79,8 +79,8 @@ public class OrderDAO_imple implements OrderDAO {
                 conn.rollback();
                 return 0;
             }
-            rs.close();
-            pstmt.close();
+            rs.close(); rs = null;
+            pstmt.close(); pstmt = null;
 
             // 2) tbl_order insert
             sql = " insert into tbl_order( "
@@ -103,7 +103,7 @@ public class OrderDAO_imple implements OrderDAO {
             pstmt.setString(10, odto.getDeliveryrequest());
 
             int n1 = pstmt.executeUpdate();
-            pstmt.close();
+            pstmt.close(); pstmt = null;
 
             if (n1 != 1) {
                 conn.rollback();
@@ -131,20 +131,52 @@ public class OrderDAO_imple implements OrderDAO {
 
                 int n2 = pstmt.executeUpdate();
                 if (n2 != 1) {
-                    pstmt.close();
+                    pstmt.close(); pstmt = null;
                     conn.rollback();
                     return 0;
                 }
             }
-            pstmt.close();
+            pstmt.close(); pstmt = null;
 
-            // 4) ✅ 장바구니 전체삭제 (같은 conn, 같은 트랜잭션)
-            // ⚠️ 테이블명/컬럼명은 네 DB에 맞게 수정!
-            sql = " delete from tbl_cart where fk_userid = ? ";
+            // 4) ✅ 회원 포인트 DB 갱신
+            // point = point - usepoint + totalpoint
+            sql = " update tbl_member "
+                + " set point = point - ? + ? "
+                + " where userid = ? ";
+
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, odto.getUsepoint());
+            pstmt.setInt(2, odto.getTotalpoint());
+            pstmt.setString(3, userid);
+
+            int n3 = pstmt.executeUpdate();
+            pstmt.close(); pstmt = null;
+
+            if (n3 != 1) {
+                conn.rollback();
+                return 0;
+            }
+
+            // 5) ✅ 장바구니 선택삭제: 선택한 cartno만 삭제
+            // delete from tbl_cart where fk_userid = ? and cartno in (?,?,...)
+            StringBuilder in = new StringBuilder();
+            for (int i = 0; i < cartnoArr.length; i++) {
+                if (i > 0) in.append(",");
+                in.append("?");
+            }
+
+            sql = " delete from tbl_cart "
+                + " where fk_userid = ? "
+                + "   and cartno in (" + in.toString() + ") ";
+
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, userid);
+            for (int i = 0; i < cartnoArr.length; i++) {
+                pstmt.setInt(2 + i, Integer.parseInt(cartnoArr[i]));
+            }
+
             pstmt.executeUpdate();
-            pstmt.close();
+            pstmt.close(); pstmt = null;
 
             conn.commit();
             return orderno;

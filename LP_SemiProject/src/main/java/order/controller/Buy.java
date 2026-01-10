@@ -17,7 +17,8 @@ public class Buy extends AbstractController {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	HttpSession session = request.getSession();
+
+        HttpSession session = request.getSession();
         MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
 
         // 0) 로그인 체크
@@ -51,8 +52,7 @@ public class Buy extends AbstractController {
             return;
         }
 
-        // 3) DB에서 선택 cartno들에 해당하는 장바구니 목록 조회
-        //    (중요) userid 조건까지 걸어서 남의 cartno 주문 못하게 막음
+        // 3) 선택 cartno들에 해당하는 장바구니 목록 조회 (userid 조건 포함)
         String userid = loginuser.getUserid();
         List<CartDTO> cartList = cdao.selectCartListByCartnoArr(userid, cartnoArr);
 
@@ -71,12 +71,12 @@ public class Buy extends AbstractController {
 
         for (CartDTO dto : cartList) {
             sumQty += dto.getQty();
-            sumTotalPrice += dto.getTotalPrice(); // dto에 이미 qty 반영된 totalPrice가 있다는 전제
-            sumTotalPoint += dto.getTotalPoint(); // dto에 이미 qty 반영된 totalPoint가 있다는 전제
+            sumTotalPrice += dto.getTotalPrice();
+            sumTotalPoint += dto.getTotalPoint();
         }
 
-        int discountAmount = 0; // 지금은 0 고정 (쿠폰/이벤트 붙이면 여기서 계산)
-        int deliveryFee = 3000; // 정책: 고정 3000 (무료배송 정책 있으면 여기서 조건 분기)
+        int discountAmount = 0;
+        int deliveryFee = 3000;
         int finalPayAmount = (sumTotalPrice - discountAmount) + deliveryFee;
 
         // 5) buy.jsp로 전달
@@ -88,10 +88,9 @@ public class Buy extends AbstractController {
         request.setAttribute("deliveryFee", deliveryFee);
         request.setAttribute("finalPayAmount", finalPayAmount);
 
-        // cartnoArr도 buy.jsp에 그대로 넘겨서 pay로 다시 POST할 때 재사용하게 하는 게 좋음
+        // ✅ pay로 넘기기 위한 선택 cartno 보관
         request.setAttribute("cartnoArr", cartnoArr);
 
-        
         setRedirect(false);
         setViewPage("/WEB-INF/order/buy.jsp");
     }

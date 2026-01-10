@@ -3,6 +3,7 @@ package order.controller;
 import java.io.BufferedReader;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import common.controller.AbstractController;
@@ -32,7 +33,6 @@ public class Pay extends AbstractController {
         HttpSession session = request.getSession();
         MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
 
-        // 1) 로그인 체크
         if (loginuser == null) {
             message = "로그인 후 이용 가능합니다.";
             loc = request.getContextPath() + "/login/login.lp";
@@ -48,7 +48,6 @@ public class Pay extends AbstractController {
             return;
         }
 
-        // 2) POST만 허용
         if (!"POST".equalsIgnoreCase(method)) {
             message = "비정상적인 접근입니다.";
             loc = "history.back()";
@@ -66,7 +65,7 @@ public class Pay extends AbstractController {
 
         String userid = loginuser.getUserid();
 
-        // 3) JSON body 읽기
+        // JSON body 읽기
         StringBuilder sb = new StringBuilder();
         try (BufferedReader br = request.getReader()) {
             String line;
@@ -92,7 +91,7 @@ public class Pay extends AbstractController {
 
         JSONObject body = new JSONObject(sb.toString());
 
-        // 4) payload 값 받기
+        // payload 값 받기
         String postcode = body.optString("postcode", "").trim();
         String address = body.optString("address", "").trim();
         String detailaddress = body.optString("detailaddress", "").trim();
@@ -101,12 +100,33 @@ public class Pay extends AbstractController {
 
         int usepoint = body.optInt("usepoint", 0);
 
-        // 아임포트 관련(로그용)
         String imp_uid = body.optString("imp_uid", "");
         String merchant_uid = body.optString("merchant_uid", "");
         int paid_amount = body.optInt("paid_amount", 0);
 
-        // 5) 기본 검증
+        // ✅ 선택 cartnoList 받기
+        JSONArray cartnoJsonArr = body.optJSONArray("cartnoList");
+        if (cartnoJsonArr == null || cartnoJsonArr.length() == 0) {
+            message = "주문할 상품이 없습니다.";
+            loc = request.getContextPath() + "/order/cart.lp";
+
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("n", 0);
+            jsonObj.put("message", message);
+            jsonObj.put("loc", loc);
+
+            request.setAttribute("json", jsonObj.toString());
+            super.setRedirect(false);
+            super.setViewPage("/WEB-INF/jsonview.jsp");
+            return;
+        }
+
+        String[] cartnoArr = new String[cartnoJsonArr.length()];
+        for (int i = 0; i < cartnoJsonArr.length(); i++) {
+            cartnoArr[i] = String.valueOf(cartnoJsonArr.getInt(i));
+        }
+
+        // 기본 검증
         if (postcode.isEmpty() || address.isEmpty() || detailaddress.isEmpty()) {
             message = "배송지 정보가 누락되었습니다.";
             loc = "history.back()";
@@ -125,28 +145,25 @@ public class Pay extends AbstractController {
         }
         else {
 
-            // ✅ 6) 서버에서 장바구니 조회 + 적립포인트(총합) 재계산 (클라 hidden 믿지 말 것)
             CartDAO cdao = new CartDAO_imple();
-            List<CartDTO> cartList = cdao.selectCartList(userid);
+
+            // ✅ 선택한 cartno만 조회
+            List<CartDTO> cartList = cdao.selectCartListByCartnoArr(userid, cartnoArr);
 
             if (cartList == null || cartList.isEmpty()) {
-                message = "장바구니가 비어있습니다.";
+                message = "선택한 상품 정보를 찾을 수 없습니다.";
                 loc = request.getContextPath() + "/order/cart.lp";
             }
             else {
                 int sumTotalPoint = 0;
-                // 필요하면 가격도 재검증 가능(여기선 포인트만)
                 for (CartDTO cdto : cartList) {
                     sumTotalPoint += cdto.getTotalPoint();
                 }
 
-                // 7) 주문 DTO 구성
                 OrderDTO odto = new OrderDTO();
                 odto.setUserid(userid);
-                odto.setTotalprice(paid_amount); // 최종 결제금액(서버에서도 재검증 권장)
+                odto.setTotalprice(paid_amount);
                 odto.setUsepoint(usepoint);
-
-                // ✅ 핵심: 적립 포인트를 0이 아니라 서버 계산값으로 세팅
                 odto.setTotalpoint(sumTotalPoint);
 
                 odto.setPostcode(postcode);
@@ -156,23 +173,23 @@ public class Pay extends AbstractController {
                 odto.setDeliveryrequest(deliveryrequest);
 
                 try {
-                    int orderno = odao.insertOrderPay(odto, userid, cartList);
+                    // ✅ 선택 cartnoArr도 넘겨서 "선택한 것만 삭제"하도록
+                    int orderno = odao.insertOrderPay(odto, userid, cartList, cartnoArr);
 
                     if (orderno > 0) {
                         n = 1;
 
-                        // ✅ DB에서도 업데이트 했으니 세션도 맞춰줌(UX용)
+                        // 세션 포인트 갱신(UX용)
                         loginuser.setPoint(loginuser.getPoint() - usepoint + odto.getTotalpoint());
 
                         message = "주문이 완료되었습니다.";
-                        // ⚠️ 이 loc는 너 프로젝트 라우팅에 맞게 수정
                         loc = request.getContextPath() + "/my_info/my_order.lp";
 
-                        System.out.println("[PAY] imp_uid=" + imp_uid
-                                + ", merchant_uid=" + merchant_uid
-                                + ", paid_amount=" + paid_amount
-                                + ", usepoint=" + usepoint
-                                + ", totalpoint=" + sumTotalPoint);
+						/*
+						  System.out.println("[PAY] imp_uid=" + imp_uid + ", merchant_uid=" +
+						  merchant_uid + ", paid_amount=" + paid_amount + ", usepoint=" + usepoint +
+						  ", totalpoint=" + sumTotalPoint);
+						 */
                     }
                     else {
                         message = "주문 저장에 실패했습니다.";

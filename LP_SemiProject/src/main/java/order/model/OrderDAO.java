@@ -7,8 +7,6 @@ import order.domain.OrderDTO;
 
 public interface OrderDAO {
 
-	// 아래 메서드는 너가 구현해야 하는 DAO 메서드야 (밑에 예시 DAO 코드도 같이 줌)
-	
-
-	int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList)throws Exception;
+	// ✅ 선택 cartnoArr도 넘겨서 "선택한 것만 삭제"하도록
+	int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList, String[] cartnoArr)throws Exception;
 }

@@ -1,8 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-	String ctxPath = request.getContextPath();
-	// /LP_SemiProject
+    String ctxPath = request.getContextPath();
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -10,28 +9,23 @@
 
 <!-- 다음 주소 API -->
 <script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> 
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="<%= ctxPath %>/13_daum_address_search/js/daum_address_search.js"></script>
 
+<!-- (주의) jQuery 중복 로드면 문제 생길 수 있음. 가능하면 하나만 쓰는 게 맞다 -->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://service.iamport.kr/js/iamport.payment-1.1.2.js"></script>
 
+<link rel="stylesheet" href="<%= ctxPath%>/css/order/buy.css">
+<link rel="stylesheet" href="<%= ctxPath%>/css/order/cart.css">
 
-  <!-- BUY 전용 -->
-  <link rel="stylesheet" href="<%= ctxPath%>/css/order/buy.css">
-  <link rel="stylesheet" href="<%= ctxPath%>/css/order/cart.css">
-  
-  <!-- HEADER -->
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
-  
-  <!-- MAIN -->
+
 <main class="buy-wrapper">
   <div class="buy-container">
 
     <!-- ================= LEFT ================= -->
-    
     <section class="buy-left">
-
       <div class="buy-card">
         <h3>주문자 / 배송 정보</h3>
 
@@ -58,52 +52,41 @@
 
         <!-- 포인트 -->
         <div class="form-group">
-	  		<label class="title">포인트 사용</label>
-	  		<input type="text" class="point-input" value="0 P" id="pointInput"
-       data-max-point="${sessionScope.loginuser.point}">
+          <label class="title">포인트 사용</label>
+          <input type="text" class="point-input" value="0 P" id="pointInput"
+                 data-max-point="${sessionScope.loginuser.point}">
 
-	  		<div class="point-check-row">
-		    		<label>
-		      	<input type="checkbox" id="chkUseAllPoint">
-
-		      	포인트 전부 사용하기
-		    		</label>
-	  		</div>
-		</div>
-
+          <div class="point-check-row">
+            <label>
+              <input type="checkbox" id="chkUseAllPoint">
+              포인트 전부 사용하기
+            </label>
+          </div>
+        </div>
 
         <hr>
 
         <!-- 주소 -->
-       <div class="form-group">
+        <div class="form-group">
           <label>주소</label>
 
           <div class="address-row">
-           <input type="text" id="postcode" name="postcode"
-	       placeholder="우편번호" readonly
-	       value="${sessionScope.loginuser.postcode}">
+            <input type="text" id="postcode" name="postcode" placeholder="우편번호" readonly
+                   value="${sessionScope.loginuser.postcode}">
 
-            <button type="button"
-                    class="btn-outline"
-                    onclick="openDaumPOST()">
+            <button type="button" class="btn-outline" onclick="openDaumPOST()">
               우편번호 찾기
             </button>
           </div>
 
-	        <input type="text" id="address" name="address"
-	       class="form-group"
-	       placeholder="도로명 주소" readonly
-	       value="${sessionScope.loginuser.address}">
+          <input type="text" id="address" name="address" class="form-group" placeholder="도로명 주소" readonly
+                 value="${sessionScope.loginuser.address}">
 
-	         <input type="text" id="detailAddress" name="detailaddress"
-	       class="form-group"
-	       placeholder="상세 주소"
-	       value="${sessionScope.loginuser.detailaddress}">
-          
-         <input type="text" id="extraAddress" name="extraaddress"
-	      class="form-group"
-	       placeholder="참고 항목"
-	       value="${sessionScope.loginuser.extraaddress}">
+          <input type="text" id="detailAddress" name="detailaddress" class="form-group" placeholder="상세 주소"
+                 value="${sessionScope.loginuser.detailaddress}">
+
+          <input type="text" id="extraAddress" name="extraaddress" class="form-group" placeholder="참고 항목"
+                 value="${sessionScope.loginuser.extraaddress}">
         </div>
 
         <!-- 요청사항 -->
@@ -128,71 +111,76 @@
             주소 및 주문자 정보 저장하기
           </label>
         </div>
-      </div>
 
+      </div>
     </section>
 
     <!-- ================= RIGHT ================= -->
-<aside class="buy-right">
+    <aside class="buy-right">
+      <section class="summary-card">
+        <h3>결제 정보</h3>
 
- <section class="summary-card">
+        <div class="summary-row">
+          <span>주문금액</span>
+          <span>₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
+        </div>
 
-  <h3>결제 정보</h3>
+        <div class="summary-row">
+          <span>할인금액</span>
+          <span>- ₩ <fmt:formatNumber value="${discountAmount}" pattern="#,###"/></span>
+        </div>
 
-  <div class="summary-row">
-    <span>주문금액</span>
-    <span>₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
-  </div>
+        <div class="summary-row">
+          <span>배송비</span>
+          <span>₩ <fmt:formatNumber value="${deliveryFee}" pattern="#,###"/></span>
+        </div>
 
-  <div class="summary-row">
-    <span>할인금액</span>
-    <span>- ₩0</span>
-  </div>
+        <hr>
 
-  <div class="summary-row">
-    <span>배송비</span>
-    <span>₩ <fmt:formatNumber value="3000" pattern="#,###"/></span>
-  </div>
+        <div class="summary-row total">
+          <span>총 결제금액</span>
+          <span>₩ <fmt:formatNumber value="${finalPayAmount}" pattern="#,###"/></span>
+        </div>
 
-  <hr>
+        <div class="summary-row point">
+          <span>적립 포인트</span>
+          <span><fmt:formatNumber value="${sumTotalPoint}" pattern="#,###"/>P</span>
+        </div>
 
-  <div class="summary-row total">
-    <span>총 결제금액</span>
-    <span>₩ <fmt:formatNumber value="${sumTotalPrice + 3000}" pattern="#,###"/></span>
-  </div>
+        <div class="action-buttons">
+          <button class="cart" onclick="location.href='<%= ctxPath%>/order/cart.lp'">
+            더 담으러가기
+          </button>
+          <button type="button" class="buy" id="btnBuy">구매하기</button>
+        </div>
+      </section>
 
-  <div class="summary-row point">
-    <span>적립 포인트</span>
-    <span><fmt:formatNumber value="${sumTotalPoint}" pattern="#,###"/>P</span>
-  </div>
+      <!-- ✅ 선택된 cartno들을 JS가 읽을 수 있도록 출력 -->
+      <c:forEach var="cno" items="${cartnoArr}">
+        <input type="hidden" class="selectedCartno" value="${cno}">
+      </c:forEach>
 
-  <div class="action-buttons">
-    <button class="cart" onclick="location.href='<%= ctxPath%>/order/cart.lp'">
-      더 담으러가기
-    </button>
-    <button type="button" class="buy" id="btnBuy">
-  	구매하기
-	</button>
+      <!-- hidden -->
+      <input type="hidden" id="ctxPath" value="<%=ctxPath%>">
 
-  </div>
+      <!-- sumTotalPrice: 상품합계 -->
+      <input type="hidden" id="sumTotalPrice" value="${sumTotalPrice}">
 
-</section>
+      <!-- 배송비 -->
+      <input type="hidden" id="deliveryFee" value="${deliveryFee}">
 
-	<input type="hidden" id="ctxPath" value="<%=ctxPath%>">
-	<input type="hidden" id="sumTotalPrice" value="${sumTotalPrice + 3000}">
-	<input type="hidden" id="deliveryFee" value="3000">
-	<input type="hidden" id="sumTotalPoint" value="${sumTotalPoint}">
-	<input type="hidden" id="usePoint" value="0">
-	<input type="hidden" id="deliveryRequestFinal" value="">
+      <!-- 적립포인트(표시용; 서버는 cartno로 재계산함) -->
+      <input type="hidden" id="sumTotalPoint" value="${sumTotalPoint}">
 
-</aside>
+      <!-- 사용포인트 -->
+      <input type="hidden" id="usePoint" value="0">
+
+      <input type="hidden" id="deliveryRequestFinal" value="">
+    </aside>
 
   </div>
 </main>
 
-
-
-<!-- FOOTER -->
 <jsp:include page="/WEB-INF/footer1.jsp" />
 
 <script src="<%= ctxPath%>/js/order/buy.js"></script>
