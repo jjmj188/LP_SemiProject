@@ -7,10 +7,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!-- 다음 주소 API -->
 <script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> 
 <script src="<%= ctxPath %>/13_daum_address_search/js/daum_address_search.js"></script>
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://service.iamport.kr/js/iamport.payment-1.1.2.js"></script>
+
 
   <!-- BUY 전용 -->
   <link rel="stylesheet" href="<%= ctxPath%>/css/order/buy.css">
@@ -162,7 +167,7 @@
   </div>
 
   <div class="action-buttons">
-    <button class="cart" onclick="location.href='../main_page.html'">
+    <button class="cart" onclick="location.href='<%= ctxPath%>/order/cart.lp'">
       더 담으러가기
     </button>
     <button type="button" class="buy" id="btnBuy">
@@ -173,11 +178,19 @@
 
 </section>
 
+	<input type="hidden" id="ctxPath" value="<%=ctxPath%>">
+	<input type="hidden" id="sumTotalPrice" value="${sumTotalPrice + 3000}">
+	<input type="hidden" id="deliveryFee" value="3000">
+	<input type="hidden" id="sumTotalPoint" value="${sumTotalPoint}">
+	<input type="hidden" id="usePoint" value="0">
+	<input type="hidden" id="deliveryRequestFinal" value="">
 
 </aside>
 
   </div>
 </main>
+
+
 
 <!-- FOOTER -->
 <jsp:include page="/WEB-INF/footer1.jsp" />

@@ -12,13 +12,7 @@ public class OrderDTO {
 	private String address; // 주소
 	private String detailaddress; // 상세주소
 	private String extraaddress; // 주소참고항목
-	private String deliverystatus; // 배송상태
-	private String ordercomment; // 주문 관련 문의 사항
 	private String deliveryrequest; // 배송시 요청사항
-	
-	
-	
-	
 	
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 	
@@ -82,24 +76,16 @@ public class OrderDTO {
 	public void setExtraaddress(String extraaddress) {
 		this.extraaddress = extraaddress;
 	}
-	public String getDeliverystatus() {
-		return deliverystatus;
-	}
-	public void setDeliverystatus(String deliverystatus) {
-		this.deliverystatus = deliverystatus;
-	}
-	public String getOrdercomment() {
-		return ordercomment;
-	}
-	public void setOrdercomment(String ordercomment) {
-		this.ordercomment = ordercomment;
-	}
 	public String getDeliveryrequest() {
 		return deliveryrequest;
 	}
 	public void setDeliveryrequest(String deliveryrequest) {
 		this.deliveryrequest = deliveryrequest;
 	}
+	
+	
+	
+	
 	
 	
 	
