@@ -5,6 +5,9 @@
   String ctxPath = request.getContextPath();
 %>
 
+<!-- JS에서 ctxPath 읽을 수 있게 meta로 제공 (header1.jsp가 body를 열어도 안전) -->
+<meta name="ctxPath" content="<%= ctxPath %>" />
+
 <link rel="stylesheet" href="<%= ctxPath%>/css/order/cart.css">
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
 
@@ -26,7 +29,12 @@
 
       <c:forEach var="dto" items="${cartList}">
         <div class="cart-item">
-          <input type="checkbox" class="chkItem" value="${dto.cartno}">
+          <!-- ✅ 선택 합산용 data 속성 추가 -->
+          <input type="checkbox"
+                 class="chkItem"
+                 value="${dto.cartno}"
+                 data-price="${dto.totalPrice}"
+                 data-point="${dto.totalPoint}">
 
           <img src="<%= ctxPath%>${dto.productimg}" alt="${dto.productname}">
 
@@ -39,69 +47,64 @@
                 ₩ <fmt:formatNumber value="${dto.totalPrice}" pattern="#,###"/>
               </p>
 
-              <p class="item-point">적립 <span>${dto.totalPoint}P</span></p>
+              <p class="item-point">적립 <span><fmt:formatNumber value="${dto.totalPoint}" pattern="#,###"/>P</span></p>
             </div>
           </div>
 
           <div class="qty-box">
-            
-           <form method="get" action="<%= ctxPath %>/productdetail.lp" style="display:inline;">
-			  <input type="hidden" name="productno" value="${dto.productno}">
-			  <input type="hidden" name="cartno" value="${dto.cartno}">
-			  <button type="submit" class="qty-btn">수정하기</button>
-			</form>
-
-
-
-
-
+            <!-- 상품 상세로 이동해서 수정 -->
+            <form method="get" action="<%= ctxPath %>/productdetail.lp" style="display:inline;">
+              <input type="hidden" name="productno" value="${dto.productno}">
+              <input type="hidden" name="cartno" value="${dto.cartno}">
+              <button type="submit" class="qty-btn">수정하기</button>
+            </form>
           </div>
         </div>
       </c:forEach>
 
-      <div class="cart-actions">
-      <form id="cartDeleteForm" >
-        <button type="button" id="btnDeleteSelected">선택상품 삭제</button>
-        <button type="button" class="danger" id="btnDeleteAll">전체삭제</button>
-      </div>
-	 </form>
-	
+      <!-- ✅ form 구조 정상화 -->
+      <form id="cartDeleteForm">
+        <div class="cart-actions">
+          <button type="button" id="btnDeleteSelected">선택상품 삭제</button>
+          <button type="button" class="danger" id="btnDeleteAll">전체삭제</button>
+        </div>
+      </form>
+
     </section>
 
+    <!-- ✅ 결제 정보: JSP 합계 출력 제거 / JS가 선택된 항목 기준으로 출력 -->
     <section class="summary-card">
       <h3>결제 정보</h3>
 
       <div class="summary-row">
         <span>주문금액</span>
-        <span>₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
+        <span>₩ <span id="sumPrice">0</span></span>
       </div>
-
-      
 
       <div class="summary-row">
         <span>배송비</span>
-        <span>₩ <fmt:formatNumber value="3000" pattern="#,###"/></span>
+        <span>₩ <span id="shipFee">0</span></span>
       </div>
 
       <hr>
 
       <div class="summary-row total">
         <span>총 결제금액</span>
-        <span>₩ <fmt:formatNumber value="${sumTotalPrice + 3000}" pattern="#,###"/></span>
+        <span>₩ <span id="payTotal">0</span></span>
       </div>
 
       <div class="summary-row point">
         <span>적립 포인트</span>
-        <span><fmt:formatNumber value="${sumTotalPoint}" pattern="#,###"/>P</span>
+        <span><span id="sumPoint">0</span>P</span>
       </div>
 
       <div class="action-buttons">
-        <button class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">쇼핑 계속하기</button>
-        
-         <form id="goBuyForm" method="post" action="<%= ctxPath %>/order/buy.lp">
-	  		<!-- JS로 체크된 cartno들을 hidden으로 추가 -->
-	  		<button type="submit" class="buy">주문자 정보 입력하러 가기</button>
-		</form>
+        <button type="button" class="cart" onclick="location.href='<%= ctxPath%>/index.lp'">쇼핑 계속하기</button>
+
+        <form id="goBuyForm" method="post" action="<%= ctxPath %>/order/buy.lp">
+          <!-- JS로 체크된 cartno들을 hidden으로 추가 -->
+          <button type="submit" class="buy">주문자 정보 입력하러 가기</button>
+        </form>
       </div>
     </section>
 
@@ -109,6 +112,5 @@
 </main>
 
 <jsp:include page="/WEB-INF/footer1.jsp" />
+
 <script src="<%= ctxPath%>/js/order/cart.js"></script>
-
-
