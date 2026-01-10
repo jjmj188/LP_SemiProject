@@ -76,10 +76,7 @@
         <span>₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
       </div>
 
-      <div class="summary-row">
-        <span>할인금액</span>
-        <span>- ₩ 0</span>
-      </div>
+      
 
       <div class="summary-row">
         <span>배송비</span>
