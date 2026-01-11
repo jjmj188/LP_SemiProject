@@ -11,6 +11,12 @@
 <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_inquiry_list.css">
 <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_order.css">
 
+<style>
+  .price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .price-original{color:#9aa0a6;text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:#9aa0a6;}
+  .price-discounted{font-weight:700;}
+</style>
+
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
 
 <main class="mypage-wrapper">
@@ -35,28 +41,52 @@
         </c:if>
 
         <c:forEach var="o" items="${orderList}">
+          <!-- ✅ 타입 안전: 숫자 파싱(문자/널이어도 안전하게 처리) -->
+          <fmt:parseNumber var="totalpriceNum" value="${empty o.totalprice ? 0 : o.totalprice}" integerOnly="true"/>
+          <fmt:parseNumber var="usepointNum"   value="${empty o.usepoint ? 0 : o.usepoint}" integerOnly="true"/>
+
+          <!-- ✅ 1P=10원 (10P=100원) -->
+          <c:set var="pointDiscountWon" value="${usepointNum * 10}" />
+          <c:set var="discountedPrice" value="${totalpriceNum - pointDiscountWon}" />
+
           <div class="order-card">
             <div class="order-summary">
 
               <div class="order-product">
                 <img src="<%= ctxPath%>${o.repProductimg}" alt="대표 상품">
                 <div class="product-info">
-               
-                <div class="product-name">
-                  <p class="name">
-                    상품명 : ${o.repProductname}
-                  </p>
- 					<c:if test="${o.moreCount > 0}">
+
+                  <div class="product-name">
+                    <p class="name">상품명 : ${o.repProductname}</p>
+                    <c:if test="${o.moreCount > 0}">
                       <span class="more-count">외 ${o.moreCount}건</span>
                     </c:if>
-                </div>
-                    
+                  </div>
+
                   <p class="meta">총 수량 : ${o.totalQty}개</p>
 
                   <p class="price">
-                    총 가격 :
-                    <fmt:formatNumber value="${o.totalprice}" pattern="#,###"/>원
+                   
+                    <span class="price-row">
+                     총 가격 :
+                      <c:choose>
+                        <c:when test="${usepointNum > 0}">
+                          <span class="price-original">
+                            <fmt:formatNumber value="${totalpriceNum}" pattern="#,###"/>원
+                          </span>
+                          <span class="price-discounted">
+                            <fmt:formatNumber value="${discountedPrice}" pattern="#,###"/>원
+                          </span>
+                        </c:when>
+                        <c:otherwise>
+                          <span class="price-discounted">
+                            <fmt:formatNumber value="${totalpriceNum}" pattern="#,###"/>원
+                          </span>
+                        </c:otherwise>
+                      </c:choose>
+                    </span>
                   </p>
+
                 </div>
               </div>
 
@@ -71,13 +101,12 @@
                 <p class="date">${o.orderdate}</p>
                 <p class="status-text">${o.deliverystatus}</p>
 
-                 <button class="btn-toggle"
-          			type="button"
-          			data-orderno="${o.orderno}"
-          			onclick="openTrackingPopup(this)">
-    					배송지 & 송장번호
-  					</button>
-               
+                <button class="btn-toggle"
+                        type="button"
+                        data-orderno="${o.orderno}"
+                        onclick="openTrackingPopup(this)">
+                  배송지 & 송장번호
+                </button>
               </div>
 
             </div>
@@ -112,13 +141,12 @@
           </div>
         </c:forEach>
 
-	        <!-- 페이징바 -->
-	        <div class="pagebar">
-			  <ul class="pagination" style="margin:0;">
-			    ${requestScope.pageBar}
-			  </ul>
-		  </div> 
-		  
+        <div class="pagebar">
+          <ul class="pagination" style="margin:0;">
+            ${requestScope.pageBar}
+          </ul>
+        </div>
+
       </div>
     </section>
   </div>
