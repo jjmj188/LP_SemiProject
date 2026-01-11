@@ -15,7 +15,8 @@ public class Tracking_popup extends AbstractController {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    	
+    		
         HttpSession session = request.getSession();
         MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
 
@@ -26,6 +27,8 @@ public class Tracking_popup extends AbstractController {
             setViewPage("/WEB-INF/msg.jsp");
             return;
         }
+        
+        
 
         String ordernoStr = request.getParameter("orderno");
         int orderno = 0;

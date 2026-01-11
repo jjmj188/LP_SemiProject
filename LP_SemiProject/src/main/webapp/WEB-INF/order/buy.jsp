@@ -600,5 +600,4 @@ $(function () {
 </main>
 
 <jsp:include page="/WEB-INF/footer1.jsp" />
-<%-- 
-<script src="<%= ctxPath%>/js/order/buy.js"></script> --%>
+
