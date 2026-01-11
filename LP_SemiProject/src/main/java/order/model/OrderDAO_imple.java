@@ -56,7 +56,7 @@ public class OrderDAO_imple implements OrderDAO {
     
     @Override
     public int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList, String[] cartnoArr) throws Exception {
-
+    	
         int orderno = 0;
 
         try {
@@ -80,6 +80,7 @@ public class OrderDAO_imple implements OrderDAO {
             rs.close(); rs = null;
             pstmt.close(); pstmt = null;
 
+            // 2) tbl_order insert
             sql = " insert into tbl_order( "
                 + " orderno, fk_userid, totalprice, usepoint, totalpoint, "
                 + " postcode, address, detailaddress, extraaddress, deliveryrequest "
@@ -107,35 +108,103 @@ public class OrderDAO_imple implements OrderDAO {
                 return 0;
             }
 
-            sql = " insert into tbl_orderdetail( "
-                + " orderdetailno, fk_orderno, fk_productno, qty, unitprice "
-                + " ) values( "
-                + " seq_orderdetailno.nextval, ?, ?, ?, ? "
-                + " ) ";
+            // 재고 체크 + 차감 (동시성 안전) 
+            String sqlSelectStockForUpdate =
+                " select stock "
+              + " from tbl_product "
+              + " where productno = ? "
+              + " for update ";
 
-            pstmt = conn.prepareStatement(sql);
+            String sqlUpdateStock =
+                " update tbl_product "
+              + " set stock = stock - ? "
+              + " where productno = ? "
+              + "   and stock >= ? ";
 
-            for (CartDTO cdto : cartList) {
-                int productno = cdto.getProductno();
-                int qty = cdto.getQty();
-                int unitprice = cdto.getPrice();
+            // 4) tbl_orderdetail insert 준비
+            String sqlInsertDetail =
+                " insert into tbl_orderdetail( "
+              + " orderdetailno, fk_orderno, fk_productno, qty, unitprice "
+              + " ) values( "
+              + " seq_orderdetailno.nextval, ?, ?, ?, ? "
+              + " ) ";
 
-                pstmt.setInt(1, orderno);
-                pstmt.setInt(2, productno);
-                pstmt.setInt(3, qty);
-                pstmt.setInt(4, unitprice);
+            
+            PreparedStatement pstmtDetail = null;
+           
+            PreparedStatement pstmtStockSel = null;
+            
+            PreparedStatement pstmtStockUp = null;
 
-                int n2 = pstmt.executeUpdate();
-                if (n2 != 1) {
-                    pstmt.close(); pstmt = null;
-                    conn.rollback();
-                    return 0;
+            try {
+                pstmtDetail = conn.prepareStatement(sqlInsertDetail);
+                pstmtStockSel = conn.prepareStatement(sqlSelectStockForUpdate);
+                pstmtStockUp = conn.prepareStatement(sqlUpdateStock);
+
+                for (CartDTO cdto : cartList) {
+
+                    int productno = cdto.getProductno();
+                    int qty = cdto.getQty();
+                    int unitprice = cdto.getPrice();
+
+                    
+                    pstmtStockSel.setInt(1, productno);
+                    rs = pstmtStockSel.executeQuery();
+
+                    if (!rs.next()) {
+                        // 존재하지 않는 상품
+                        if (rs != null) { rs.close(); rs = null; }
+                        conn.rollback();
+                        return 0;
+                    }
+
+                    int stock = rs.getInt("stock");
+                    rs.close(); rs = null;
+
+                    if (qty <= 0) {
+                        conn.rollback();
+                        return 0;
+                    }
+
+                    if (stock < qty) {
+                        // 재고 부족
+                        conn.rollback();
+                        return 0;
+                    }
+
+                    // 주문상세 insert
+                    pstmtDetail.setInt(1, orderno);
+                    pstmtDetail.setInt(2, productno);
+                    pstmtDetail.setInt(3, qty);
+                    pstmtDetail.setInt(4, unitprice);
+
+                    int n2 = pstmtDetail.executeUpdate();
+                    if (n2 != 1) {
+                        conn.rollback();
+                        return 0;
+                    }
+
+                    // 재고 차감 (stock >= qty 조건으로 안전하게 한번 더 방어)
+                    pstmtStockUp.setInt(1, qty);
+                    pstmtStockUp.setInt(2, productno);
+                    pstmtStockUp.setInt(3, qty);
+
+                    int nStock = pstmtStockUp.executeUpdate();
+                    if (nStock != 1) {
+                        // 동시성 등으로 재고가 변했을 가능성
+                        conn.rollback();
+                        return 0;
+                    }
                 }
+
+            } finally {
+                if (rs != null) { try { rs.close(); } catch (SQLException e) {} rs = null; }
+                if (pstmtDetail != null) { try { pstmtDetail.close(); } catch (SQLException e) {} }
+                if (pstmtStockSel != null) { try { pstmtStockSel.close(); } catch (SQLException e) {} }
+                if (pstmtStockUp != null) { try { pstmtStockUp.close(); } catch (SQLException e) {} }
             }
-            pstmt.close(); pstmt = null;
 
             // 회원 포인트 DB 갱신
-            // point = point - usepoint + totalpoint
             sql = " update tbl_member "
                 + " set point = point - ? + ? "
                 + " where userid = ? ";
@@ -153,8 +222,7 @@ public class OrderDAO_imple implements OrderDAO {
                 return 0;
             }
 
-            // 장바구니 선택삭제: 선택한 cartno만 삭제
-            
+            // 장바구니 선택삭제
             StringBuilder in = new StringBuilder();
             for (int i = 0; i < cartnoArr.length; i++) {
                 if (i > 0) in.append(",");
@@ -170,7 +238,6 @@ public class OrderDAO_imple implements OrderDAO {
             for (int i = 0; i < cartnoArr.length; i++) {
                 pstmt.setInt(2 + i, Integer.parseInt(cartnoArr[i]));
             }
-
             pstmt.executeUpdate();
             pstmt.close(); pstmt = null;
 
@@ -190,6 +257,7 @@ public class OrderDAO_imple implements OrderDAO {
             close();
         }
     }
+
     
   //주문목록(대표상품/총수량/배송정보 포함)
     @Override

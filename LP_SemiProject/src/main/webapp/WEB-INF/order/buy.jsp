@@ -337,7 +337,7 @@ $(function () {
 
 	      //const payAmount = calc.finalPay;
 		  //테스트용 결제
-		  const payAmount = 1000;
+		  const payAmount = 10;
 
 	      if (payAmount <= 0) {
 	        alert("결제금액이 올바르지 않습니다.");
