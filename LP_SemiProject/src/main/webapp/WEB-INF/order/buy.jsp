@@ -7,13 +7,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<!-- 다음 주소 API -->
+<!-- jQuery (중복 로드 금지: 하나만 유지) -->
 <script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
+
+<!-- 다음 주소 API -->
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="<%= ctxPath %>/13_daum_address_search/js/daum_address_search.js"></script>
 
-<!-- (주의) jQuery 중복 로드면 문제 생길 수 있음. 가능하면 하나만 쓰는 게 맞다 -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<!-- 아임포트 -->
 <script src="https://service.iamport.kr/js/iamport.payment-1.1.2.js"></script>
 
 <link rel="stylesheet" href="<%= ctxPath%>/css/order/buy.css">
@@ -53,7 +54,10 @@
         <!-- 포인트 -->
         <div class="form-group">
           <label class="title">포인트 사용</label>
-          <input type="text" class="point-input" value="0 P" id="pointInput"
+          <input type="text"
+                 class="point-input"
+                 value="0 P"
+                 id="pointInput"
                  data-max-point="${sessionScope.loginuser.point}">
 
           <div class="point-check-row">
@@ -62,6 +66,7 @@
               포인트 전부 사용하기
             </label>
           </div>
+
         </div>
 
         <hr>
@@ -122,24 +127,26 @@
 
         <div class="summary-row">
           <span>주문금액</span>
-          <span>₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
+          <span id="uiOrderAmount">₩ <fmt:formatNumber value="${sumTotalPrice}" pattern="#,###"/></span>
         </div>
 
         <div class="summary-row">
           <span>할인금액</span>
-          <span>- ₩ <fmt:formatNumber value="${discountAmount}" pattern="#,###"/></span>
+          
+          <span id="uiDiscountAmount">- ₩ <fmt:formatNumber value="${discountAmount}" pattern="#,###"/></span>
         </div>
 
         <div class="summary-row">
           <span>배송비</span>
-          <span>₩ <fmt:formatNumber value="${deliveryFee}" pattern="#,###"/></span>
+          <span id="uiDeliveryFee">₩ <fmt:formatNumber value="${deliveryFee}" pattern="#,###"/></span>
         </div>
 
         <hr>
 
         <div class="summary-row total">
           <span>총 결제금액</span>
-          <span>₩ <fmt:formatNumber value="${finalPayAmount}" pattern="#,###"/></span>
+          
+          <span id="uiFinalPay">₩ <fmt:formatNumber value="${finalPayAmount}" pattern="#,###"/></span>
         </div>
 
         <div class="summary-row point">
@@ -161,17 +168,26 @@
 
       <input type="hidden" id="ctxPath" value="<%=ctxPath%>">
 
-      <!-- sumTotalPrice: 상품합계 -->
+      <!-- ✅ 상품합계 -->
       <input type="hidden" id="sumTotalPrice" value="${sumTotalPrice}">
 
-      <!-- 배송비 -->
+      <!-- ✅ 기존 할인금액(쿠폰/프로모션 등 서버 계산값) -->
+      <input type="hidden" id="baseDiscountAmount" value="${discountAmount}">
+
+      <!-- ✅ 배송비 -->
       <input type="hidden" id="deliveryFee" value="${deliveryFee}">
 
-      <!-- 적립포인트(표시용; 서버는 cartno로 재계산함) -->
+      <!-- 적립포인트(표시용; 서버는 cartno로 재계산 권장) -->
       <input type="hidden" id="sumTotalPoint" value="${sumTotalPoint}">
 
-      <!-- 사용포인트 -->
+      <!-- ✅ 사용포인트(포인트 '점수') -->
       <input type="hidden" id="usePoint" value="0">
+
+      <!-- ✅ 포인트를 원화로 환산한 할인액(1P=10원) -->
+      <input type="hidden" id="pointDiscountWon" value="0">
+
+      <!-- ✅ 최종 결제금액(원화) -->
+      <input type="hidden" id="finalPayAmount" value="${finalPayAmount}">
 
       <input type="hidden" id="deliveryRequestFinal" value="">
     </aside>

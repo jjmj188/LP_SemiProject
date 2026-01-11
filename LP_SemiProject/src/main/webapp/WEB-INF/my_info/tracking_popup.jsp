@@ -80,7 +80,7 @@
                 ${odto.invoiceNo}
               </c:when>
               <c:otherwise>
-                (등록 전)
+                (배송이 시작되면 송장번호를 확인할 수 있습니다)
               </c:otherwise>
             </c:choose>
           </div>
