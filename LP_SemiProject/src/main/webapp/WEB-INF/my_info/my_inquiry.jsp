@@ -94,7 +94,7 @@
 		  <ul class="pagination" style="margin:0;">
 		    ${requestScope.pageBar}
 		  </ul>
-	</div> 
+	  </div> 
 	
 <%-- 	    <!-- 페이징 영역 -->
 <div class="pagebar">
