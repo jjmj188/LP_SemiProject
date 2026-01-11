@@ -1,43 +1,27 @@
-/* =====================
-   RESET
-===================== */
-* {
-  box-sizing: border-box;
+/* 1. body 대신 특정 클래스에만 배경을 줍니다 (헤더 영향 방지) */
+#pwdChangePageBody { 
+  background: #fafafa; 
 }
 
-body {
-  margin: 0;
-  font-family: "Noto Sans KR", Arial, sans-serif;
-  background: #fafafa;
-  color: #222;
-  
-}
-
-/* =====================
-   WRAPPER
-===================== */
+/* 2. 모든 폰트 설정을 wrapper 안으로 가둡니다 */
 .pwd-wrapper {
+  font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
   width: 420px;
   margin: 120px auto;
   background: #fff;
-  border: 2px solid #ddd;
+  border: 1px solid #ddd;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   padding: 28px 30px 32px;
+  
+  /* 박스 사이징이 헤더를 망치지 않게 여기서만 선언 */
+  box-sizing: border-box; 
 }
 
-/* =====================
-   TITLE
-===================== */
-.pwd-wrapper h2 {
-  margin: 0 0 18px;
-  text-align: center;
-  font-size: 22px;
-  font-weight: 700;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 16px;
+/* 3. 내부 요소들도 전부 .pwd-wrapper를 앞에 붙여서 확실히 가두세요 */
+.pwd-wrapper *, .pwd-wrapper *:before, .pwd-wrapper *:after {
+  box-sizing: border-box;
 }
-
 /* =====================
    NOTICE
 ===================== */
@@ -72,6 +56,8 @@ body {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
+  /* 인풋 폰트가 시스템 폰트로 변하는 것 방지 */
+  font-family: inherit; 
 }
 
 .input-box input:focus {
@@ -96,10 +82,11 @@ body {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 #btnPwdChange:hover {
-  background: #222;
+  background: #000;
 }
 
 /* =====================
@@ -107,8 +94,8 @@ body {
 ===================== */
 @media (max-width: 480px) {
   .pwd-wrapper {
-    width: 92%;
-    margin: 80px auto;
+    width: calc(100% - 40px);
+    margin: 60px auto;
     padding: 24px 20px 28px;
   }
 }

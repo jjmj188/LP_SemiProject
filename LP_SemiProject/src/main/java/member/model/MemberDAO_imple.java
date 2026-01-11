@@ -17,9 +17,11 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import member.domain.MemberDTO;
+
 import util.security.AES256;
 import util.security.SecretMyKey;
 import util.security.Sha256;
+import product.domain.ReviewDTO;
 
 
 public class MemberDAO_imple implements MemberDAO {
@@ -718,8 +720,113 @@ public class MemberDAO_imple implements MemberDAO {
 		    return member;
 		}
 
+		//내리뷰보기 
+		@Override
+		public List<ReviewDTO> selectMyReviewList(String userid) throws SQLException {
 
+		    List<ReviewDTO> reviewList = new ArrayList<>();
 
+		    try {
+		        conn = ds.getConnection();
+
+		        // 제품명(productname), 이미지(productimg), 리뷰내용, 별점, 날짜를 조인해서 가져옴
+		        String sql = " SELECT R.reviewno, R.fk_productno AS Productno , R.rating, R.reviewcontent, "
+		                   + "        TO_CHAR(R.writedate, 'yyyy-mm-dd') AS writedate, "
+		                   + "        P.productname, P.productimg "
+		                   + " FROM tbl_review R "
+		                   + " JOIN tbl_product P ON R.fk_productno = P.productno "
+		                   + " WHERE R.fk_userid = ? "
+		                   + " ORDER BY R.writedate DESC ";
+
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, userid);
+
+		        rs = pstmt.executeQuery();
+
+		        while (rs.next()) {
+		            ReviewDTO rdto = new ReviewDTO();
+		            rdto.setReviewno(rs.getInt("reviewno"));
+		            rdto.setProductno(rs.getInt("productno"));
+		            rdto.setRating(rs.getInt("rating")); // 정수형 별점 (1~5)
+		            rdto.setReviewcontent(rs.getString("reviewcontent")); // "제품이 너무 좋아요..."
+		            rdto.setWritedate(rs.getString("writedate"));
+
+		         // JOIN으로 가져온 상품 정보 세팅
+		            rdto.setProductname(rs.getString("productname")); 
+		            rdto.setProductimg(rs.getString("productimg"));
+
+		            reviewList.add(rdto);
+		        }
+
+		    } finally {
+		        close();
+		    }
+
+		    return reviewList;
+		}
+		// 특정 리뷰 1개 상세 조회 (리뷰번호 기준)
+		@Override
+		public ReviewDTO selectOneReview(int reviewno) throws SQLException {
+		    ReviewDTO rdto = null;
+		    try {
+		        conn = ds.getConnection();
+
+		        // 리스트 때와 마찬가지로 상품 테이블과 조인해서 상품명, 이미지를 가져옵니다.
+		        String sql = " SELECT R.reviewno, R.fk_productno, R.rating, R.reviewcontent, "
+		                   + "        TO_CHAR(R.writedate, 'yyyy-mm-dd') AS writedate, "
+		                   + "        P.productname, P.productimg "
+		                   + " FROM tbl_review R "
+		                   + " JOIN tbl_product P ON R.fk_productno = P.productno "
+		                   + " WHERE R.reviewno = ? ";
+
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setInt(1, reviewno);
+
+		        rs = pstmt.executeQuery();
+
+		        if (rs.next()) { // 1개만 조회하므로 while 대신 if
+		            rdto = new ReviewDTO();
+		            rdto.setReviewno(rs.getInt("reviewno"));
+		            rdto.setProductno(rs.getInt("fk_productno"));
+		            rdto.setRating(rs.getInt("rating"));
+		            rdto.setReviewcontent(rs.getString("reviewcontent"));
+		            rdto.setWritedate(rs.getString("writedate"));
+		            rdto.setProductname(rs.getString("productname")); 
+		            rdto.setProductimg(rs.getString("productimg"));
+		        }
+		    } finally {
+		        close();
+		    }
+		    return rdto;
+		}
+		
+		// 내 리뷰 삭제하기
+		@Override
+		public int deleteReview(String reviewno) throws SQLException {
+		    
+		    int n = 0;
+		    
+		    try {
+		        conn = ds.getConnection();
+		        
+		        // 해당 리뷰 번호(PK)를 가진 행을 삭제합니다.
+		        String sql = " delete from tbl_review "
+		                   + " where reviewno = ? ";
+		        
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, reviewno);
+		        
+		        n = pstmt.executeUpdate(); // 성공하면 1, 실패하면 0 반환
+		        
+		    } finally {
+		        close(); // 자원 반납
+		    }
+		    
+		    return n;
+		}
+		
+		
+		
 }//end
 
 
