@@ -7,9 +7,11 @@ public class ReviewDTO {
 	private int productno; // 제품번호
 	private int rating; // 별점
 	private String reviewcontent; // 리뷰내용
+
 	private String writedate; // 작성날짜
 	
-	
+	private String productname; //리뷰 참조용 joindto 
+	private String productimg;
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 	
 	public int getReviewno() {
@@ -48,7 +50,18 @@ public class ReviewDTO {
 	public void setWritedate(String writedate) {
 		this.writedate = writedate;
 	}
-	
+	public String getProductname() {
+		return productname;
+	}
+	public void setProductname(String productname) {
+		this.productname = productname;
+	}
+	public String getProductimg() {
+		return productimg;
+	}
+	public void setProductimg(String productimg) {
+		this.productimg = productimg;
+	}
 	
 	
 }

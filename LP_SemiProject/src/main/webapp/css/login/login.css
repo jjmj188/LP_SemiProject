@@ -1,169 +1,154 @@
-/* =====================
-   RESET & COMMON
-===================== */
-* {
-  box-sizing: border-box;
-}
-
+/* ===============================
+   Bootstrap BODY 영향 차단 (헤더 보호)
+   =============================== */
 body {
-  margin: 0;
-  font-family: "Noto Sans KR", Arial, sans-serif;
-  background: #fafafa;
-  color: #222;
+  font-size: 16px;        /* header 기준 복원 */
+  line-height: normal;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-/* =====================
-   LOGIN TABLE (테두리 빨간색 3px 고정)
-===================== */
+
+/* ===============================
+   Bootstrap 영향 범위 제한
+   =============================== */
+.login-scope {
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.login-scope table,
+.login-scope th,
+.login-scope td,
+.login-scope a,
+.login-scope button,
+.login-scope input,
+.login-scope label,
+.login-scope span {
+  font-size: inherit;
+  line-height: inherit;
+  font-family: inherit;
+}
+
+/* ===================================================
+   2. 로그인 테이블 스타일 (부트스트랩보다 우선순위 높임)
+   =================================================== */
 #loginTbl {
-  width: 420px;
-  margin: 100px auto;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #fff;
-  border: eee 3px solid !important; /* 🔥 테두리 빨간색 3px 강제 적용 */
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  overflow: hidden;
+    width: 420px !important;
+    margin: 100px auto !important;
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    border-collapse: separate !important;
 }
 
-/* =====================
-   TITLE
-===================== */
+/* 부트스트랩이 테이블에 강제로 넣는 줄무늬나 테두리 제거 */
+#loginTbl th, #loginTbl td {
+    border: none !important;
+    padding: 10px 35px !important;
+}
+
 #loginTbl thead th {
-  padding: 35px 0 15px 0;
-  font-size: 26px;
-  font-weight: 700;
-  text-align: center;
-  color: #333;
+    padding-top: 35px !important;
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
 }
 
-/* =====================
-   TD 기본
-===================== */
-#loginTbl td {
-  padding: 8px 35px;
-  font-size: 14px;
+/* ===================================================
+   3. 인풋 및 버튼 스타일
+   =================================================== */
+#loginUserid, #loginPwd {
+    width: 100% !important;
+    height: 46px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 6px !important;
+    padding: 0 15px !important;
 }
 
-/* =====================
-   LABEL & INPUT
-===================== */
-.label-text {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 600;
-  color: #444;
-}
-
-#loginUserid,
-#loginPwd {
-  width: 100%;
-  height: 46px;
-  padding: 0 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-#loginUserid:focus,
-#loginPwd:focus {
-  outline: none;
-  border-color: #333;
-}
-
-/* =====================
-   아이디저장(왼쪽) & 찾기(오른쪽)
-===================== */
-.saveid-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 0 20px 0;
-}
-
-.saveid-wrap {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.find-links a {
-  color: #777;
-  text-decoration: none;
-  font-size: 13px;
-}
-
-/* =====================
-   BUTTONS (반전 효과)
-===================== */
-
-/* 1. 로그인 버튼: 기본 검정 -> 마우스 올리면 흰색 */
 #btnSubmit {
-  width: 100%;
-  height: 50px;
-  background: #333;       /* 기본 바탕 검정 */
-  color: #fff;            /* 글자 흰색 */
-  border: 1px solid #333;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 8px;     /* 회원가입 버튼과의 간격 축소 */
-  transition: all 0.2s ease;
+    width: 100% !important;
+    height: 50px !important;
+    background: #fff !important;
+    color: #333 !important;
+    border: 1px solid #333 !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+    margin-top: 15px !important;
+    cursor: pointer !important;
 }
-
 #btnSubmit:hover {
-  background: #fff;       /* 🔥 마우스 올리면 흰색 */
-  color: #333;            /* 🔥 글자는 검정 */
-  border: 1px solid #333;
+  background: #333 !important;
+  color: #fff !important;
 }
-
-/* 2. 회원가입 버튼: 기본 흰색 -> 마우스 올리면 검정 */
 .btn-register {
-  width: 100%;
-  height: 50px;
-  background: #fff;       /* 기본 바탕 흰색 */
-  color: #333;            /* 글자 검정 */
-  border: 1px solid #333;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  margin-bottom: 25px;
+    width: 100% !important;
+    height: 50px !important;
+    background: #fff !important;
+    color: #333 !important;
+   border: 1px solid #333 !important;
+    /* border: 1px solid red !important;*/
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+    margin-top: 0px !important;
+	margin-bottom:10px !important;
 }
-
 .btn-register:hover {
-  background: #333;       /* 🔥 마우스 올리면 검정 */
-  color: #fff;            /* 🔥 글자는 흰색 */
+  background: #333 !important;
+  color: #fff !important;
+}
+/* 아이디저장과 찾기 링크를 한 줄에 정렬 */
+.saveid-line {
+    display: flex !important;
+    justify-content: space-between !important; /* 양 끝으로 밀기 */
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 5px !important;
 }
 
+/* 왼쪽 아이디저장 영역 */
+.saveid-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important; /* 체크박스와 글자 사이 간격 */
+}
 
+.saveid-right label {
+    margin-bottom: 0 !important; /* 부트스트랩 기본 마진 제거 */
+    cursor: pointer;
+}
+
+/* 오른쪽 찾기 링크 영역 */
 .find-links {
-    text-align: center;
-    font-size: 14px;
-    color: #000; /* 세로선(|) 색상 (연한 회색) */
+    display: flex !important;
+    gap: 5px !important; /* 글자 사이 간격 */
 }
 
 .find-links a {
-    text-decoration: none; 
-    color: #000;           /* <--- 여기를 #000으로 바꿔야 완전한 검정색이 됩니다! */
-    cursor: pointer;       
+    color: #666 !important;
+    text-decoration: none !important;
+    font-size: 13px !important;
+    cursor: pointer;
 }
 
-/* =====================
-   RESPONSIVE
-===================== */
+.find-links a:hover {
+    text-decoration: underline !important;
+    color: #333 !important;
+}
+/* 반응형 모바일 고정 */
 @media (max-width: 480px) {
   #loginTbl {
-    width: 90%;
+    width: 90% !important;
+    margin: 60px auto !important;
+  }
+  #loginTbl td {
+    padding: 8px 20px !important;
   }
 }

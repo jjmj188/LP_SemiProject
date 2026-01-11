@@ -18,12 +18,21 @@ public class My_info extends AbstractController {
         String method = request.getMethod();
         HttpSession session = request.getSession();
         MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
-
+        
+        
         // 1. 로그인 체크
         if (loginuser == null) {
-            setRedirect(true);
-            setViewPage(request.getContextPath() + "/login/login.lp");
+        	String message="로그인 후 이용가능합니다.";
+        	String loc=request.getContextPath()+"/login/login.lp";
+        	
+        	request.setAttribute("message", message);
+        	request.setAttribute("loc", loc);
+        	
+        	
+            setRedirect(false); // request 영역에 담긴 메시지를 전달해야 하므로 forward(false)
+            setViewPage("/WEB-INF/msg.jsp"); 
             return;
+        	
         }
 
         /* ============================================================
