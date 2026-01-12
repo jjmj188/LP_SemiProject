@@ -1,159 +1,172 @@
-$(function () {
+$(document).ready(function() {
     
-   // ==========================================
-   // 1. 초기 설정 (연도 옵션 생성 등)
-   // ==========================================
-   const currentYear = new Date().getFullYear(); 
-   const startYearLoop = 2020; // 서비스 시작 연도
-   const endYearLoop = currentYear; 
+    // 1. 초기화 작업: 날짜 및 연도 셀렉트 박스 세팅
+    initDateControls();
 
-   // 연도 select 박스에 옵션 추가
-   for (let y = startYearLoop; y <= endYearLoop; y++) {
-     $("#startYearSelect, #endYearSelect").append(`<option value="${y}">${y}년</option>`);
-   }
-   
-   // 기본값 설정 (최근 1년 또는 현재 연도)
-   $("#startYearSelect").val(currentYear - 1); // 작년
-   $("#endYearSelect").val(currentYear);       // 올해
+    // 2. 조회 기준(월별/연도별) 변경 시 UI 토글
+    $("#searchType").change(function() {
+        const type = $(this).val();
+        if(type === "month") {
+            $(".box-month").show();
+            $(".box-year").hide();
+        } else {
+            $(".box-month").hide();
+            $(".box-year").show();
+        }
+    });
 
-   // 월별 조회 기본값 (이번달, 6개월 전)
-   const today = new Date();
-   const mm = String(today.getMonth() + 1).padStart(2, '0');
-   const yyyy = today.getFullYear();
-   $("#endDate").val(`${yyyy}-${mm}`); // 종료일: 이번 달
-   
-   // 시작일: 6개월 전으로 셋팅
-   const pastDate = new Date();
-   pastDate.setMonth(pastDate.getMonth() - 6);
-   const p_mm = String(pastDate.getMonth() + 1).padStart(2, '0');
-   const p_yyyy = pastDate.getFullYear();
-   $("#startDate").val(`${p_yyyy}-${p_mm}`);
+    // 3. [조회하기] 버튼 클릭 시 AJAX 요청
+    $("#btnSearch").click(function() {
+        const searchType = $("#searchType").val();
+        
+        // 파라미터 객체 생성 (mode: 'chartData' 필수)
+        let params = { "searchType": searchType, "mode": "chartData" }; 
 
-
-   // ==========================================
-   // 2. 검색 타입 변경 시 UI 제어
-   // ==========================================
-   $("#searchType").on("change", function() {
-     const type = $(this).val();
-     if (type === 'year') {
-       $(".box-month").hide(); 
-       $(".box-year").show();
-     } else {
-       $(".box-year").hide(); 
-       $(".box-month").show();
-     }
-   });
-
-
-   // ==========================================
-   // 3. 차트 렌더링 함수 (AJAX 요청)
-   // ==========================================
-   function renderChart() {
-     const type = $("#searchType").val(); // 'month' or 'year'
-     
-     // 컨트롤러로 보낼 데이터 객체
-     let requestData = {
-         "searchType": type
-     };
-
-     // --- 유효성 검사 및 데이터 세팅 ---
-     if (type === 'month') {
-       const sVal = $("#startDate").val(); 
-       const eVal = $("#endDate").val();
-
-       if (!sVal || !eVal) { alert("기간을 선택해주세요."); return; }
-       
-       if (sVal > eVal) { alert("종료일이 시작일보다 빠릅니다."); return; }
-
-       requestData.startDate = sVal;
-       requestData.endDate = eVal;
-
-     } else {
-       // 연도별 조회
-       const startY = parseInt($("#startYearSelect").val());
-       const endY = parseInt($("#endYearSelect").val());
-
-       if (startY > endY) { alert("종료 연도가 시작 연도보다 빠릅니다."); return; }
-
-       requestData.startYear = startY;
-       requestData.endYear = endY;
-     }
-
-     // --- AJAX 요청 ---
-     $.ajax({
-        // [중요] Command.properties에 등록한 AJAX 전용 URL로 변경
-        url: "accountChart.lp", 
-        type: "GET",
-        data: requestData,
-        dataType: "json", 
-        success: function(json) {
+        // 유효성 검사 및 파라미터 세팅
+        if(searchType === "month") {
+            const start = $("#startDate").val();
+            const end = $("#endDate").val();
             
-            const $bars = $("#chartBars");
-            const $labels = $("#chartLabels");
-
-            $bars.empty();
-            $labels.empty();
-
-            if (!json || json.length === 0) {
-               $bars.html('<div style="width:100%; text-align:center; margin-top:130px; color:#999;">조회된 데이터가 없습니다.</div>');
-               return; 
+            if(!start || !end) { 
+                alert("조회 기간을 선택해주세요."); 
+                return; 
+            }
+            if(start > end) { 
+                alert("시작일이 종료일보다 클 수 없습니다."); 
+                return; 
+            }
+            
+            params.startDate = start;
+            params.endDate = end;
+        } else {
+            const startYear = $("#startYearSelect").val();
+            const endYear = $("#endYearSelect").val();
+            
+            if(Number(startYear) > Number(endYear)) { 
+                alert("시작 연도가 종료 연도보다 클 수 없습니다."); 
+                return; 
             }
 
-            drawBars(json);
-        },
-        error: function(request, status, error){
-            console.error("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-            alert("데이터 조회 중 오류가 발생했습니다.");
+            params.startYear = startYear;
+            params.endYear = endYear;
         }
-     });
 
-     // --- 차트 그리기 함수 (내부) ---
-     function drawBars(data) {
-       const $bars = $("#chartBars");
-       const $labels = $("#chartLabels");
+        // AJAX 호출
+        $.ajax({
+            url: "admin_account.lp", // 상대 경로 사용 (현재 페이지와 동일한 컨트롤러)
+            type: "GET",
+            data: params,
+            dataType: "json",
+            success: function(json) {
+                renderChart(json); // 차트 그리기 함수 호출
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", error);
+                alert("데이터 조회 중 오류가 발생했습니다.");
+            }
+        });
+    });
+    
+    // (선택사항) 페이지 로드 시 자동으로 조회 버튼 클릭 트리거
+    // $("#btnSearch").trigger("click");
 
-       // 1. 최대값 구하기 (그래프 높이 비율 100% 기준점)
-       const maxAmount = Math.max(...data.map(d => Number(d.amount)));
-       
-       if (maxAmount === 0) {
-           $bars.html('<div style="width:100%; text-align:center; margin-top:130px; color:#999;">매출 내역이 없습니다 (0원).</div>');
-           return;
-       }
+}); // end of $(document).ready
 
-       data.forEach(d => {
-         const amt = Number(d.amount);
-         
-         // 2. 높이 비율 계산 (최소 5% 보장)
-         let percent = 0;
-         if(amt > 0) {
-             percent = (amt / maxAmount) * 100;
-             if(percent < 5) percent = 5; 
-         }
 
-         // 3. 금액 포맷팅 (3자리 콤마)
-         const formatAmount = amt.toLocaleString();
-         
-         // 4. 막대 생성
-         // .bar 클래스는 JSP 내부 <style>에 정의되어 있어야 함
-         const barHtml = `<div class="bar" style="height:${percent}%;" title="${d.label}: ${formatAmount}원"></div>`;
-         $bars.append(barHtml);
+// ============================================
+//  함수 정의 영역
+// ============================================
 
-         // 5. 라벨 생성
-         $labels.append(`<span>${d.label}</span>`);
-       });
-     }
-   }
+/**
+ * 날짜(월) 및 연도 선택 컨트롤의 초기값을 설정하는 함수
+ */
+function initDateControls() {
+    // 1. 월별 조회 초기값 설정 (현재 달 ~ 5개월 전)
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const currentMonth = year + "-" + month;
+    
+    // 5개월 전 계산
+    const pastDate = new Date();
+    pastDate.setMonth(pastDate.getMonth() - 5);
+    const pastYear = pastDate.getFullYear();
+    const pastMon = String(pastDate.getMonth() + 1).padStart(2, '0');
+    const startMonth = pastYear + "-" + pastMon;
 
-   // ==========================================
-   // 4. 이벤트 등록
-   // ==========================================
-   
-   // 조회 버튼 클릭 시 실행
-   $("#btnSearch").on("click", function() { 
-       renderChart(); 
-   });
-   
-   // 페이지 로딩 시 자동으로 1회 실행
-   renderChart();
-   
-});
+    // input type="month"에 값 할당
+    $("#startDate").val(startMonth);
+    $("#endDate").val(currentMonth);
+
+    // 2. 연도별 조회 옵션 생성 (최근 10년)
+    const currentYear = new Date().getFullYear();
+    let yearOptions = "";
+    for(let y = currentYear; y >= currentYear - 10; y--) {
+        yearOptions += '<option value="'+y+'">'+y+'년</option>';
+    }
+    
+    $("#startYearSelect").html(yearOptions);
+    $("#endYearSelect").html(yearOptions);
+    
+    // 기본값: 시작(4년 전) ~ 끝(현재)
+    $("#endYearSelect").val(currentYear);
+    $("#startYearSelect").val(currentYear - 4);
+}
+
+/**
+ * JSON 데이터를 받아 막대 그래프를 그리는 함수
+ * @param {Array} dataList - [{label: '2025-01', amount: '10000'}, ...]
+ */
+function renderChart(dataList) {
+    const $bars = $("#chartBars");
+    const $labels = $("#chartLabels");
+    
+    // 기존 내용 초기화
+    $bars.empty();
+    $labels.empty();
+
+    // 데이터가 없거나 비어있는 경우 처리
+    if(!dataList || dataList.length === 0) {
+        $bars.removeClass("has-data");
+        $bars.html('<div style="margin: auto; color: #999;">조회된 데이터가 없습니다.</div>');
+        return;
+    }
+
+    $bars.addClass("has-data");
+
+    // 1. Y축 비율 계산을 위해 최대값(Max Value) 찾기
+    let maxVal = 0;
+    dataList.forEach(item => {
+        // DB에서 가져온 값이 문자열일 수 있으므로 숫자로 변환
+        const val = Number(item.amount); 
+        if(val > maxVal) maxVal = val;
+    });
+    
+    if(maxVal === 0) maxVal = 1; // 0 나누기 방지
+
+    // 2. 데이터를 순회하며 막대(Bar) 생성
+    dataList.forEach(item => {
+        const val = Number(item.amount);
+        
+        // 높이 비율 계산 (최대 높이의 90%까지만 차도록 설정)
+        const heightPercent = (val / maxVal) * 90; 
+        
+        // 금액 포맷팅 (예: 10000 -> 10,000)
+        const formattedVal = val.toLocaleString();
+
+        // 막대 HTML 생성
+        // 최소 높이 1% 보장 (값이 0이어도 선은 보이게)
+        const displayHeight = heightPercent === 0 ? 1 : heightPercent;
+
+        let html = '';
+        html += '<div class="bar-container">';
+        html += '   <div class="bar" style="height: '+ displayHeight +'%;" title="'+ item.label +' : '+ formattedVal +'원"></div>';
+        html += '   <div class="bar-tooltip">'+ formattedVal +'</div>';
+        html += '</div>';
+
+        $bars.append(html);
+
+        // 하단 라벨(날짜/연도) 추가
+        $labels.append('<div class="label-item">'+ item.label +'</div>');
+    });
+}

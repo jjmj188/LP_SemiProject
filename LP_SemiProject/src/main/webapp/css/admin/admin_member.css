@@ -1,163 +1,138 @@
-/* =====================
-   BASE
-===================== */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #fafafa;
-  color: #222;
+@charset "UTF-8";
+
+/* 상단 검색 및 버튼 컨트롤 영역 */
+.member-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-/* =====================
-   ADMIN WRAPPER
-===================== */
-.admin-wrapper {
-  padding: 60px 0;
-  background: #ffffff;
+/* 검색 박스 */
+.search-box {
+    display: flex;
+    gap: 5px;
+    align-items: center;
 }
 
-/* =====================
-   ADMIN CONTAINER (좌우 기준선 핵심)
-===================== */
-.admin-container {
-  max-width: 1200px;
-  margin: 0 auto;
-
-
-  gap: 30px;
-
-  min-height: 720px;
-  background: #fff;
+.search-box select, 
+.search-box input {
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-sizing: border-box;
+    font-size: 14px;
 }
 
-/* =====================
-   ADMIN MENU (상단 가로형)
-===================== */
-.admin-menu {
+.search-box input { width: 220px; }
+
+/* 버튼 공통 스타일 */
+button {
+    height: 36px;
+    cursor: pointer;
+    font-size: 13px;
+    border-radius: 2px;
+    border: none;
+}
+
+/* 검색 버튼 */
+.btn-search {
+    padding: 0 15px;
+    background: #444;
+    color: #fff;
+}
+
+/* 삭제 버튼 */
+.btn-delete {
+    padding: 0 20px;
+    background: #c95048; /* 테라코타 레드 */
+    color: #fff;
+    font-weight: 600;
+}
+
+/* 테이블 스타일 */
+.member-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    border-top: 1px solid #e1e1e1;
+}
+
+.member-table th { 
+    background-color: #f9f9f9;
+    color: #333;
+    font-weight: 600;
+    padding: 14px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.member-table td {
+    padding: 14px 0;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+}
+
+/* 상태 표시 */
+.status-active { color: #28a745; font-weight: 700; }
+.status-out { color: #dc3545; font-weight: 700; }
+
+/* 체크박스 */
+input[type="checkbox"] {
+    width: 16px; height: 16px; margin: 0; vertical-align: middle; cursor: pointer;
+}
+
+/* ==========================================================================
+   페이지네이션 (Seoul Vinyl Style - 사각형)
+   ========================================================================== */
+.pagination {
   display: flex;
-  gap: 20px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 14px;
-  margin-bottom: 30px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 60px;
+  gap: 8px;
 }
 
-.admin-menu a {
+.pagination a,
+.pagination span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  
+  font-size: 13px;
+  font-family: 'Arial', sans-serif;
+  color: #888;
   text-decoration: none;
+  
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 0;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.pagination a:hover {
+  border-color: #333;
+  color: #333;
+}
+
+.pagination a.active,
+.pagination span.active {
+  background-color: #222;
+  border-color: #222;
+  color: #fff;
+  font-weight: 600;
+  cursor: default;
+  pointer-events: none;
+}
+
+.pagination .direction {
   color: #333;
   font-size: 14px;
-  padding: 8px 12px;
-}
-
-.admin-menu a.active {
-  font-weight: bold;
-  border-bottom: 2px solid #222;
-}
-
-/* =====================
-   ADMIN CONTENT
-===================== */
-.admin-content {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 40px;
-  min-height: 720px;   /* 🔥 다른 페이지랑 높이 통일 */
-}
-
-.admin-content h2 {
-  margin: 0 0 30px;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-/* =====================
-   SEARCH BAR (상단 메뉴 기준)
-===================== */
-.admin-search {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-
-.admin-search input {
-  width: 260px;
-  padding: 8px 12px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-}
-
-.admin-search button {
-  padding: 8px 16px;
-  font-size: 14px;
-  border: 1px solid #222;
-  background: #222;
-  color: #fff;
-  cursor: pointer;
-}
-
-.admin-search button:hover {
-  background: #000;
-}
-
-/* =====================
-   ADMIN TABLE
-===================== */
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.admin-table th {
-  background: #f8f8f8;
-  border: 1px solid #ddd;
-  padding: 12px 10px;
-  text-align: center;
-  font-weight: 600;
-}
-
-.admin-table td {
-  border: 1px solid #ddd;
-  padding: 12px 10px;
-  text-align: center;
-}
-
-.admin-table tbody tr:hover {
-  background: #fafafa;
-}
-
-/* =====================
-   DELETE BUTTON
-===================== */
-.btn-delete {
-  padding: 6px 14px;
-  font-size: 13px;
-  border: 1px solid #c62828;
-  background: #c62828;
-  color: #fff;
-  cursor: pointer;
-}
-
-.btn-delete:hover {
-  background: #a61f1f;
-}
-
-/* =====================
-   RESPONSIVE
-===================== */
-@media (max-width: 900px) {
-
-  .admin-search {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .admin-search input {
-    width: 100%;
-  }
-
-  .admin-table {
-    font-size: 13px;
-  }
 }

@@ -1,340 +1,175 @@
-/* =====================
-   BASE
-===================== */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #ffffff;
-  color: #222;
-}
-
-/* =====================
-   WRAPPER
-===================== */
-.admin-wrapper {
-  padding: 60px 0;
-}
-
-/* 🔥 핵심: 기준 컨테이너 */
-.admin-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
+@charset "UTF-8";
 
 /* =====================
    ADMIN MENU (상단 가로)
 ===================== */
 .admin-menu {
-  display: flex;
-  gap: 20px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 14px;
-  margin-bottom: 30px;
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    background: #fff;
 }
-
 .admin-menu a {
-  text-decoration: none;
-  color: #333;
-  font-size: 14px;
-  padding: 8px 12px;
+    text-decoration: none;
+    color: #555 !important;
+    font-weight: bold;
+    font-size: 16px;
+    padding-bottom: 5px;
+    display: inline-block;
 }
-
+.admin-menu a:hover,
 .admin-menu a.active {
-  font-weight: bold;
-  border-bottom: 2px solid #222;
+    color: #000 !important;
+    border-bottom: 2px solid #000;
 }
 
 /* =====================
-   CONTENT CARD
-===================== */
-.admin-content {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 40px;
-  min-height: 720px;
-}
-
-/* =====================
-   PRODUCT CONTROL
+   PRODUCT LIST & CONTROL
 ===================== */
 .product-control {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
-
-.control-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 14px;
-}
+.control-left { font-size: 14px; color: #333; }
 
 .btn-add {
-  padding: 8px 14px;
-  background: #222;
-  color: #fff;
-  border: none;
-  font-size: 13px;
-  cursor: pointer;
+    background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold;
 }
-
-.btn-add:hover {
-  background: #000;
-}
-
-/* =====================
-   PRODUCT ACTION
-===================== */
-.product-action {
-  margin-bottom: 20px;
-}
-
 .btn-delete {
-  padding: 7px 14px;
-  background: #e53935;
-  color: #fff;
-  border: none;
-  font-size: 13px;
-  cursor: pointer;
+    background: #d9534f; color: #fff; border: none;
+    padding: 6px 12px; cursor: pointer; font-size: 13px; margin-bottom: 10px;
 }
 
-.btn-delete:hover {
-  background: #c62828;
-}
-
-/* =====================
-   PRODUCT LIST
-===================== */
-.product-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+.product-list { display: flex; flex-direction: column; gap: 10px; }
+.empty-msg { padding: 50px; text-align: center; }
 
 /* =====================
    PRODUCT ITEM
 ===================== */
 .product-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 16px;
-  border: 1px solid #ddd;
-  background: #fff;
+    display: flex; align-items: center; border: 1px solid #eee; padding: 15px; border-radius: 5px; background: #fff;
 }
+.product-item input[type=checkbox] { margin-right: 15px; }
+.product-item img { margin-right: 20px; border: 1px solid #ddd; width: 80px; height: 80px; object-fit: cover; }
 
-.product-item img {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border: 1px solid #eee;
-}
+.product-info { flex: 1; }
+.product-info p { margin: 3px 0; }
+.artist-en { color: #555; font-size: 14px; font-weight: bold; }
+.artist-kr { font-weight: bold; font-size: 16px; color: #333; }
+.price { font-weight: bold; color: #000; margin-top: 5px; }
+.stock { font-size: 12px; color: #888; }
 
-/* =====================
-   PRODUCT INFO
-===================== */
-.product-info {
-  flex: 1;
-}
-
-.artist-en {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.artist-kr {
-  font-size: 13px;
-  color: #666;
-}
-
-.price {
-  margin-top: 6px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-/* =====================
-   BUTTONS
-===================== */
-.product-btns {
-  display: flex;
-  gap: 8px;
-}
-
+.product-btns { display: flex; gap: 5px; }
 .product-btns button {
-  padding: 6px 12px;
-  font-size: 12px;
-  background: #fff;
-  border: 1px solid #ccc;
-  cursor: pointer;
+    padding: 5px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 12px;
 }
-
-.product-btns .btn-remove {
-  color: #e53935;
-  border-color: #e53935;
-}
-
-.product-btns .btn-remove:hover {
-  background: #e53935;
-  color: #fff;
-}
+.btn-remove { color: #d9534f; border-color: #d9534f !important; }
 
 /* =====================
-   [수정됨] MODAL POPUP
+   PAGINATION
 ===================== */
-/* 배경 (어두운 오버레이) */
+.pagination { text-align: center; margin-top: 30px; }
+.pagination a {
+    display: inline-block; padding: 5px 10px; border: 1px solid #ddd; color: #555; text-decoration: none; margin: 0 2px;
+}
+.pagination a.active { background: #333; color: #fff; border-color: #333; }
+
+/* =====================
+   MODAL POPUP
+===================== */
 .modal-overlay {
-  display: none; /* 기본적으로 숨김 */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
-  z-index: 1000; /* 최상위로 올림 */
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
 }
-
-/* 팝업 창 본체 (스크롤 적용) */
 .modal-window {
-  background: #fff;
-  width: 450px; /* 가로폭 확장 (400 -> 450) */
-  /* padding 제거 -> header, body, footer로 분산 */
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  
-  display: flex;
-  flex-direction: column;
-
-  position: fixed; /* absolute -> fixed */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  /* [핵심] 화면 높이 제한 및 넘침 방지 */
-  max-height: 85vh;
-  overflow: hidden; 
+    background: #fff; width: 500px; border-radius: 5px;
+    overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
-
-/* 헤더 (제목 + 닫기버튼) */
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  padding: 20px 24px; /* 패딩 이동됨 */
-  flex-shrink: 0; /* 스크롤 시 고정 */
+    padding: 15px; background: #f1f1f1; border-bottom: 1px solid #ddd; 
+    display: flex; justify-content: space-between; align-items: center;
 }
+.modal-header h3 { margin: 0; font-size: 18px; }
+.btn-close-modal { border: none; background: none; font-size: 24px; cursor: pointer; }
 
-.modal-header h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #222;
-}
+.modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px; }
+.input-text { width: 100%; padding: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+.input-file { width: 100%; }
+.desc-area { height: 100px; resize: none; }
+#currentImgText { font-size:12px; color:blue; display:none; }
 
-.btn-close-modal {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #999;
-}
+/* 트랙 리스트 */
+.track-list-box { background: #f9f9f9; padding: 10px; border: 1px solid #ddd; margin-bottom: 5px; }
+.track-item { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; }
+.track-item input { flex: 1; }
+.btn-add-track { padding: 5px 10px; background: #555; color: #fff; border: none; cursor: pointer; font-size: 12px; border-radius: 3px; }
+.btn-remove-track { padding: 5px 8px; background: #fff; border: 1px solid #ccc; color: red; cursor: pointer; font-weight: bold; border-radius: 3px; }
 
-/* 입력 폼 영역 (여기에만 스크롤 적용) */
-.modal-body {
-  padding: 20px 24px; /* 패딩 이동됨 */
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  
-  overflow-y: auto; /* 내용 길어지면 스크롤 발생 */
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group label {
-  font-size: 13px;
-  font-weight: bold;
-  color: #444;
-}
-
-.input-text {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.input-file {
-  font-size: 13px;
-}
-
-/* 하단 버튼 영역 */
 .modal-footer {
+    padding: 15px; border-top: 1px solid #ddd; text-align: right; background: #f9f9f9;
+}
+.btn-submit-modal { background: #333; color: #fff; padding: 8px 20px; border: none; cursor: pointer; }
+.btn-cancel-modal { background: #fff; border: 1px solid #ccc; padding: 8px 15px; margin-right: 5px; cursor: pointer; }
+
+/* ==========================================================================
+   [추가] 페이지네이션 (Seoul Vinyl Style)
+   ========================================================================== */
+.pagination {
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  border-top: 1px solid #eee;
-  padding: 16px 24px 20px; /* 패딩 이동됨 */
-  background: #fff;
-  flex-shrink: 0; /* 스크롤 시 고정 */
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px; /* 리스트와의 간격 */
+  margin-bottom: 60px; /* 푸터와의 간격 */
+  gap: 8px; /* 버튼 사이 간격 */
 }
 
-.btn-cancel-modal {
-  padding: 8px 16px;
-  background: #fff;
-  border: 1px solid #ddd;
-  cursor: pointer;
+/* 기본 버튼 스타일 (숫자, 화살표 공통) */
+.pagination a,
+.pagination span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 32px; /* 정사각형 형태 */
+  height: 32px;
+  padding: 0 6px;
+  
   font-size: 13px;
-  color: #666;
-}
-
-.btn-submit-modal {
-  padding: 8px 16px;
-  background: #222;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.btn-submit-modal:hover {
-  background: #000;
-}
-
-/* =====================
-   [추가] 모달 내부 폼 확장 스타일
-   (textarea, select, number input 대응)
-===================== */
-
-/* 1. 텍스트 영역 (제품 설명) 스타일 */
-.modal-body .form-group textarea.input-text {
-  height: 100px;        /* 기본 높이 설정 */
-  resize: vertical;     /* 세로로만 크기 조절 가능하도록 제한 */
-  font-family: inherit; /* 부모 폰트 상속 */
-  line-height: 1.5;     /* 줄간격 확보 */
-}
-
-/* 2. 셀렉트 박스 (카테고리) 스타일 */
-.modal-body .form-group select.input-text {
-  cursor: pointer;      /* 마우스 올렸을 때 손가락 모양 */
+  font-family: 'Arial', sans-serif;
+  color: #888; /* 기본 회색 텍스트 */
+  text-decoration: none;
+  
   background-color: #fff;
+  border: 1px solid #e0e0e0; /* 연한 테두리 */
+  border-radius: 0; /* 완전 사각형 (원하면 4px 등으로 수정) */
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-/* 3. 숫자 입력 필드 (가격, 재고) 화살표 제거 */
-/* 크롬, 사파리, 엣지용 */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+/* 마우스 올렸을 때 */
+.pagination a:hover {
+  border-color: #333;
+  color: #333;
 }
-/* 파이어폭스용 */
-input[type="number"] {
-  -moz-appearance: textfield; 
-  appearance: textfield;
+
+/* 현재 활성화된 페이지 (검정 배경) */
+.pagination a.active,
+.pagination span.active {
+  background-color: #222;
+  border-color: #222;
+  color: #fff;
+  font-weight: 600;
+  cursor: default;
+  pointer-events: none; /* 클릭 방지 */
+}
+
+/* 이전/다음 버튼 (화살표) */
+.pagination .direction {
+  color: #333;
+  font-size: 14px;
 }

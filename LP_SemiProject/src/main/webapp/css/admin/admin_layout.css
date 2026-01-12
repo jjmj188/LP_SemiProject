@@ -1,80 +1,96 @@
+@charset "UTF-8";
+
 /* =====================
    관리자 공통 레이아웃
 ===================== */
 
-/* 바깥 래퍼: 배경 + 상하 여백 */
-.admin-wrapper {
-  padding: 60px 0;              /* 🔥 mypage / buy / cart 와 통일 */
-  background: #fafafa;
+/* 1. 기본 설정 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fafafa;
 }
 
-/* 🔥 핵심: 헤더 기준선 맞추는 컨테이너 */
+a { text-decoration: none; color: inherit; }
+ul, li { list-style: none; margin: 0; padding: 0; }
+
+/* 2. 바깥 래퍼 */
+.admin-wrapper {
+  padding: 60px 0;
+  background: #fafafa;
+  min-height: 800px; /* 최소 높이 확보 */
+}
+
+/* 3. 메인 컨테이너 (중앙 정렬) */
 .admin-container {
-   max-width: 1200px;
+  max-width: 1200px;
   margin: 0 auto;
-
-
-  gap: 30px;
-
-  min-height: 720px;
-  background: #fff;
-
+  background: transparent; /* 컨테이너 배경은 투명하게 (내부 콘텐츠가 흰색) */
 }
 
 /* =====================
-   관리자 메뉴바
+   관리자 메뉴바 (가로형 탭)
 ===================== */
-
 .admin-menu {
   display: flex;
-  gap: 20px;
+  gap: 30px; /* 메뉴 간 간격 */
   border-bottom: 1px solid #ddd;
-  padding-bottom: 14px;
-  margin-bottom: 30px;
+  padding-bottom: 0; /* 아래 border와 텍스트 간격 조정 */
+  margin-bottom: 40px;
+  padding-left: 10px;
 }
 
 .admin-menu a {
   text-decoration: none;
-  color: #333;
-  font-size: 14px;
-  padding: 8px 12px;
+  color: #888;
+  font-size: 16px;
+  padding: 12px 5px;
+  font-weight: 500;
+  position: relative;
+  top: 1px; /* border와 겹치게 하단으로 1px 이동 */
+  cursor: pointer;
 }
 
+/* 활성화된 메뉴 (검은 글씨 + 검은 밑줄) */
 .admin-menu a.active {
-  font-weight: bold;
+  color: #222;
+  font-weight: 700;
   border-bottom: 2px solid #222;
+}
+
+.admin-menu a:hover {
+  color: #333;
 }
 
 /* =====================
    콘텐츠 영역
 ===================== */
-
 .admin-content {
   background: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #ddd; /* 테두리 있음 */
   padding: 40px;
-  min-height: 720px;           /* 🔥 높이 기준 통일 */
+  min-height: 600px;
+  border-radius: 4px; /* 살짝 둥글게 */
 }
 
 .admin-content h2 {
   margin: 0 0 30px;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
 }
 
-/* ==========================================================================
-   페이지네이션 (Pagination) - Seoul Vinyl Style
-   ========================================================================== */
+/* =====================
+   페이지네이션
+===================== */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px; /* 컨텐츠와 간격 */
-  margin-bottom: 60px; /* 푸터와 간격 */
-  gap: 8px; /* 버튼 사이 간격 */
+  margin-top: 40px;
+  gap: 8px;
 }
 
-/* 기본 버튼 스타일 */
 .pagination a {
   display: inline-flex;
   justify-content: center;
@@ -82,36 +98,23 @@
   min-width: 32px;
   height: 32px;
   padding: 0 6px;
-  
   font-size: 13px;
-  font-family: 'Pretendard', sans-serif; /* 또는 기존 폰트 */
-  color: #888; /* 비활성 텍스트 색상 (연한 회색) */
+  color: #888;
   text-decoration: none;
-  
   background-color: #fff;
-  border: 1px solid #ddd; /* 연한 테두리 */
+  border: 1px solid #ddd;
   transition: all 0.2s ease;
 }
 
-/* 마우스 올렸을 때 */
 .pagination a:hover {
   border-color: #333;
   color: #333;
 }
 
-/* 현재 활성화된 페이지 (검정 배경) */
 .pagination a.active {
   background-color: #333;
   border-color: #333;
   color: #fff;
   font-weight: 600;
   cursor: default;
-}
-
-/* 이전/다음 버튼 (화살표) */
-.pagination .prev,
-.pagination .next {
-  font-size: 16px; /* 화살표만 약간 크게 */
-  color: #333;
-  border: 1px solid #ddd;
 }
