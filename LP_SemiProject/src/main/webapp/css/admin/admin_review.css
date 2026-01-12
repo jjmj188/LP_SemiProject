@@ -32,6 +32,7 @@
     border-collapse: collapse;
     font-size: 13px;
     text-align: center;
+    table-layout: fixed; 
 }
 
 .review-table th, .review-table td {
@@ -46,7 +47,17 @@
     color: #333;
 }
 
-/* 칼럼별 정렬 */
+.review-table th:nth-child(1) { width: 5%; }  /* 선택 */
+.review-table th:nth-child(2) { width: 5%; }  /* 번호 */
+.review-table th:nth-child(3) { width: 15%; } /* 상품명 */
+.review-table th:nth-child(4) { width: 40%; } /* 리뷰내용 (가장 넓게 할당) */
+.review-table th:nth-child(5) { width: 12%; } /* 평점 */
+.review-table th:nth-child(6) { width: 8%; }  /* 작성자 */
+.review-table th:nth-child(7) { width: 9%; }  /* 작성일 */
+.review-table th:nth-child(8) { width: 6%; }  /* 관리 */
+
+
+/* 칼럼별 스타일 */
 .review-table .col-product {
     font-weight: bold;
     color: #444;
@@ -57,7 +68,8 @@
     padding-left: 15px;
     color: #555;
     line-height: 1.4;
-    max-width: 400px;
+    word-break: break-all; 
+    white-space: normal;
 }
 
 /* 별점 색상 */
