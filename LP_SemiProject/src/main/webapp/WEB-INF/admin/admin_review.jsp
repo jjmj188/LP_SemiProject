@@ -1,23 +1,27 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 
-<%
-	String ctxPath = request.getContextPath();
-%>
+<% String ctxPath = request.getContextPath(); %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 리뷰 관리</title>
+<title>관리자 - 리뷰 관리</title>
+
 <link rel="stylesheet" href="<%= ctxPath%>/css/admin/admin_layout.css">
 <link rel="stylesheet" href="<%= ctxPath%>/css/admin/admin_review.css">
+
+<script>const ctxPath = "<%= ctxPath %>";</script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="<%= ctxPath%>/js/admin/admin_review.js"></script>
+
 </head>
 <body>
-  
+
 <jsp:include page="/WEB-INF/header2.jsp"></jsp:include>
-  
+
 <main class="admin-wrapper">
   <div class="admin-container">
 
@@ -34,76 +38,67 @@
       <h2>리뷰 관리</h2>
 
       <div class="review-control">
-        <div class="control-left">
-          <label>
-            <input type="checkbox" id="checkAll">
-            전체 선택
-          </label>
+        <div style="display:flex; align-items:center;">
+             <input type="checkbox" id="checkAll" style="margin-right:8px;">
+             <label for="checkAll" style="font-size:14px; cursor:pointer;">전체 선택</label>
         </div>
-
-        <div class="control-right">
-          <button class="btn-delete" onclick="alert('준비중인 기능입니다.')">선택 삭제</button>
-        </div>
+        <button type="button" class="btn-delete" onclick="goDelete()">선택 삭제</button>
       </div>
 
       <table class="review-table">
+        <colgroup>
+            <col width="5%">  <col width="7%">  <col width="25%"> <col width="*">   
+            <col width="10%"> <col width="10%"> <col width="12%"> <col width="8%">  
+        </colgroup>
         <thead>
-          <tr>
-            <th></th>
-            <th>상품명</th>
-            <th>리뷰내용</th>
-            <th>평점</th>
-            <th>작성자</th>
-            <th>작성일</th>
-            <th>관리</th>
-          </tr>
+            <tr>
+                <th>선택</th> <th>번호</th>
+                <th>상품명</th>
+                <th>리뷰내용</th>
+                <th>평점</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>관리</th>
+            </tr>
         </thead>
-
         <tbody>
-          <c:if test="${empty requestScope.reviewList}">
-              <tr>
-                  <td colspan="7" style="text-align: center; padding: 50px; color: #666;">
-                      등록된 리뷰가 없습니다.
-                  </td>
-              </tr>
-          </c:if>
+            <c:if test="${empty requestScope.reviewList}">
+                <tr>
+                    <td colspan="8" style="padding: 50px; color:#777;">등록된 리뷰가 없습니다.</td>
+                </tr>
+            </c:if>
 
-          <c:forEach var="rvo" items="${requestScope.reviewList}">
-              <tr>
-                <td>
-                    <input type="checkbox" name="reviewno" value="${rvo.reviewno}">
-                </td>
-                
-                <td class="product-name">
-                    ${rvo.productname}
-                </td>
-                
-                <td class="review-content" style="text-align: left;">
-                  ${rvo.reviewcontent}
-                </td>
-                
-                <td>
-                   <c:forEach begin="1" end="${rvo.rating}">
-                       ⭐
-                   </c:forEach>
-                </td>
-                
-                <td>${rvo.name}</td>
-                
-                <td>${rvo.writedate}</td>
-                
-                <td>
-                  <button class="btn-small" onclick="alert('준비중인 기능입니다.')">숨김</button>
-                </td>
-              </tr>
-          </c:forEach>
+            <c:forEach var="rvo" items="${requestScope.reviewList}" varStatus="status">
+                <tr>
+                    <td>
+                        <input type="checkbox" name="reviewno" value="${rvo.reviewno}">
+                    </td>
+                    
+                    <%-- 번호 출력 (오름차순 계산값) --%>
+                    <td>${requestScope.startIter + status.index}</td>
+                    
+                    <td class="col-product">${rvo.productname}</td>
+                    <td class="col-content">${rvo.reviewcontent}</td>
+                    
+                    <td>
+                        <div class="star-rating">
+                           <c:forEach begin="1" end="${rvo.rating}">★</c:forEach>
+                        </div>
+                    </td>
+                    
+                    <td>${rvo.name}</td>
+                    <td>${rvo.writedate}</td>
+                    
+                    <td>
+                        <button type="button" class="btn-hide">숨김</button>
+                    </td>
+                </tr>
+            </c:forEach>
         </tbody>
       </table>
 
       <div class="pagination">
-        <a href="#" class="prev">&lsaquo;</a>
-        <a href="#" class="active">1</a>
-        <a href="#" class="next">&rsaquo;</a>
+        ${requestScope.pageBar}
       </div>
 
     </section>
@@ -111,19 +106,6 @@
 </main>
 
 <jsp:include page="/WEB-INF/footer2.jsp" />
-
-<script>
-    const checkAll = document.getElementById('checkAll');
-    const checkboxes = document.getElementsByName('reviewno');
-
-    if(checkAll) {
-        checkAll.addEventListener('change', function() {
-            for(let box of checkboxes) {
-                box.checked = this.checked;
-            }
-        });
-    }
-</script>
 
 </body>
 </html>

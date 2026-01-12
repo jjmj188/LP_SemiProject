@@ -191,7 +191,7 @@ public class AdminDAO implements InterAdminDAO {
         return adminvo;
     }
 
-    // 6. 회원 전체 목록 조회 (복호화 로직 포함)
+    // 6-1. 회원 전체 목록 조회 (기존 방식 - 페이징 없음)
     @Override
     public List<MemberVO> getMemberList(Map<String, String> paraMap) throws SQLException {
         List<MemberVO> memberList = new ArrayList<>();
@@ -246,6 +246,90 @@ public class AdminDAO implements InterAdminDAO {
         } finally {
             close();
         }
+        return memberList;
+    }
+
+    // 6-2. [cite_start][추가] 총 회원 수 조회 (페이징용, 검색 포함) [cite: 88, 97]
+    @Override
+    public int getTotalMemberCount(Map<String, String> paraMap) throws SQLException {
+        int totalCount = 0;
+        try {
+            conn = ds.getConnection();
+            String searchWord = paraMap.get("searchWord");
+            String searchType = paraMap.get("searchType");
+            
+            String sql = " SELECT count(*) FROM tbl_member WHERE userid != 'admin' ";
+            
+            if(searchWord != null && !searchWord.trim().isEmpty()) {
+                sql += " AND " + searchType + " LIKE '%'|| ? ||'%' ";
+            }
+            
+            pstmt = conn.prepareStatement(sql);
+            if(searchWord != null && !searchWord.trim().isEmpty()) {
+                pstmt.setString(1, searchWord);
+            }
+            
+            rs = pstmt.executeQuery();
+            if(rs.next()) totalCount = rs.getInt(1);
+            
+        } finally { close(); }
+        return totalCount;
+    }
+
+    // 6-3. [cite_start][추가] 페이징 처리된 회원 목록 조회 [cite: 90, 93, 99]
+    @Override
+    public List<MemberVO> getMemberListWithPaging(Map<String, String> paraMap) throws SQLException {
+        List<MemberVO> memberList = new ArrayList<>();
+        try {
+            conn = ds.getConnection();
+            String searchWord = paraMap.get("searchWord");
+            String searchType = paraMap.get("searchType");
+            
+            String sql = " SELECT userseq, userid, name, email, mobile, gender, registerday, status "
+                       + " FROM ( "
+                       + "   SELECT rownum AS rno, userseq, userid, name, email, mobile, gender, registerday, status "
+                       + "   FROM ( "
+                       + "     SELECT userseq, userid, name, email, mobile, gender, "
+                       + "            to_char(registerday, 'yyyy-mm-dd') AS registerday, status "
+                       + "     FROM tbl_member "
+                       + "     WHERE userid != 'admin' ";
+            
+            if(searchWord != null && !searchWord.trim().isEmpty()) {
+                sql += " AND " + searchType + " LIKE '%'|| ? ||'%' ";
+            }
+            
+            sql += "     ORDER BY userseq DESC "
+                 + "   ) V "
+                 + " ) T "
+                 + " WHERE rno BETWEEN ? AND ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+            
+            int idx = 1;
+            if(searchWord != null && !searchWord.trim().isEmpty()) {
+                pstmt.setString(idx++, searchWord);
+            }
+            pstmt.setInt(idx++, Integer.parseInt(paraMap.get("startRno")));
+            pstmt.setInt(idx++, Integer.parseInt(paraMap.get("endRno")));
+            
+            rs = pstmt.executeQuery();
+            while(rs.next()) {
+                MemberVO mvo = new MemberVO();
+                mvo.setUserseq(rs.getInt("userseq"));
+                mvo.setUserid(rs.getString("userid"));
+                mvo.setName(rs.getString("name"));
+                
+                try { mvo.setEmail(aes.decrypt(rs.getString("email"))); } 
+                catch(Exception e) { mvo.setEmail(rs.getString("email")); }
+                
+                try { mvo.setMobile(aes.decrypt(rs.getString("mobile"))); } 
+                catch(Exception e) { mvo.setMobile(rs.getString("mobile")); }
+                
+                mvo.setRegisterday(rs.getString("registerday"));
+                mvo.setStatus(rs.getInt("status"));
+                memberList.add(mvo);
+            }
+        } finally { close(); }
         return memberList;
     }
     
@@ -505,8 +589,76 @@ public class AdminDAO implements InterAdminDAO {
         }
         return result;
     }
+    
+    // 12. 전체 상품 개수 조회 (페이징 계산용)
+    @Override
+    public int getTotalProductCount(Map<String, String> paraMap) throws SQLException {
+        int totalCount = 0;
+        try {
+            conn = ds.getConnection();
+            String sql = " SELECT count(*) FROM tbl_product ";
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                totalCount = rs.getInt(1);
+            }
+        } finally {
+            close();
+        }
+        return totalCount;
+    }
 
-    // 12. 주문 및 배송 전체 목록 조회
+    // 13. 페이징 처리된 상품 목록 조회 (10개씩)
+    @Override
+    public List<ProductVO> getProductListWithPaging(Map<String, String> paraMap) throws SQLException {
+        List<ProductVO> productList = new ArrayList<>();
+        try {
+            conn = ds.getConnection();
+            
+            String sql = " SELECT productno, fk_categoryno, categoryname, productname, productimg, "
+                       + "        price, stock, point, youtubeurl, productdesc "
+                       + " FROM "
+                       + " ( "
+                       + "     SELECT rownum AS rno, V.* "
+                       + "     FROM "
+                       + "     ( "
+                       + "         SELECT P.productno, P.fk_categoryno, C.categoryname, P.productname, P.productimg, "
+                       + "                P.price, P.stock, P.point, P.youtubeurl, P.productdesc "
+                       + "         FROM tbl_product P "
+                       + "         JOIN tbl_category C ON P.fk_categoryno = C.categoryno "
+                       + "         ORDER BY P.productno DESC "
+                       + "     ) V "
+                       + " ) T "
+                       + " WHERE rno BETWEEN ? AND ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, Integer.parseInt(paraMap.get("startRno")));
+            pstmt.setInt(2, Integer.parseInt(paraMap.get("endRno")));
+            
+            rs = pstmt.executeQuery();
+            
+            while(rs.next()) {
+                ProductVO pvo = new ProductVO();
+                pvo.setProductno(rs.getInt("productno"));
+                pvo.setFk_categoryno(rs.getInt("fk_categoryno"));
+                pvo.setCategoryname(rs.getString("categoryname"));
+                pvo.setProductname(rs.getString("productname"));
+                pvo.setProductimg(rs.getString("productimg"));
+                pvo.setPrice(rs.getInt("price"));
+                pvo.setStock(rs.getInt("stock"));
+                pvo.setPoint(rs.getInt("point"));
+                pvo.setYoutubeurl(rs.getString("youtubeurl"));
+                pvo.setProductdesc(rs.getString("productdesc"));
+                
+                productList.add(pvo);
+            }
+        } finally {
+            close();
+        }
+        return productList;
+    }
+
+    // 14. 주문 및 배송 전체 목록 조회
     @Override
     public List<Map<String, String>> getOrderList(Map<String, String> paraMap) throws SQLException {
         List<Map<String, String>> orderList = new ArrayList<>();
@@ -519,7 +671,7 @@ public class AdminDAO implements InterAdminDAO {
                        + " FROM tbl_order O "
                        + " JOIN tbl_member M ON O.fk_userid = M.userid "
                        + " JOIN tbl_delivery D ON O.orderno = D.fk_orderno "
-                       + " ORDER BY O.orderno DESC ";
+                       + " ORDER BY O.orderno ASC "; // [수정] DESC -> ASC 로 변경
             
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -549,8 +701,64 @@ public class AdminDAO implements InterAdminDAO {
         }
         return orderList;
     }
+    
+    // 15. 주문 및 배송 시작 처리 
+    
+    @Override
+    public int updateDeliveryStart(Map<String, String> paraMap) throws SQLException {
+        int result = 0;
+        
+        try {
+            conn = ds.getConnection();
+            conn.setAutoCommit(false); // 트랜잭션 시작
+            
+            // 1. 배송 테이블 업데이트 (상태: 배송중, 송장번호, 택배사, 발송일: 현재시각)
+            String sqlDelivery = " UPDATE tbl_delivery "
+                               + " SET deliverystatus = '배송중', "
+                               + "     invoice_no = ?, "
+                               + "     delivery_company = ?, "
+                               + "     shipped_date = sysdate "
+                               + " WHERE fk_orderno = ? ";
+            
+            pstmt = conn.prepareStatement(sqlDelivery);
+            pstmt.setString(1, paraMap.get("invoice_no"));       // 송장번호
+            pstmt.setString(2, paraMap.get("delivery_company")); // 택배사
+            pstmt.setString(3, paraMap.get("orderno"));          // 주문번호
+            
+            int n1 = pstmt.executeUpdate();
+            pstmt.close();
+            
+            // 2. 주문 테이블의 받는 사람 이름(name)도 혹시 수정되었을 수 있으니 업데이트
+            String sqlOrder = " UPDATE tbl_order SET name = ? WHERE orderno = ? ";
+            
+            pstmt = conn.prepareStatement(sqlOrder);
+            pstmt.setString(1, paraMap.get("receiverName")); // 받는 사람
+            pstmt.setString(2, paraMap.get("orderno"));
+            
+            int n2 = pstmt.executeUpdate();
+            
+            // 두 쿼리 모두 성공 시 커밋
+            if(n1 == 1 && n2 == 1) {
+                conn.commit();
+                result = 1;
+            } else {
+                conn.rollback();
+                result = 0;
+            }
+            
+            conn.setAutoCommit(true);
+            
+        } catch(SQLException e) {
+            if(conn != null) try { conn.rollback(); } catch(SQLException ex) {}
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+        
+        return result;
+    }
 
-    // 13. 리뷰 전체 목록 조회
+    // 16. 리뷰 전체 목록 조회
     @Override
     public List<Map<String, String>> getReviewList(Map<String, String> paraMap) throws SQLException {
         List<Map<String, String>> reviewList = new ArrayList<>();
@@ -586,7 +794,61 @@ public class AdminDAO implements InterAdminDAO {
         return reviewList;
     }
     
-    // 14. 문의 내역 전체 조회
+    // 17. 리뷰 총 개수 구하기 (페이징용)
+    @Override
+    public int getTotalReviewCount(Map<String, String> paraMap) throws SQLException {
+        int totalCount = 0;
+        try {
+            conn = ds.getConnection();
+            String sql = " SELECT count(*) FROM tbl_review ";
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if(rs.next()) totalCount = rs.getInt(1);
+        } finally { close(); }
+        return totalCount;
+    }
+
+    // 18. 페이징 처리된 리뷰 목록 조회 (오름차순 정렬)
+    @Override
+    public List<Map<String, String>> getReviewListWithPaging(Map<String, String> paraMap) throws SQLException {
+        List<Map<String, String>> reviewList = new ArrayList<>();
+        try {
+            conn = ds.getConnection();
+            // [중요] ORDER BY writedate ASC (오래된 순)
+            String sql = " SELECT reviewno, reviewcontent, rating, writedate, name, productname "
+                       + " FROM ( "
+                       + "    SELECT rownum AS rno, V.* "
+                       + "    FROM ( "
+                       + "        SELECT R.reviewno, R.reviewcontent, R.rating, to_char(R.writedate, 'yyyy-mm-dd') AS writedate, "
+                       + "               M.name, P.productname "
+                       + "        FROM tbl_review R "
+                       + "        JOIN tbl_member M ON R.fk_userid = M.userid "
+                       + "        JOIN tbl_product P ON R.fk_productno = P.productno "
+                       + "        ORDER BY R.writedate ASC " 
+                       + "    ) V "
+                       + " ) T "
+                       + " WHERE rno BETWEEN ? AND ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, Integer.parseInt(paraMap.get("startRno")));
+            pstmt.setInt(2, Integer.parseInt(paraMap.get("endRno")));
+            
+            rs = pstmt.executeQuery();
+            while(rs.next()) {
+                Map<String, String> map = new HashMap<>();
+                map.put("reviewno", rs.getString("reviewno"));
+                map.put("reviewcontent", rs.getString("reviewcontent"));
+                map.put("rating", rs.getString("rating"));
+                map.put("writedate", rs.getString("writedate"));
+                map.put("name", rs.getString("name"));
+                map.put("productname", rs.getString("productname"));
+                reviewList.add(map);
+            }
+        } finally { close(); }
+        return reviewList;
+    }
+    
+    // 19. 문의 내역 전체 조회
     @Override
     public List<InquiryVO> getInquiryList(Map<String, String> paraMap) throws SQLException {
         List<InquiryVO> inquiryList = new ArrayList<>();
@@ -620,7 +882,60 @@ public class AdminDAO implements InterAdminDAO {
         return inquiryList;
     }
     
-    // 15. 문의 답변 등록 및 수정 (Update)
+    // 20. 문의 총 개수 조회 (페이징용)
+    @Override
+    public int getTotalInquiryCount(Map<String, String> paraMap) throws SQLException {
+        int totalCount = 0;
+        try {
+            conn = ds.getConnection();
+            String sql = " SELECT count(*) FROM tbl_inquiry ";
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if(rs.next()) totalCount = rs.getInt(1);
+        } finally { close(); }
+        return totalCount;
+    }
+
+    // 21. 페이징 처리된 문의 목록 조회 (작성일 오름차순: 오래된 순)
+    @Override
+    public List<InquiryVO> getInquiryListWithPaging(Map<String, String> paraMap) throws SQLException {
+        List<InquiryVO> inquiryList = new ArrayList<>();
+        try {
+            conn = ds.getConnection();
+            // [중요] ORDER BY inquirydate ASC (오래된 날짜가 1번)
+            String sql = " SELECT inquiryno, fk_userid, inquirycontent, inquirydate, inquirystatus, adminreply "
+                       + " FROM ( "
+                       + "    SELECT rownum AS rno, V.* "
+                       + "    FROM ( "
+                       + "        SELECT inquiryno, fk_userid, inquirycontent, "
+                       + "               to_char(inquirydate, 'yyyy-mm-dd') AS inquirydate, "
+                       + "               inquirystatus, adminreply "
+                       + "        FROM tbl_inquiry "
+                       + "        ORDER BY inquirydate ASC " 
+                       + "    ) V "
+                       + " ) T "
+                       + " WHERE rno BETWEEN ? AND ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, Integer.parseInt(paraMap.get("startRno")));
+            pstmt.setInt(2, Integer.parseInt(paraMap.get("endRno")));
+            
+            rs = pstmt.executeQuery();
+            while(rs.next()) {
+                InquiryVO ivo = new InquiryVO();
+                ivo.setInquiryno(rs.getInt("inquiryno"));
+                ivo.setFk_userid(rs.getString("fk_userid"));
+                ivo.setInquirycontent(rs.getString("inquirycontent"));
+                ivo.setInquirydate(rs.getString("inquirydate"));
+                ivo.setInquirystatus(rs.getString("inquirystatus"));
+                ivo.setAdminreply(rs.getString("adminreply"));
+                inquiryList.add(ivo);
+            }
+        } finally { close(); }
+        return inquiryList;
+    }
+    
+    // 22. 문의 답변 등록 및 수정 (Update)
     @Override
     public int replyInquiry(String inquiryno, String adminreply) throws SQLException {
         int result = 0;
@@ -639,6 +954,48 @@ public class AdminDAO implements InterAdminDAO {
             
             result = pstmt.executeUpdate();
             
+        } finally {
+            close();
+        }
+        return result;
+    }
+    
+    // 2. 리뷰 선택 삭제 (Delete - Batch 처리)
+    @Override
+    public int deleteMultiReviews(String[] reviewNos) throws SQLException {
+        int result = 0;
+        try {
+            conn = ds.getConnection();
+            conn.setAutoCommit(false); // 트랜잭션 시작
+            
+            String sql = " DELETE FROM tbl_review WHERE reviewno = ? ";
+            pstmt = conn.prepareStatement(sql);
+            
+            for(String reviewNo : reviewNos) {
+                pstmt.setString(1, reviewNo);
+                pstmt.addBatch(); // 배치에 추가
+            }
+            
+            int[] count = pstmt.executeBatch(); // 일괄 실행
+            
+            // 실행 결과 확인
+            for(int n : count) {
+                if(n == 1) result++; // 삭제된 행의 개수 누적
+            }
+            
+            // 요청한 개수만큼 삭제가 되었다면 커밋
+            if(result == reviewNos.length) {
+                conn.commit();
+            } else {
+                conn.rollback();
+                result = 0; 
+            }
+            
+            conn.setAutoCommit(true);
+            
+        } catch(SQLException e) {
+            try { if(conn != null) conn.rollback(); } catch(SQLException ex) {}
+            e.printStackTrace();
         } finally {
             close();
         }

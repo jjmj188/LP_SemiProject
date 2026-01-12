@@ -1,73 +1,67 @@
-/* =====================
-   BASE & LAYOUT (기존 유지)
-===================== */
-body { margin: 0; font-family: Arial, sans-serif; background: #fafafa; color: #222; }
-.admin-wrapper { padding: 60px 0; background: #ffffff; }
-.admin-container { max-width: 1200px; margin: 0 auto; min-height: 720px; background: #fff; }
-.admin-menu { display: flex; gap: 20px; border-bottom: 1px solid #ddd; padding-bottom: 14px; margin-bottom: 30px; }
-.admin-menu a { text-decoration: none; color: #333; font-size: 14px; padding: 8px 12px; }
-.admin-menu a.active { font-weight: bold; border-bottom: 2px solid #222; }
-.admin-content { background: #fff; border: 1px solid #ddd; padding: 40px; min-height: 720px; }
-.admin-content h2 { margin: 0 0 30px; font-size: 22px; font-weight: 700; }
+@charset "UTF-8";
 
 /* =====================
-   INQUIRY TABLE
+   테이블 스타일 (리뷰 페이지와 통일)
 ===================== */
 .inquiry-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13px;
+  text-align: center;
 }
 
-.inquiry-table thead th {
-  background: #f8f8f8;
+.inquiry-table th {
+  background-color: #f8f8f8;
   border: 1px solid #ddd;
-  padding: 12px 10px;
-  text-align: center;
+  padding: 12px;
   font-weight: 600;
+  color: #333;
 }
 
-.inquiry-table tbody td {
+.inquiry-table td {
   border: 1px solid #ddd;
   padding: 12px 10px;
-  text-align: center;
   vertical-align: middle;
 }
 
-/* 문의내용 왼쪽 정렬 */
-.inquiry-table .content {
+/* 문의내용: 왼쪽 정렬 및 클릭 커서 */
+.content-cell {
   text-align: left;
-  padding-left: 16px;
-  line-height: 1.5;
-}
-
-/* [수정] 처리상태 Select Box */
-.status-select {
-  padding: 6px 8px;
-  font-size: 13px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding-left: 15px;
   cursor: pointer;
+  color: #444;
+  /* 말줄임 처리 필요 시 */
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.content-cell:hover {
+  text-decoration: underline;
+  color: #000;
 }
 
-/* [추가] 답변하기 버튼 */
+/* 상태 뱃지 */
+.status-wait { color: #d9534f; font-weight: bold; } /* 대기 - 빨강 */
+.status-done { color: #5cb85c; font-weight: bold; } /* 완료 - 초록 */
+
+/* 답변 버튼 (리뷰 삭제 버튼 등과 유사한 스타일) */
 .btn-reply {
-  padding: 6px 12px;
-  font-size: 13px;
-  border: 1px solid #222;
   background: #fff;
-  color: #222;
+  border: 1px solid #ccc;
+  padding: 4px 10px;
+  font-size: 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  color: #555;
+  border-radius: 2px;
 }
-
 .btn-reply:hover {
-  background: #222;
-  color: #fff;
+  background: #f0f0f0;
+  color: #333;
 }
 
 /* =====================
-   [수정] MODAL POPUP
+   모달 (팝업) 스타일
 ===================== */
 .modal-overlay {
   display: none;
@@ -76,91 +70,103 @@ body { margin: 0; font-family: Arial, sans-serif; background: #fafafa; color: #2
   width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  /* flex 정렬 속성 제거 (absolute positioning 사용) */
 }
 
 .modal-window {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
   background: #fff;
-  width: 500px; /* 답변창은 조금 더 넓게 */
-  padding: 24px;
+  width: 500px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-
-  /* [핵심] 화면 중앙 정렬 코드 */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 12px;
 }
-
-.modal-header h3 { margin: 0; font-size: 18px; color: #222; }
+.modal-header h3 { margin: 0; font-size: 18px; }
 .btn-close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
 
-.modal-body { display: flex; flex-direction: column; gap: 16px; }
+.modal-body { padding: 20px; }
 
-/* 문의 내용 미리보기 박스 */
 .inquiry-preview-box {
   background: #f9f9f9;
-  padding: 12px;
+  padding: 15px;
   border-radius: 4px;
+  border: 1px solid #eee;
+  margin-bottom: 20px;
   font-size: 13px;
   color: #555;
-  border: 1px solid #eee;
 }
-
-.preview-text { margin: 4px 0 0 0; color: #222; font-weight: 500; }
-
-/* 폼 요소 */
-.form-group { display: flex; flex-direction: column; gap: 8px; }
-.form-group label { font-size: 14px; font-weight: bold; color: #444; }
 
 .input-textarea {
   width: 100%;
-  height: 120px; /* 높이 넉넉하게 */
+  height: 120px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  resize: vertical; /* 세로 크기 조절 허용 */
-  font-size: 14px;
-  box-sizing: border-box; /* padding 포함 크기 계산 */
+  resize: vertical;
+  box-sizing: border-box;
 }
 
-/* 하단 버튼 */
 .modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+  padding: 15px 20px;
   border-top: 1px solid #eee;
-  padding-top: 16px;
+  text-align: right;
+  background-color: #fafafa;
+  border-radius: 0 0 8px 8px;
 }
 
-.btn-cancel-modal {
-  padding: 8px 16px;
-  background: #fff;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  font-size: 13px;
-  color: #666;
+.btn-submit-modal { background: #333; color: #fff; border: none; padding: 8px 16px; cursor: pointer; border-radius: 2px; }
+.btn-cancel-modal { background: #fff; border: 1px solid #ddd; padding: 8px 16px; margin-right: 8px; cursor: pointer; border-radius: 2px; }
+
+/* =====================
+   페이지네이션 (사각형 스타일)
+===================== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    gap: 0;
 }
 
-.btn-submit-modal {
-  padding: 8px 16px;
-  background: #222;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 13px;
+.pagination a, .pagination span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 5px;
+    font-size: 13px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #888;
+    margin-left: -1px;
 }
 
-.btn-submit-modal:hover { background: #000; }
+.pagination a:hover {
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.pagination .active {
+    background-color: #333;
+    border-color: #333;
+    color: #fff;
+    font-weight: bold;
+    cursor: default;
+    z-index: 1;
+}
+
+.pagination .direction {
+    font-weight: bold;
+}
