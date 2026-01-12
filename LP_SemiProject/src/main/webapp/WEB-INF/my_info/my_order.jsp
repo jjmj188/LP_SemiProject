@@ -145,9 +145,10 @@
                 <p class="status-text">${o.deliverystatus}</p>
 
                 <button class="btn-toggle" type="button"
-                  data-orderno="${o.orderno}" onclick="openTrackingPopup(this)">
-                  배송지 & 송장번호
-                </button>
+  				data-orderno="${o.orderno}" onclick="openTrackingModal(this)">
+  				배송지 & 송장번호
+				</button>
+
               </div>
 
             </div>
@@ -214,6 +215,22 @@
   </div>
 </div>
 
+<!-- ✅ 배송지 & 송장번호 모달 -->
+<div id="trackingModal" class="review-modal" aria-hidden="true">
+  <div class="backdrop" onclick="closeTrackingModal()"></div>
+
+  <div class="panel" role="dialog" aria-modal="true" aria-label="배송지 & 송장번호">
+    <div class="panel-head">
+      <p class="panel-title">배송지 & 송장번호</p>
+      <button type="button" class="btn-x" onclick="closeTrackingModal()" aria-label="닫기">×</button>
+    </div>
+    <div class="panel-body">
+      <div class="loading">불러오는 중...</div>
+    </div>
+  </div>
+</div>
+
+
 <jsp:include page="/WEB-INF/footer1.jsp" />
 
 <script type="text/javascript">
@@ -240,8 +257,20 @@
     btn.textContent = isOpen ? "접기 ▲" : "펼치기 ▼";
   }
 
-  // ===== 송장 팝업 =====
-  function openTrackingPopup(btn) {
+  // ===== 배송지&송장 모달 =====
+  function closeTrackingModal() {
+    const modal = document.getElementById("trackingModal");
+    if (!modal) return;
+
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    modal.dataset.lastBtnId = "";
+
+    const body = modal.querySelector(".panel-body");
+    if (body) body.innerHTML = '<div class="loading">불러오는 중...</div>';
+  }
+
+  async function openTrackingModal(btn) {
     if (!btn) return;
 
     const orderno = btn.dataset.orderno;
@@ -250,26 +279,61 @@
       return;
     }
 
+    if (!btn.id) btn.id = "btnTracking_" + orderno;
+
     const url =
       ctxPath +
       "/my_info/tracking_popup.lp?orderno=" +
       encodeURIComponent(orderno);
 
-    const name = "trackingPopup";
-    const width = 520;
-    const height = 520;
-    const left = Math.max(0, (window.screen.width - width) / 2);
-    const top  = Math.max(0, (window.screen.height - height) / 2);
+    const modal = document.getElementById("trackingModal");
+    if (!modal) {
+      alert("배송 모달 요소(#trackingModal)를 찾을 수 없습니다.");
+      return;
+    }
 
-    const options =
-      "width=" + width +
-      ",height=" + height +
-      ",left=" + left +
-      ",top=" + top +
-      ",scrollbars=yes,resizable=no";
+    const body = modal.querySelector(".panel-body");
+    if (!body) {
+      alert("배송 모달 본문(.panel-body)을 찾을 수 없습니다.");
+      return;
+    }
 
-    window.open(url, name, options);
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    modal.dataset.lastBtnId = btn.id;
+
+    body.innerHTML = '<div class="loading">불러오는 중...</div>';
+
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
+
+      const ct = (res.headers.get("content-type") || "").toLowerCase();
+
+      // 서버가 JSON(에러) 내려주면 alert
+      if (ct.includes("application/json")) {
+        const data = await res.json();
+        alert(data && data.msg ? data.msg : "배송 정보를 불러올 수 없습니다.");
+        closeTrackingModal();
+        return;
+      }
+
+      const html = await res.text();
+      body.innerHTML = html;
+
+      // 모달 내부 닫기 버튼(있다면) 바인딩
+      const closeBtn = modal.querySelector("[data-action='close-tracking']");
+      if (closeBtn) closeBtn.addEventListener("click", closeTrackingModal);
+
+    } catch (e) {
+      console.error(e);
+      alert("배송 정보를 불러오지 못했습니다.");
+      closeTrackingModal();
+    }
   }
+
 
   // ===== 리뷰 모달 =====
   function closeReviewModal() {
@@ -449,9 +513,9 @@
     });
   }
 
-  // 전역(onclick="...") 노출
   window.toggleOrderDetails = toggleOrderDetails;
-  window.openTrackingPopup = openTrackingPopup;
+  window.openTrackingModal = openTrackingModal;
+  window.closeTrackingModal = closeTrackingModal;
   window.openReviewModal = openReviewModal;
   window.closeReviewModal = closeReviewModal;
 
