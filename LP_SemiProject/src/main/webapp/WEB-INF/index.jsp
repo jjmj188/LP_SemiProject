@@ -296,9 +296,20 @@
         
         <c:if test="${empty requestScope.productList}">
             <div style="width:100%; text-align:center; padding: 50px;">
-            	<script type="text/javascript">
-            		alert("검색어에 해당하는 제품이 없습니다.");
-            	</script>
+                <script type="text/javascript">
+                    alert("검색어에 해당하는 제품이 없습니다.");
+                    
+                    if (history.replaceState) {
+                        var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + window.location.search;
+                        window.history.replaceState({path:cleanUrl}, '', cleanUrl);
+                    }
+
+                    var searchInput = document.querySelector("input[name='q']");
+                    if(searchInput) {
+                        searchInput.focus();
+                        searchInput.select();
+                    }
+                </script>
                 등록된 상품이 없습니다.
             </div>
         </c:if>
