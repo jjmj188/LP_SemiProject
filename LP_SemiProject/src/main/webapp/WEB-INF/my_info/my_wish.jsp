@@ -65,6 +65,29 @@
         </c:if>
         
       </div>
+      
+      <div class="pagebar">
+        <c:if test="${requestScope.totalPage > 0}">
+    
+
+            <c:forEach var="i" begin="1" end="${requestScope.totalPage}">
+                <c:choose>
+                    <c:when test="${i == requestScope.currentShowPageNo}">
+                        <button type="button" class="page-num active">${i}</button>
+                    </c:when>
+                    
+                    <c:otherwise>
+                        <button type="button" class="page-num" 
+                                onclick="location.href='<%= ctxPath%>/my_info/my_wish.lp?currentShowPageNo=${i}'">
+                            ${i}
+                        </button>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            
+            
+        </c:if>
+      </div>
 
        </section>
 
@@ -92,11 +115,8 @@
                     const targetItem = $("#item-" + productNo);
                     targetItem.remove(); 
                     
-                    // 남은 개수 확인하기
-                    // #wishContainer 안에 .wish-item 클래스를 가진 요소가 몇 개 카운트
                     const remainingItems = $("#wishContainer").find(".wish-item").length;
 
-                    // 하트해제하다가 하나도 없으면 "찜한 상품이 없습니다" 메시지 띄우기
                     if(remainingItems === 0) {
                         const emptyHtml = `
                             <div class="no-wish">
