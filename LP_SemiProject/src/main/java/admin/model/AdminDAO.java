@@ -791,7 +791,29 @@ public class AdminDAO implements InterAdminDAO {
         return result;
     }
     
-    // 20. 리뷰 선택 삭제
+    // 20. 배송 완료 처리 메서드
+    @Override
+    public int updateDeliveryEnd(String orderno) throws SQLException {
+        int result = 0;
+        try {
+            conn = ds.getConnection();
+            // 배송상태를 '배송완료'로 변경하고, 배송완료일(delivered_date)을 현재시간으로 업데이트
+            String sql = " UPDATE tbl_delivery "
+                       + " SET deliverystatus = '배송완료', delivered_date = sysdate "
+                       + " WHERE fk_orderno = ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, orderno);
+            
+            result = pstmt.executeUpdate();
+            
+        } finally {
+            close();
+        }
+        return result;
+    }
+    
+    // 21. 리뷰 선택 삭제
     @Override
     public int deleteMultiReviews(String[] reviewNos) throws SQLException {
         int result = 0;
@@ -816,7 +838,7 @@ public class AdminDAO implements InterAdminDAO {
         return result;
     }
     
-    // 21. 리뷰 총 개수 조회
+    // 22. 리뷰 총 개수 조회
     @Override
     public int getTotalReviewCount(Map<String, String> paraMap) throws SQLException {
         int totalCount = 0;
@@ -830,7 +852,7 @@ public class AdminDAO implements InterAdminDAO {
         return totalCount;
     }
 
-    // 22. 페이징 처리된 리뷰 목록 조회
+    // 23. 페이징 처리된 리뷰 목록 조회
     @Override
     public List<Map<String, String>> getReviewListWithPaging(Map<String, String> paraMap) throws SQLException {
         List<Map<String, String>> reviewList = new ArrayList<>();
@@ -867,7 +889,7 @@ public class AdminDAO implements InterAdminDAO {
         return reviewList;
     }
     
-    // 23. 문의 총 개수 조회
+    // 24. 문의 총 개수 조회
     @Override
     public int getTotalInquiryCount(Map<String, String> paraMap) throws SQLException {
         int totalCount = 0;
@@ -881,7 +903,7 @@ public class AdminDAO implements InterAdminDAO {
         return totalCount;
     }
 
-    // 24. 페이징 처리된 문의 목록 조회
+    // 25. 페이징 처리된 문의 목록 조회
     @Override
     public List<InquiryVO> getInquiryListWithPaging(Map<String, String> paraMap) throws SQLException {
         List<InquiryVO> inquiryList = new ArrayList<>();
@@ -917,7 +939,7 @@ public class AdminDAO implements InterAdminDAO {
         return inquiryList;
     }
     
-    // 25. 문의 답변 등록 및 수정
+    // 26. 문의 답변 등록 및 수정
     @Override
     public int replyInquiry(String inquiryno, String adminreply) throws SQLException {
         int result = 0;
