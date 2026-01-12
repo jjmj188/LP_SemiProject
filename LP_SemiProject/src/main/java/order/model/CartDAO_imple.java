@@ -56,67 +56,116 @@ public class CartDAO_imple implements CartDAO {
  	}// end of private void close()---------------
 
  	// DB 처리 (있으면 update, 없으면 insert)
-	@Override
-	public int addCart(String loginuserid, int productno, int qty) throws SQLException {
-		
-		int result =0;
-		
-		try {
-			 conn = ds.getConnection();
-			
-			//이미 담긴 상품이 있는지 확인
-			String sql=" select cartno, qty "
-					+ " from tbl_cart "
-					+ " where fk_userid = ? and fk_productno= ? ";
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, loginuserid);
-			pstmt.setInt(2, productno);
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-			//DB에 있다면 수량 누적
-			int cartno = rs.getInt("cartno");
-			
-			rs.close();
-			pstmt.close();
-			
-			sql = " update tbl_cart "
-					+ " set qty = qty + ? "
-					+ " where cartno = ? ";
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, qty);
-			pstmt.setInt(2, cartno);
-			
-			result = pstmt.executeUpdate();
-			
-			
-			}
-			else {
-				//없으면 그냥 추가
-				rs.close();
-				pstmt.close();
-				
-				sql =" insert into tbl_cart(cartno, fk_userid, fk_productno, qty) " +
-	                    " values(seq_cartno.nextval, ?, ?, ?) ";
-				
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, loginuserid);
-				pstmt.setInt(2, productno);
-				pstmt.setInt(3, qty);
-				
-				result = pstmt.executeUpdate();
-					
-			}
-			
-		} finally {
-			close();
-		}
-		
-		return (result == 1? 1:0);
-	}
+ 	@Override
+ 	public int addCart(String loginuserid, int productno, int qty) throws SQLException {
+
+ 	    int status = 0; // 1 정상, 2 일부반영, 0 실패
+
+ 	    try {
+ 	        conn = ds.getConnection();
+
+ 	        String sql =
+ 	            " select stock " +
+ 	            " from tbl_product " +
+ 	            " where productno = ? ";
+
+ 	        pstmt = conn.prepareStatement(sql);
+ 	        pstmt.setInt(1, productno);
+ 	        rs = pstmt.executeQuery();
+
+ 	        if (!rs.next()) {
+ 	            return 0; // 상품 없음
+ 	        }
+
+ 	        int stock = rs.getInt("stock");
+
+ 	        rs.close();
+ 	        pstmt.close();
+
+ 	        if (stock <= 0) {
+ 	            return 0; // 품절
+ 	        }
+
+ 	        //이미 장바구니에 담긴 수량 확인
+ 	        sql =
+ 	            " select cartno, qty " +
+ 	            " from tbl_cart " +
+ 	            " where fk_userid = ? and fk_productno = ? ";
+
+ 	        pstmt = conn.prepareStatement(sql);
+ 	        pstmt.setString(1, loginuserid);
+ 	        pstmt.setInt(2, productno);
+ 	        rs = pstmt.executeQuery();
+
+ 	        if (rs.next()) {
+ 	            int cartno = rs.getInt("cartno");
+ 	            int existingQty = rs.getInt("qty");
+
+ 	            rs.close();
+ 	            pstmt.close();
+
+ 	            // 추가로 담을 수 있는 수량 계산
+ 	            int allowed = stock - existingQty; // 이번에 더 담을 수 있는 최대치
+
+ 	            if (allowed <= 0) {
+ 	                return 0; 
+ 	            }
+
+ 	            int addQty = qty;
+ 	            if (addQty > allowed) {
+ 	                addQty = allowed;
+ 	                status = 2; // 일부만 반영
+ 	            } else {
+ 	                status = 1; // 정상 반영
+ 	            }
+
+ 	            sql =
+ 	                " update tbl_cart " +
+ 	                " set qty = qty + ? " +
+ 	                " where cartno = ? ";
+
+ 	            pstmt = conn.prepareStatement(sql);
+ 	            pstmt.setInt(1, addQty);
+ 	            pstmt.setInt(2, cartno);
+
+ 	            int result = pstmt.executeUpdate();
+ 	            if (result != 1) return 0;
+
+ 	            return status;
+ 	        }
+ 	        else {
+ 	            rs.close();
+ 	            pstmt.close();
+
+ 	            //새로 담는 경우: qty는 stock을 넘지 못함
+ 	            int addQty = qty;
+ 	            if (addQty > stock) {
+ 	                addQty = stock;
+ 	                status = 2; // 일부만 반영
+ 	            } else {
+ 	                status = 1;
+ 	            }
+
+ 	            sql =
+ 	                " insert into tbl_cart(cartno, fk_userid, fk_productno, qty) " +
+ 	                " values(seq_cartno.nextval, ?, ?, ?) ";
+
+ 	            pstmt = conn.prepareStatement(sql);
+ 	            pstmt.setString(1, loginuserid);
+ 	            pstmt.setInt(2, productno);
+ 	            pstmt.setInt(3, addQty);
+
+ 	            int result = pstmt.executeUpdate();
+ 	            if (result != 1) return 0;
+
+ 	            return status;
+ 	        }
+
+ 	    } finally {
+ 	        close();
+ 	    }
+ 	}
+
 
 	//장바구니 조회
 	@Override
@@ -180,30 +229,76 @@ public class CartDAO_imple implements CartDAO {
 	//장바구니 수정
 	@Override
 	public int updateCartQty(String loginuserid, int cartno, int qty) throws SQLException {
-		 int result = 0;
+	    int result = 0;
 
-		    try {
-		        conn = ds.getConnection();
+	    if (qty < 1) qty = 1;
 
-		        String sql =
-		              " update tbl_cart "
-		            + " set qty = ? "
-		            + " where cartno = ? "
-		            + "   and fk_userid = ? ";
+	    try {
+	        conn = ds.getConnection();
 
-		        pstmt = conn.prepareStatement(sql);
-		        pstmt.setInt(1, qty);
-		        pstmt.setInt(2, cartno);
-		        pstmt.setString(3, loginuserid);
+	        String sql =
+	            " select tbl_cart.fk_productno " +
+	            " from tbl_cart " +
+	            " where tbl_cart.cartno = ? " +
+	            "   and tbl_cart.fk_userid = ? ";
 
-		        result = pstmt.executeUpdate();
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, cartno);
+	        pstmt.setString(2, loginuserid);
+	        rs = pstmt.executeQuery();
 
-		    } finally {
-		        close();
-		    }
+	        if (!rs.next()) return 0;
 
-		    return (result == 1 ? 1 : 0);
+	        int productno = rs.getInt("fk_productno");
+	        rs.close();
+	        pstmt.close();
+
+	        // 해당 상품 재고 조회
+	        sql =
+	            " select stock " +
+	            " from tbl_product " +
+	            " where productno = ? ";
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, productno);
+	        rs = pstmt.executeQuery();
+
+	        if (!rs.next()) return 0;
+
+	        int stock = rs.getInt("stock");
+	        rs.close();
+	        pstmt.close();
+
+	        if (stock <= 0) {
+	            // 재고 0이면 장바구니 qty를 0으로 둘 건지, 삭제할 건지 정책 선택
+	            // 여기선 "수정 실패"로 처리
+	            return 0;
+	        }
+
+	        //재고 이상 요청 시 강제로 재고로 clamp
+	        if (qty > stock) qty = stock;
+
+	        // 업데이트
+	        sql =
+	            " update tbl_cart " +
+	            " set qty = ? " +
+	            " where cartno = ? " +
+	            "   and fk_userid = ? ";
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, qty);
+	        pstmt.setInt(2, cartno);
+	        pstmt.setString(3, loginuserid);
+
+	        result = pstmt.executeUpdate();
+
+	    } finally {
+	        close();
+	    }
+
+	    return (result == 1 ? 1 : 0);
 	}
+
 
 	//장바구니 개별 삭제
 	@Override

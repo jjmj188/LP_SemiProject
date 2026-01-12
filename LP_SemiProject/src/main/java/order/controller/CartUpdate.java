@@ -60,10 +60,18 @@ public class CartUpdate extends AbstractController {
             return;
         }
 
-        int n = cdao.updateCartQty(loginuserid, cartno, qty);
+        // 1: 정상, 2: 재고로 조정, 0: 실패
+        int status = cdao.updateCartQty(loginuserid, cartno, qty);
 
-        if (n == 1) {
+        if (status == 1) {
             request.setAttribute("message", "수량이 변경되었습니다.");
+            request.setAttribute("loc", request.getContextPath() + "/order/cart.lp");
+            setRedirect(false);
+            setViewPage("/WEB-INF/msg.jsp");
+            return;
+        }
+        else if (status == 2) {
+            request.setAttribute("message", "재고 수량을 초과하여 가능한 수량으로 자동 조정되었습니다.");
             request.setAttribute("loc", request.getContextPath() + "/order/cart.lp");
             setRedirect(false);
             setViewPage("/WEB-INF/msg.jsp");
