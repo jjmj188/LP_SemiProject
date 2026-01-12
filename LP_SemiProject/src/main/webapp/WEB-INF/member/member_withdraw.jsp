@@ -59,50 +59,47 @@ function goWithdraw() {
 
 <body>
 
-<!-- HEADER -->
 <jsp:include page="/WEB-INF/header1.jsp" />
 
 <main class="mypage-wrapper">
   <div class="mypage-container">
-<main>
-  <div class="pwd-wrapper withdraw-wrapper">
+    
+    <div class="pwd-wrapper withdraw-wrapper" ">
 
-    <h2>회원 탈퇴</h2>
+      <h2>회원 탈퇴</h2>
 
-    <div class="warning-notice">
-      <p>⚠️ <strong>탈퇴 전 꼭 확인해주세요</strong></p>
-      <p>
-        탈퇴 시 계정 복구가 불가능하며<br>
-        포인트 및 모든 혜택이 소멸됩니다.
-      </p>
-    </div>
+      <div class="warning-notice">
+        <p>⚠️ <strong>탈퇴 전 꼭 확인해주세요</strong></p>
+        <p>
+          탈퇴 시 계정 복구가 불가능하며<br>
+          포인트 및 모든 혜택이 소멸됩니다.
+        </p>
+      </div>
 
-    <form name="withdrawFrm"
-          method="post"
-          action="<%=ctxPath%>/member/member_withdraw.lp">
+      <form name="withdrawFrm"
+            method="post"
+            action="<%=ctxPath%>/member/member_withdraw.lp">
 
-      <div class="input-box">
-        <label>비밀번호 확인</label>
-        <input type="password" name="pwd" id="pwd">
+        <div class="input-box">
+          <label>비밀번호 확인</label>
+          <input type="password" name="pwd" id="pwd">
 
-        <div id="pwdError" class="pwd-error">
-          비밀번호가 일치하지 않습니다.
+          <div id="pwdError" class="pwd-error">
+            비밀번호가 일치하지 않습니다.
+          </div>
         </div>
-      </div>
 
-      <div class="btn-group">
-        <button type="button" id="btnWithdraw" onclick="goWithdraw()">
-          탈퇴하기
-        </button>
-        <button type="button" id="btnCancel" onclick="history.back()">
-          취소
-        </button>
-      </div>
-
-    </form>
-
-  </div>
-</main>
+        <div class="btn-group">
+          <button type="button" id="btnWithdraw" onclick="goWithdraw()">
+            탈퇴하기
+          </button>
+          <button type="button" id="btnCancel" onclick="history.back()">
+            취소
+          </button>
+        </div>
+      </form>
+      
+    </div> </div> </main> <jsp:include page="/WEB-INF/footer1.jsp" />
 
 </body>
 </html>

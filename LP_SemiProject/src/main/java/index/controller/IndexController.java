@@ -93,7 +93,7 @@ public class IndexController extends AbstractController {
         else {
             MemberDAO mdao = new MemberDAO_imple();
             
-            // [수정] 이미 만들어둔 getUserPreference 메소드 사용!
+            // 이미 만들어둔 getUserPreference 메소드
             List<Integer> myTaste = mdao.getUserPreference(loginuser.getUserid());
             
             // 취향 선택을 안 한 경우 -> 랜덤 추천
@@ -109,12 +109,12 @@ public class IndexController extends AbstractController {
                     case 3: counts = new int[]{2, 2, 1}; break;       // 3개 선택: 2개, 2개, 1개
                     case 4: counts = new int[]{2, 1, 1, 1}; break;    // 4개 선택: 2개, 1개...
                     case 5: counts = new int[]{1, 1, 1, 1, 1}; break; // 5개 선택: 각 1개
-                    default: counts = new int[]{1, 1, 1, 1, 1}; break; // 예외 안전장치
+                    default: counts = new int[]{1, 1, 1, 1, 1}; break;
                 }
                 
                 // 각 취향 카테고리별로 할당된 개수만큼 뽑아와서 합치기
                 for(int i=0; i<myTaste.size(); i++) {
-                    // 혹시 취향 개수가 5개 넘어가면 루프 중단 (배열 인덱스 오류 방지)
+                    // 혹시 취향 개수가 5개 넘어가면 루프 중단
                     if(i >= counts.length) break;
                     
                     int targetCategory = myTaste.get(i); // 카테고리 번호

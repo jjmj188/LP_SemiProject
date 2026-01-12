@@ -10,8 +10,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<!-- 1. jQuery -->
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <!-- Bootstrap CSS -->
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -19,10 +20,42 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Optional JavaScript -->
-<script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script> 
 
+<!-- Optional JavaScript 
+<script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>--> 
+<style>/* 공통 폼 스타일 */
+.form-container {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 auto;
+    display: table;
+}
+
+.form-container li {
+    margin: 20px 0;
+}
+
+.form-container label {
+    display: inline-block;
+    width: 90px;        /* 라벨 위치 통일 */
+    font-weight: bold;
+    font-size: 16px;   /* 라벨 폰트 통일 */
+}
+
+.form-container input {
+    width: 240px;      /* 🔥 가로 길이 통일 */
+    height: 32px;      /* 🔥 높이 통일 */
+    padding: 4px 6px;
+    font-size: 14px;   /* 🔥 폰트 크기 통일 */
+    box-sizing: border-box;
+}
+.form-container input,
+.form-container label {
+    font-family: "Noto Sans KR", Arial, sans-serif;
+}
+
+</style>
 <script type="text/javascript">
    $(function(){
 
@@ -96,16 +129,16 @@
 
 <form name="idFindFrm">
 
-   <ul style="list-style-type: none;">
-      <li style="margin: 25px 0">
-          <label style="display: inline-block; width: 90px;">성명</label>
-          <input type="text" name="name" size="25" autocomplete="off" /> 
-      </li>
-      <li style="margin: 25px 0">
-          <label style="display: inline-block; width: 90px;">이메일</label>
-          <input type="text" name="email" size="25" autocomplete="off" /> 
-      </li>
-   </ul> 
+   <ul class="form-container">
+  <li>
+    <label>성명</label>
+    <input type="text" name="name" autocomplete="off" />
+  </li>
+  <li>
+    <label>이메일</label>
+    <input type="text" name="email" autocomplete="off" />
+  </li>
+</ul>
 
    <div class="my-3 text-center">
    <button type="button" id="btnFind" class="btn btn-dark">찾기</button>

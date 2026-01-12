@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import member.domain.MemberDTO;
+import product.domain.ReviewDTO;
 
 public interface MemberDAO {
 
@@ -54,9 +55,15 @@ public interface MemberDAO {
 	List<Integer> getUserPreference(String userid) throws SQLException;
 	//취향선택 수정
 	boolean updateMemberPreference(String userid, String[] categoryArr) throws SQLException;
+	 //새로고침 할 때마다 DB에서 최신 정보를 가져와서 세션을 갱신함
+	MemberDTO getMemberByUserid(String userid) throws SQLException;
 
-
-	
+	//내리뷰보기 요약
+	List<ReviewDTO> selectMyReviewList(String userid)throws SQLException;
+	//내리뷰 상세보기
+	ReviewDTO selectOneReview(int int1)throws SQLException;
+	//리뷰삭제하기
+	int deleteReview(String reviewno)throws SQLException;
 	
 	
 	

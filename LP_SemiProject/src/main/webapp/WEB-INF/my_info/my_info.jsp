@@ -63,14 +63,14 @@
 
       <div class="info-box">
         <h4>내가 쓴 리뷰</h4>
-        양소라올릴예정
-<!--          <iframe
+   
+         <iframe
 	  src="<%=ctxPath%>/my_info/my_review_iframe.lp"
 	  width="100%"
 	  height="350"
 	  frameborder="0"
 	  scrolling="auto">
-	</iframe> --> 
+	</iframe> 
 
       </div>
     </section>
@@ -93,12 +93,14 @@
         </div>
 
         <div class="form-group">
-          <label>이메일 *</label>
-          <input type="text" name="email" id="email"
-                 value="${sessionScope.loginuser.email}">
-          <button type="button" id="btnEmailCheck">중복확인</button>
-          <span id="emailCheckResult"></span>
-        </div>
+		  <label>이메일 *</label>
+		  <div class="email-row">
+		    <input type="text" name="email" id="email" value="${sessionScope.loginuser.email}">
+		    <button type="button" id="btnEmailCheck">중복확인</button>
+		    
+		    <span id="emailCheckResult"></span>
+		  </div>
+		</div>
 
            <div class="form-group">
 		  <label>휴대폰</label>
@@ -175,7 +177,36 @@
   </div>
 </main>
 
-</main>
+<div id="reviewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#fff; width:550px; height:550px; border-radius:15px; position:relative; overflow:hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+        
+        <iframe id="modalIframe" src="" width="100%" height="100%" frameborder="0"></iframe>
+        
+        <button onclick="closeReviewModal()" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:24px; cursor:pointer; color:#333;">&times;</button>
+    </div>
+</div>
+<script>
+//모달 열기 함수 (자식 iframe에서 호출할 것임)
+function openReviewModal(reviewno) {
+    const modal = document.getElementById("reviewModal");
+    const modalIframe = document.getElementById("modalIframe");
+
+    // 1. 상세페이지 주소 설정 (컨트롤러 주소 + 리뷰번호)
+    modalIframe.src = "<%= request.getContextPath() %>/my_info/my_review_iframe.lp?reviewno=" + reviewno;
+
+    // 2. 모달 보이기
+    modal.style.display = "flex";
+}
+
+// 모달 닫기 함수
+function closeReviewModal() {
+    const modal = document.getElementById("reviewModal");
+    const modalIframe = document.getElementById("modalIframe");
+
+    modal.style.display = "none";
+    modalIframe.src = ""; // 닫을 때 주소를 비워줘야 다음에 깔끔하게 뜹니다.
+}</script>
+
 <!--  daum_address_search.js 에러방지용-->
 <div style="display: none;">
     <input type="checkbox" id="allCheck">

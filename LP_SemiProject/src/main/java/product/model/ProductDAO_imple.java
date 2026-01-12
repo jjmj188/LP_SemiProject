@@ -302,7 +302,6 @@ public class ProductDAO_imple implements ProductDAO {
 	}// end of public List<ProductDTO> selectNewProductList() throws SQLException--------------
   
 
-	// ... (기존 코드 하단에 추가) ...
 
     // 로그아웃용 (각 카테고리 1개씩)
     @Override
@@ -310,7 +309,7 @@ public class ProductDAO_imple implements ProductDAO {
         List<ProductDTO> list = new ArrayList<>();
         try {
             conn = ds.getConnection();
-            // 카테고리 1~5번에서 각각 랜덤 1개씩 뽑아서 합침 (UNION ALL)
+            // 카테고리 1~5번에서 각각 랜덤 1개씩 뽑아서 합침
             String sql = "";
             for(int i=1; i<=5; i++) {
                 sql += " (SELECT productno, productname, price, productimg, fk_categoryno "

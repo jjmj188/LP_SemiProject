@@ -11,9 +11,9 @@
   <!-- HEADER -->
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
 
-<%-- 2. 부트스트랩 (헤더에 없다면 여기서 추가, 있다면 삭제) --%>
+<%-- 2. 부트스트랩 (헤더에 없다면 여기서 추가, 있다면 삭제)
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>--%>
 
 <%-- 3. 내 스타일 --%>
 <link rel="stylesheet" href="<%= ctxPath %>/css/my_info/my_taste.css">

@@ -296,6 +296,9 @@
         
         <c:if test="${empty requestScope.productList}">
             <div style="width:100%; text-align:center; padding: 50px;">
+            	<script type="text/javascript">
+            		alert("검색어에 해당하는 제품이 없습니다.");
+            	</script>
                 등록된 상품이 없습니다.
             </div>
         </c:if>

@@ -40,22 +40,33 @@ function openReviewPopup(orderId, prdId, prdName) {
     }
 	
 	// ✅ 송장 팝업 열기
-	  function openTrackingPopup(ordNo){
-	    const url = "/LP_SemiProject/my_info/tracking_popup.lp?ordNo=" + encodeURIComponent(ordNo);
+	
+	function openTrackingPopup(btn) {
 
-	    const name = "trackingPopup";
-	    const width = 520;
-	    const height = 400;
-	    const left = Math.max(0, (window.screen.width - width) / 2);
-	    const top  = Math.max(0, (window.screen.height - height) / 2);
-
-	    const options =
-	      "width=" + width +
-	      ",height=" + height +
-	      ",left=" + left +
-	      ",top=" + top +
-	      ",scrollbars=yes,resizable=no";
-
-	    window.open(url, name, options);
+	  const orderno = btn.dataset.orderno;
+	  if (!orderno) {
+	    alert("주문번호를 찾을 수 없습니다.");
+	    return;
 	  }
+
+	  const ctxPath = "/LP_SemiProject";
+
+	  const url = ctxPath + "/my_info/tracking_popup.lp?orderno=" + encodeURIComponent(orderno);
+
+	  const name = "trackingPopup";
+	  const width = 520;
+	  const height = 520;
+	  const left = Math.max(0, (window.screen.width - width) / 2);
+	  const top  = Math.max(0, (window.screen.height - height) / 2);
+
+	  const options =
+	    "width=" + width +
+	    ",height=" + height +
+	    ",left=" + left +
+	    ",top=" + top +
+	    ",scrollbars=yes,resizable=no";
+
+	  window.open(url, name, options);
+	}
+
 

@@ -6,21 +6,17 @@
 
 <%
     String ctx_Path = request.getContextPath();
-   
 %>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
 
 <link rel="stylesheet" type="text/css" href="<%= ctx_Path%>/css/login/login.css" />
 
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="<%= ctx_Path%>/js/login/login.js"></script>
-
-
-<!-- Bootstrap CSS -->
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="<%= ctx_Path %>/css/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 
 <script type="text/javascript">
 
@@ -79,8 +75,8 @@
 </script>
 
 <%-- === 로그인을 하기 위한 폼태그 생성하기 시작 === --%>
-<!-- HEADER -->
 
+<div class="login-scope">
 <c:if test="${empty sessionScope.loginuser}">
 
    <form name="loginFrm" action="<%= ctx_Path%>/login/login.lp" method="post">
@@ -202,6 +198,7 @@
 <%-- ****** 비밀번호 찾기 Modal 끝 ****** --%>
 
 </c:if>
+</div>
 <!-- FOOTER -->
 <jsp:include page="/WEB-INF/footer1.jsp" />
 

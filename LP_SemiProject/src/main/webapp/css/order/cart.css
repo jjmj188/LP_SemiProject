@@ -189,7 +189,8 @@ hr {
 }
 
 /* 메인 액션 */
-.action-buttons .buy {
+#goBuyForm > button {
+  width:100%;
   padding: 16px;
   background: #222;
   color: #fff;
@@ -199,7 +200,7 @@ hr {
   cursor: pointer;
 }
 
-.action-buttons .buy:hover {
+#goBuyForm > button:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
 }

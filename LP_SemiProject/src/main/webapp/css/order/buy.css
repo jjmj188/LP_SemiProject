@@ -53,7 +53,9 @@ body {
    FORM
 ===================== */
 .form-group {
-  margin-bottom: 18px;
+	margin-top:9px;
+	margin-bottom: 9px;	
+ 
 }
 
 .form-group label {
@@ -81,9 +83,7 @@ textarea {
   height: 80px;
 }
 
-/* =====================
-   POINT
-===================== */
+
 /* =====================
    POINT
 ===================== */

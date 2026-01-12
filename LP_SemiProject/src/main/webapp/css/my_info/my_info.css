@@ -7,6 +7,7 @@ body {
   margin: 0;
   background: #fafafa;
  
+ 
 }
 
 /* =====================
@@ -22,6 +23,7 @@ body {
   display: flex;
   gap: 30px;
   background: #fff;
+   
 }
 
 /* =====================
@@ -55,11 +57,14 @@ body {
 /* =====================
    가운데 요약 영역 (포인트 / 리뷰)
 ===================== */
+/* 가운데 요약 영역 */
 .mypage-info {
   width: 240px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  /* 아래 코드를 추가하면 내용이 부족해도 영역이 아래로 꽉 찹니다 */
+  height: 100%; 
 }
 
 .info-box {
@@ -69,15 +74,36 @@ body {
   flex-direction: column;
 }
 
+/* 보유 포인트 숫자 정렬 */
 .point {
-  font-size: 36px;
+  font-size: 32px;      /* 기존 36px에서 박스 크기에 맞춰 살짝 조절 가능 */
   font-weight: bold;
+  text-align: center;   /* 1. 가로 중앙 정렬 */
+  padding: 20px 0;      /* 2. 위아래 여백을 주어 세로 중앙 효과 */
+  color: #222;
+  display: flex;        /* 3. 더 확실한 중앙 정렬을 위해 flex 사용 */
+  justify-content: center; 
+  align-items: center;
+}
+
+/* 추가로 "보유 포인트" 글자도 가운데로 보내고 싶다면 */
+.info-box h4 {
+  text-align: center;   /* 제목도 가운데로 */
+  margin-bottom: 10px;
+}
+/* 리뷰 리스트가 담긴 박스 */
+.info-box.review-box {
+  flex: 1; /* 남은 공간을 다 차지하게 함 */
+  display: flex;
+  flex-direction: column;
+  padding: 0; /* 내부 여백을 0으로 해야 iframe이 꽉 찹니다 */
 }
 
 /* 리뷰 iframe 높이 보정 */
 .mypage-info iframe {
-  flex: 1;
-  min-height: 420px;   /* 🔥 짧아 보이던 문제 해결 */
+  width: 100%;
+  height: 100%; /* 부모 박스 높이에 맞춤 */
+  min-height: 550px; /* 🔥 왼쪽 메뉴바 길이에 맞춰 숫자를 조절하세요 (예: 550~600px) */
   border: none;
 }
 
@@ -89,6 +115,7 @@ body {
   border: 1px solid #ddd;
   padding: 40px 60px;
   box-sizing: border-box;
+ 
 }
 
 .mypage-content h2 {
@@ -132,12 +159,13 @@ body {
   cursor: pointer;
 }
 
-#emailCheckResult {
-  display: block;
-  margin-top: 6px;
-  font-size: 13px;
-}
 
+
+/* 결과 메시지 오른쪽 표시 */
+#emailCheckResult {
+  font-size: 13px;
+  white-space: nowrap;   /* 줄바꿈 방지 */
+}
 /* =====================
    휴대폰
 ===================== */
@@ -167,14 +195,36 @@ body {
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
+  /* border: 2px solid red; (확인 후 제거) */
+}
+
+.zipcode-row input,
+.zipcode-row .btn-outline {
+  /* 1. 높이를 동일하게 설정 (예: 40px) */
+  height: 40px; 
+  
+  /* 2. 테두리와 패딩이 높이에 영향을 주지 않도록 설정 */
+  box-sizing: border-box; 
+  
+  /* 3. 텍스트 수직 중앙 정렬 */
+  display: flex;
+  align-items: center;
+  
+  /* 기존 스타일 유지 */
+  margin: 0; 
+  padding: 0 12px; /* 좌우 여백만 조절 */
 }
 
 .zipcode-row input {
   width: 160px;
+  border: 1px solid #ddd; /* 통일감을 위해 보더 추가 */
+  border-radius: 4px;
 }
 
-.address-input {
-  margin-bottom: 14px;
+.zipcode-row .btn-outline {
+  cursor: pointer;
+  white-space: nowrap; /* 글자가 줄바꿈되지 않게 */
+  justify-content: center;
 }
 
 /* =====================
