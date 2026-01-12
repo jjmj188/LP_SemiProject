@@ -144,10 +144,9 @@ String ctxPath = request.getContextPath();
 											</div>
 
 											<button class="btn-review" type="button"
-												data-prdname="<c:out value='${d.productname}'/>"
-												data-prdimg="<c:out value='${d.productimg}'/>"
-												data-lineprice="${d.lineprice}"
-												onclick="openReviewPopup(this)">리뷰쓰기</button>
+												data-orderno="${o.orderno}" data-productno="${d.productno}"
+												onclick="openReviewPopup(this)">리뷰쓰기
+											</button>
 
 
 										</div>
