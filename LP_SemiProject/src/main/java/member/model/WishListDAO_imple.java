@@ -13,6 +13,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import member.domain.WishListDTO;
 import product.domain.ProductDTO;
 import util.security.AES256;
 import util.security.SecretMyKey;
@@ -174,6 +175,83 @@ public class WishListDAO_imple implements WishListDAO {
 		
 		return wishList;
 	}// end of public List<ProductDTO> selectWishList(String userid) throws SQLException {---------------
+
+	
+	// 4. 내 찜 개수 조회(마이페이지 페이징 처리용)
+	@Override
+	public int getTotalWishListCount(String userid) throws SQLException {
+		int totalCount = 0;
+
+		try {
+		  conn = ds.getConnection();
+	
+		  String sql = " SELECT COUNT(*) "
+		             + " FROM tbl_wishlist "
+		             + " WHERE fk_userid = ? ";
+	
+		  pstmt = conn.prepareStatement(sql);
+		  pstmt.setString(1, userid);
+	
+		  rs = pstmt.executeQuery();
+		  if (rs.next()) {
+		    totalCount = rs.getInt(1);
+		  }
+	
+		  } finally {
+		    close();
+		  }
+	
+		  return totalCount;
+	}// end of public int getTotalWishListCount(String userid) throws SQLException 
+
+	
+	// 5. 찜 목록 조회 (페이징)
+	@Override
+	public List<ProductDTO> selectWishListPaging(String userid, int sizePerPage, int currentShowPageNo) throws SQLException {
+
+	    List<ProductDTO> wishList = new ArrayList<>(); // 리스트 생성
+
+	    try {
+	        conn = ds.getConnection();
+
+	        int startRno = ((currentShowPageNo - 1) * sizePerPage) + 1;
+	        int endRno = startRno + sizePerPage - 1;
+
+	        // JOIN을 통해 상품 정보를 조회하고, 페이징 처리
+	        String sql = " SELECT productno, productname, productimg "
+	                   + " FROM "
+	                   + " ( "
+	                   + "     SELECT row_number() over(order by P.productno desc) AS rno "
+	                   + "          , P.productno, P.productname, P.productimg "
+	                   + "     FROM tbl_wishlist W "
+	                   + "     JOIN tbl_product P ON W.fk_productno = P.productno "
+	                   + "     WHERE W.fk_userid = ? "
+	                   + " ) V "
+	                   + " WHERE V.rno BETWEEN ? AND ? ";
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, userid);
+	        pstmt.setInt(2, startRno);
+	        pstmt.setInt(3, endRno);
+
+	        rs = pstmt.executeQuery();
+
+	        while(rs.next()) {
+	            ProductDTO pdto = new ProductDTO(); // ProductDTO 객체 생성
+
+	            pdto.setProductno(rs.getInt("productno"));
+	            pdto.setProductname(rs.getString("productname"));
+	            pdto.setProductimg(rs.getString("productimg"));
+
+	            wishList.add(pdto); // 리스트에 추가
+	        }
+
+	    } finally {
+	        close();
+	    }
+
+	    return wishList;
+	}
  	
  	
  	
