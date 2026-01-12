@@ -46,18 +46,19 @@
                   <fmt:formatNumber value="${requestScope.s_todaySales}" pattern="#,###" /> 원
               </strong>
           </div>
-          <div class="summary-box">
-              <span class="label">이번 달 매출</span>
-              <strong class="amount">
-                  <fmt:formatNumber value="${requestScope.s_monthSales}" pattern="#,###" /> 원
-              </strong>
-          </div>
-          <div class="summary-box highlight">
-              <span class="label">누적 매출 (Total)</span>
-              <strong class="amount">
-                  <fmt:formatNumber value="${requestScope.s_totalSales}" pattern="#,###" /> 원
-              </strong>
-          </div>
+			<div class="summary-box">
+			    <span class="label">이번 달 매출</span>
+			    <strong class="amount">
+			       ${requestScope.s_monthSales} 원
+			    </strong>
+			</div>
+			
+			<div class="summary-box highlight">
+			    <span class="label">누적 매출 (Total)</span>
+			    <strong class="amount">
+			       ${requestScope.s_totalSales} 원
+			    </strong>
+			</div>
       </div>
 
       <div class="chart-wrapper">

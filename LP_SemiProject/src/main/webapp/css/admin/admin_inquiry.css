@@ -30,7 +30,6 @@
   padding-left: 15px;
   cursor: pointer;
   color: #444;
-  /* 말줄임 처리 필요 시 */
   max-width: 400px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -42,10 +41,10 @@
 }
 
 /* 상태 뱃지 */
-.status-wait { color: #d9534f; font-weight: bold; } /* 대기 - 빨강 */
-.status-done { color: #5cb85c; font-weight: bold; } /* 완료 - 초록 */
+.status-wait { color: #d9534f; font-weight: bold; }
+.status-done { color: #5cb85c; font-weight: bold; }
 
-/* 답변 버튼 (리뷰 삭제 버튼 등과 유사한 스타일) */
+/* 답변 버튼 */
 .btn-reply {
   background: #fff;
   border: 1px solid #ccc;
@@ -126,47 +125,3 @@
 
 .btn-submit-modal { background: #333; color: #fff; border: none; padding: 8px 16px; cursor: pointer; border-radius: 2px; }
 .btn-cancel-modal { background: #fff; border: 1px solid #ddd; padding: 8px 16px; margin-right: 8px; cursor: pointer; border-radius: 2px; }
-
-/* =====================
-   페이지네이션 (사각형 스타일)
-===================== */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 40px;
-    gap: 0;
-}
-
-.pagination a, .pagination span {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 32px;
-    height: 32px;
-    padding: 0 5px;
-    font-size: 13px;
-    text-decoration: none;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    color: #888;
-    margin-left: -1px;
-}
-
-.pagination a:hover {
-    background-color: #f9f9f9;
-    color: #333;
-}
-
-.pagination .active {
-    background-color: #333;
-    border-color: #333;
-    color: #fff;
-    font-weight: bold;
-    cursor: default;
-    z-index: 1;
-}
-
-.pagination .direction {
-    font-weight: bold;
-}
