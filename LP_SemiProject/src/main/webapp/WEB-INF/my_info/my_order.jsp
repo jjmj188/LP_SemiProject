@@ -1,7 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-  pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-String ctxPath = request.getContextPath();
+  String ctxPath = request.getContextPath();
 %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -12,83 +11,52 @@ String ctxPath = request.getContextPath();
 <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_order.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
 
-
 <style>
-.price-row {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+.price-row { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
 .price-original {
-  color: #9aa0a6;
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-  text-decoration-color: #9aa0a6;
+  color:#9aa0a6;
+  text-decoration:line-through;
+  text-decoration-thickness:1px;
+  text-decoration-color:#9aa0a6;
 }
-.price-discounted { font-weight: 700; }
+.price-discounted { font-weight:700; }
 
 /* ===== 리뷰 모달 ===== */
-.review-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: none;
-}
-.review-modal.open { display: block; }
+.review-modal { position:fixed; inset:0; z-index:9999; display:none; }
+.review-modal.open { display:block; }
 
-.review-modal .backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-}
+.review-modal .backdrop { position:absolute; inset:0; background:rgba(0,0,0,.45); }
 
 .review-modal .panel {
-  position: relative;
-  width: min(640px, calc(100vw - 24px));
-  max-height: calc(100vh - 24px);
-  overflow: auto;
-  margin: 12px auto;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 12px 34px rgba(0,0,0,.25);
+  position:relative;
+  width:min(640px, calc(100vw - 24px));
+  max-height:calc(100vh - 24px);
+  overflow:auto;
+  margin:12px auto;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 34px rgba(0,0,0,.25);
 }
 
-.review-modal .panel-head {
-  position: sticky;
-  top: 0;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.review-modal .panel-head{
+  position:sticky; top:0;
+  background:#fff;
+  border-bottom:1px solid #eee;
+  padding:12px 14px;
+  display:flex; align-items:center; justify-content:space-between;
 }
 
-.review-modal .panel-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
+.review-modal .panel-title{ margin:0; font-size:16px; font-weight:700; }
+
+.review-modal .btn-x{
+  border:0; background:transparent;
+  cursor:pointer;
+  font-size:22px; line-height:1;
 }
 
-.review-modal .btn-x {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  font-size: 22px;
-  line-height: 1;
-}
+.review-modal .panel-body{ padding:12px 14px 18px; }
 
-.review-modal .panel-body {
-  padding: 12px 14px 18px;
-}
-
-.review-modal .loading {
-  padding: 22px 0;
-  text-align: center;
-  color: #666;
-}
-
+.review-modal .loading{ padding:22px 0; text-align:center; color:#666; }
 </style>
 
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
@@ -120,17 +88,17 @@ String ctxPath = request.getContextPath();
             value="${empty o.totalprice ? 0 : o.totalprice}"
             integerOnly="true" />
           <fmt:parseNumber var="usepointNum"
-            value="${empty o.usepoint ? 0 : o.usepoint}" integerOnly="true" />
+            value="${empty o.usepoint ? 0 : o.usepoint}"
+            integerOnly="true" />
 
           <c:set var="pointDiscountWon" value="${usepointNum * 10}" />
-          <c:set var="discountedPrice"
-            value="${totalpriceNum - pointDiscountWon}" />
+          <c:set var="discountedPrice" value="${totalpriceNum - pointDiscountWon}" />
 
           <div class="order-card">
             <div class="order-summary">
 
               <div class="order-product">
-                <img src="<%= ctxPath%>${o.repProductimg}" alt="대표 상품">
+                <img src="<%=ctxPath%>${o.repProductimg}" alt="대표 상품">
                 <div class="product-info">
 
                   <div class="product-name">
@@ -169,8 +137,7 @@ String ctxPath = request.getContextPath();
                 <span>적립포인트:
                   <fmt:formatNumber value="${o.totalpoint}" pattern="#,###" />p
                 </span>
-                <button class="btn-toggle" type="button"
-                  onclick="toggleOrderDetails(this)">펼치기 ▼</button>
+                <button class="btn-toggle" type="button" onclick="toggleOrderDetails(this)">펼치기 ▼</button>
               </div>
 
               <div class="order-status">
@@ -179,7 +146,8 @@ String ctxPath = request.getContextPath();
 
                 <button class="btn-toggle" type="button"
                   data-orderno="${o.orderno}" onclick="openTrackingPopup(this)">
-                  배송지 & 송장번호</button>
+                  배송지 & 송장번호
+                </button>
               </div>
 
             </div>
@@ -189,7 +157,7 @@ String ctxPath = request.getContextPath();
 
                 <c:forEach var="d" items="${o.orderDetailList}">
                   <div class="detail-item">
-                    <img src="<%= ctxPath%>${d.productimg}" alt="상품">
+                    <img src="<%=ctxPath%>${d.productimg}" alt="상품">
                     <div class="detail-info">
                       <p class="d-name">${d.productname}</p>
                       <p class="d-sub">수량: ${d.qty}개</p>
@@ -200,22 +168,18 @@ String ctxPath = request.getContextPath();
                         <fmt:formatNumber value="${d.lineprice}" pattern="#,###" />원
                       </div>
 
-						<c:choose>
-							<c:when test="${d.hasReview == 1}">
-								<button type="button" class="btn-review-done"
-									>작성완료</button>
-							</c:when>
-	
-							<c:otherwise>
-								<button type="button" class="btn-review"
-									data-orderno="${o.orderno}"
-									data-productno="${d.productno}"
-									onclick="openReviewModal(this)">리뷰쓰기</button>
-							</c:otherwise>
-						</c:choose>
-
-
-										</div>
+                      <c:choose>
+                        <c:when test="${d.hasReview == 1}">
+                          <button type="button" class="btn-review-done">작성완료</button>
+                        </c:when>
+                        <c:otherwise>
+                          <button type="button" class="btn-review"
+                            data-orderno="${o.orderno}"
+                            data-productno="${d.productno}"
+                            onclick="openReviewModal(this)">리뷰쓰기</button>
+                        </c:otherwise>
+                      </c:choose>
+                    </div>
                   </div>
                 </c:forEach>
 
@@ -252,11 +216,251 @@ String ctxPath = request.getContextPath();
 
 <jsp:include page="/WEB-INF/footer1.jsp" />
 
+<script type="text/javascript">
+"use strict";
 
-<script>
-  const ctxPath = "<%= request.getContextPath() %>";  // 이 줄 자체는 ok
- 
+(function () {
+
+  // ✅ JSP ctxPath를 JS로 직접 주입
+  const ctxPath = "<%= ctxPath %>";
+
+  // ===== 상세 펼치기 =====
+  function toggleOrderDetails(btn) {
+    if (!btn) return;
+
+    const orderCard = btn.closest(".order-card");
+    if (!orderCard) return;
+
+    const details = orderCard.querySelector(".order-details");
+    if (!details) return;
+
+    const isOpen = orderCard.classList.toggle("open");
+
+    details.setAttribute("aria-hidden", String(!isOpen));
+    btn.textContent = isOpen ? "접기 ▲" : "펼치기 ▼";
+  }
+
+  // ===== 송장 팝업 =====
+  function openTrackingPopup(btn) {
+    if (!btn) return;
+
+    const orderno = btn.dataset.orderno;
+    if (!orderno) {
+      alert("주문번호를 찾을 수 없습니다.");
+      return;
+    }
+
+    const url =
+      ctxPath +
+      "/my_info/tracking_popup.lp?orderno=" +
+      encodeURIComponent(orderno);
+
+    const name = "trackingPopup";
+    const width = 520;
+    const height = 520;
+    const left = Math.max(0, (window.screen.width - width) / 2);
+    const top  = Math.max(0, (window.screen.height - height) / 2);
+
+    const options =
+      "width=" + width +
+      ",height=" + height +
+      ",left=" + left +
+      ",top=" + top +
+      ",scrollbars=yes,resizable=no";
+
+    window.open(url, name, options);
+  }
+
+  // ===== 리뷰 모달 =====
+  function closeReviewModal() {
+    const modal = document.getElementById("reviewModal");
+    if (!modal) return;
+
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    modal.dataset.lastBtnId = "";
+
+    const body = modal.querySelector(".panel-body");
+    if (body) body.innerHTML = '<div class="loading">불러오는 중...</div>';
+  }
+
+  async function openReviewModal(btn) {
+    if (!btn) return;
+
+    if (btn.disabled || btn.classList.contains("done")) return;
+
+    const orderno = btn.dataset.orderno;
+    const productno = btn.dataset.productno;
+
+    if (!orderno || !productno) {
+      alert("리뷰 정보를 열 수 없습니다. (주문/상품 식별값 누락)");
+      return;
+    }
+
+    if (!btn.id) btn.id = "btnReview_" + orderno + "_" + productno;
+
+    const url =
+      ctxPath +
+      "/my_info/review_write.lp?orderno=" +
+      encodeURIComponent(orderno) +
+      "&productno=" +
+      encodeURIComponent(productno);
+
+    const modal = document.getElementById("reviewModal");
+    if (!modal) {
+      alert("리뷰 모달 요소(#reviewModal)를 찾을 수 없습니다.");
+      return;
+    }
+
+    const body = modal.querySelector(".panel-body");
+    if (!body) {
+      alert("리뷰 모달 본문(.panel-body)을 찾을 수 없습니다.");
+      return;
+    }
+
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    modal.dataset.lastBtnId = btn.id;
+
+    body.innerHTML = '<div class="loading">불러오는 중...</div>';
+
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
+
+      const ct = (res.headers.get("content-type") || "").toLowerCase();
+
+      if (ct.includes("application/json")) {
+        const data = await res.json();
+        alert(data && data.msg ? data.msg : "리뷰 창을 열 수 없습니다.");
+        closeReviewModal();
+        return;
+      }
+
+      const html = await res.text();
+      body.innerHTML = html;
+
+      bindReviewModalEvents();
+    } catch (e) {
+      console.error(e);
+      alert("리뷰 창을 불러오지 못했습니다.");
+      closeReviewModal();
+    }
+  }
+
+  function bindReviewModalEvents() {
+    const modal = document.getElementById("reviewModal");
+    if (!modal) return;
+
+    const form = modal.querySelector("form#reviewForm");
+    if (!form) return;
+
+    // cancel 버튼
+    const btnCancel = modal.querySelector("[data-action='close-review']");
+    if (btnCancel) btnCancel.addEventListener("click", closeReviewModal);
+
+    // 별점 표시
+    const scoreEl = modal.querySelector("#ratingScore");
+    const ratingRadios = modal.querySelectorAll('input[name="rating"]');
+    ratingRadios.forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        if (scoreEl) scoreEl.textContent = e.target.value + ".0";
+      });
+    });
+
+    // 글자수
+    const ta = modal.querySelector("#reviewContents");
+    const cnt = modal.querySelector("#charCurrent");
+    if (ta && cnt) {
+      cnt.textContent = String(ta.value.length);
+      ta.addEventListener("input", () => {
+        cnt.textContent = String(ta.value.length);
+      });
+    }
+
+    // submit 중복 바인딩 방지
+    if (form.dataset.bound === "1") return;
+    form.dataset.bound = "1";
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const checked = modal.querySelector('input[name="rating"]:checked');
+      if (!checked) {
+        alert("별점을 선택해주세요.");
+        return;
+      }
+
+      const ratingVal = parseInt(checked.value, 10);
+      if (Number.isNaN(ratingVal) || ratingVal < 1 || ratingVal > 5) {
+        alert("별점은 1~5점만 가능합니다.");
+        return;
+      }
+
+      if (ta && ta.value.length > 100) {
+        alert("리뷰 내용은 100자 이내로 작성해주세요.");
+        return;
+      }
+
+      const submitBtn = modal.querySelector("button[type='submit']");
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+          body: new FormData(form),
+        });
+
+        const ct = (res.headers.get("content-type") || "").toLowerCase();
+        if (!ct.includes("application/json")) {
+          alert("서버 응답 형식이 올바르지 않습니다.");
+          return;
+        }
+
+        const data = await res.json();
+
+        if (!data || !data.ok) {
+          alert(data && data.msg ? data.msg : "등록에 실패했습니다.");
+          return;
+        }
+
+        alert(data.msg || "리뷰가 등록되었습니다.");
+
+        const lastBtnId = modal.dataset.lastBtnId;
+        if (lastBtnId) {
+          const b = document.getElementById(lastBtnId);
+          if (b) {
+            b.textContent = "작성완료";
+            b.disabled = true;
+            b.classList.add("done");
+          }
+        }
+
+        closeReviewModal();
+      } catch (err) {
+        console.error(err);
+        alert("처리 중 오류가 발생했습니다.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+
+  // 전역(onclick="...") 노출
+  window.toggleOrderDetails = toggleOrderDetails;
+  window.openTrackingPopup = openTrackingPopup;
+  window.openReviewModal = openReviewModal;
+  window.closeReviewModal = closeReviewModal;
+
+})();
 </script>
 
-<script src="<%=ctxPath%>/js/my_info/my_order.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+<%-- <script src="<%=ctxPath%>/js/my_info/my_order.js"></script> --%>
+
+
