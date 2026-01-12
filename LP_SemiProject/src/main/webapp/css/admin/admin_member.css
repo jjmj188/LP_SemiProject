@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-/* 상단 검색 및 버튼 컨트롤 영역 */
+/* 컨트롤 영역 */
 .member-control {
     display: flex;
     justify-content: space-between;
@@ -20,59 +20,58 @@
     height: 36px;
     padding: 0 10px;
     border: 1px solid #ccc;
-    border-radius: 2px;
+    border-radius: 0; /* 사각형 */
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .search-box input { width: 220px; }
 
-/* 버튼 공통 스타일 */
+/* 버튼 스타일 */
 button {
     height: 36px;
     cursor: pointer;
     font-size: 13px;
-    border-radius: 2px;
+    border-radius: 0;
     border: none;
+    padding: 0 16px;
 }
 
-/* 검색 버튼 */
 .btn-search {
-    padding: 0 15px;
-    background: #444;
+    background: #555;
     color: #fff;
 }
+.btn-search:hover { background: #333; }
 
-/* 삭제 버튼 */
 .btn-delete {
-    padding: 0 20px;
-    background: #c95048; /* 테라코타 레드 */
+    background-color: #333;
     color: #fff;
-    font-weight: 600;
+}
+.btn-delete:hover {
+    background-color: #000;
 }
 
 /* 테이블 스타일 */
 .member-table { 
     width: 100%; 
     border-collapse: collapse; 
-    border-top: 1px solid #e1e1e1;
+    font-size: 13px;
+    text-align: center;
 }
 
 .member-table th { 
-    background-color: #f9f9f9;
+    background-color: #f8f8f8; 
     color: #333;
     font-weight: 600;
-    padding: 14px 0;
+    padding: 12px 10px;
+    border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
-    font-size: 14px;
 }
 
 .member-table td {
-    padding: 14px 0;
+    padding: 12px 10px;
     border-bottom: 1px solid #eee;
-    text-align: center;
-    color: #555;
-    font-size: 14px;
+    color: #444;
 }
 
 /* 상태 표시 */
@@ -81,58 +80,5 @@ button {
 
 /* 체크박스 */
 input[type="checkbox"] {
-    width: 16px; height: 16px; margin: 0; vertical-align: middle; cursor: pointer;
-}
-
-/* ==========================================================================
-   페이지네이션 (Seoul Vinyl Style - 사각형)
-   ========================================================================== */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 40px;
-  margin-bottom: 60px;
-  gap: 8px;
-}
-
-.pagination a,
-.pagination span {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 32px;
-  height: 32px;
-  padding: 0 6px;
-  
-  font-size: 13px;
-  font-family: 'Arial', sans-serif;
-  color: #888;
-  text-decoration: none;
-  
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 0;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.pagination a:hover {
-  border-color: #333;
-  color: #333;
-}
-
-.pagination a.active,
-.pagination span.active {
-  background-color: #222;
-  border-color: #222;
-  color: #fff;
-  font-weight: 600;
-  cursor: default;
-  pointer-events: none;
-}
-
-.pagination .direction {
-  color: #333;
-  font-size: 14px;
+    width: 14px; height: 14px; margin: 0; vertical-align: middle; cursor: pointer;
 }

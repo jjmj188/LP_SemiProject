@@ -9,7 +9,9 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: #fafafa;
+    /* [수정] 전체 배경색을 흰색으로 변경 (회색 제거) */
+    background-color: #fff; 
+    color: #222;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -18,27 +20,29 @@ ul, li { list-style: none; margin: 0; padding: 0; }
 /* 2. 바깥 래퍼 */
 .admin-wrapper {
   padding: 60px 0;
-  background: #fafafa;
-  min-height: 800px; /* 최소 높이 확보 */
+  /* [수정] 래퍼 배경색도 흰색으로 변경 */
+  background: #fff;
+  min-height: 800px;
 }
 
-/* 3. 메인 컨테이너 (중앙 정렬) */
+/* 3. 메인 컨테이너 */
 .admin-container {
   max-width: 1200px;
   margin: 0 auto;
-  background: transparent; /* 컨테이너 배경은 투명하게 (내부 콘텐츠가 흰색) */
+  background: #fff;
 }
 
 /* =====================
-   관리자 메뉴바 (가로형 탭)
+   관리자 메뉴바 (탭)
 ===================== */
 .admin-menu {
   display: flex;
-  gap: 30px; /* 메뉴 간 간격 */
+  gap: 30px;
   border-bottom: 1px solid #ddd;
-  padding-bottom: 0; /* 아래 border와 텍스트 간격 조정 */
   margin-bottom: 40px;
-  padding-left: 10px;
+  /* 배경색이나 박스 스타일 제거 (완전한 흰색 배경) */
+  background-color: transparent;
+  padding: 0 10px; 
 }
 
 .admin-menu a {
@@ -48,11 +52,11 @@ ul, li { list-style: none; margin: 0; padding: 0; }
   padding: 12px 5px;
   font-weight: 500;
   position: relative;
-  top: 1px; /* border와 겹치게 하단으로 1px 이동 */
+  top: 1px; /* border와 겹치게 */
   cursor: pointer;
 }
 
-/* 활성화된 메뉴 (검은 글씨 + 검은 밑줄) */
+/* 활성화된 메뉴 (검은 글씨 + 밑줄) */
 .admin-menu a.active {
   color: #222;
   font-weight: 700;
@@ -68,30 +72,31 @@ ul, li { list-style: none; margin: 0; padding: 0; }
 ===================== */
 .admin-content {
   background: #fff;
-  border: 1px solid #ddd; /* 테두리 있음 */
-  padding: 40px;
+  /* 테두리 제거 (회색 사각형 느낌 제거) */
+  border: none; 
+  padding: 20px 10px; /* 내부 여백 조정 */
   min-height: 600px;
-  border-radius: 4px; /* 살짝 둥글게 */
 }
 
 .admin-content h2 {
   margin: 0 0 30px;
   font-size: 24px;
   font-weight: 700;
+  color: #222;
 }
 
 /* =====================
-   페이지네이션
+   페이지네이션 (공통)
 ===================== */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
-  gap: 8px;
+  margin-top: 50px;
+  gap: 0;
 }
 
-.pagination a {
+.pagination a, .pagination span {
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -103,18 +108,19 @@ ul, li { list-style: none; margin: 0; padding: 0; }
   text-decoration: none;
   background-color: #fff;
   border: 1px solid #ddd;
-  transition: all 0.2s ease;
+  margin-left: -1px;
 }
 
 .pagination a:hover {
-  border-color: #333;
+  background-color: #f8f8f8;
   color: #333;
 }
 
-.pagination a.active {
+.pagination .active {
   background-color: #333;
   border-color: #333;
   color: #fff;
   font-weight: 600;
   cursor: default;
+  z-index: 1;
 }

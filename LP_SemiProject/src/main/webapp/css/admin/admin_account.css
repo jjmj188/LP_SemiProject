@@ -1,222 +1,104 @@
 @charset "UTF-8";
 
-/* =========================================
-   회계 관리 페이지 전용 스타일
-   ========================================= */
-
-/* 1. 상단 요약 박스 영역 (오늘매출, 이번달매출, 누적매출) */
-.sales-summary {
+/* =====================
+   매출 요약 카드 (Summary)
+===================== */
+.summary-container {
     display: flex;
     gap: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .summary-box {
-    background: #ffffff;
-    padding: 25px 20px;
+    flex: 1;
+    background: #fff;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    padding: 25px;
     text-align: center;
-    flex: 1; /* 박스 너비 균등 분할 */
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    border: 1px solid #eee;
-    transition: transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.summary-box:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.summary-box.highlight {
+    background-color: #333; /* 포인트 컬러 */
+    color: #fff;
+    border: 1px solid #333;
 }
 
 .summary-box .label {
-    font-size: 15px;
+    display: block;
+    font-size: 14px;
     color: #888;
-    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.summary-box.highlight .label {
+    color: #ccc;
 }
 
 .summary-box .amount {
-    font-size: 26px;
-    color: #333;
+    font-size: 24px;
     font-weight: 700;
-    letter-spacing: -0.5px;
+    color: #222;
 }
 
+.summary-box.highlight .amount {
+    color: #fff;
+}
 
-/* 2. 차트 섹션 컨테이너 */
-.chart-section {
-    background: #ffffff;
-    padding: 25px;
+/* =====================
+   차트 영역
+===================== */
+.chart-wrapper {
+    background: #fff;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-top: 20px;
-    border: 1px solid #eee;
+    padding: 30px;
 }
 
-/* 차트 헤더 (제목 + 컨트롤 박스) */
 .chart-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    gap: 10px;
-    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
     padding-bottom: 15px;
 }
 
 .chart-header h3 {
-    font-size: 18px;
-    color: #333;
-    font-weight: 600;
     margin: 0;
+    font-size: 18px;
 }
 
-/* 검색 조건 컨트롤 박스 */
-.chart-controls {
+.chart-filter {
     display: flex;
-    gap: 8px;
     align-items: center;
-    background: #f8f9fa;
-    padding: 8px 15px;
-    border-radius: 6px;
-}
-
-/* 입력 폼 (Select, Input) 스타일 */
-.filter-select, .input-date {
-    padding: 6px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    gap: 8px;
     font-size: 13px;
-    color: #555;
-    background-color: #fff;
-    outline: none;
 }
 
-.filter-select:focus, .input-date:focus {
-    border-color: #333;
+.chart-filter select, 
+.chart-filter input {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-/* 조회 버튼 */
-.btn-search {
+.chart-filter button {
     background-color: #333;
-    color: #fff;
+    color: white;
     border: none;
-    padding: 7px 16px;
+    padding: 7px 15px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: background-color 0.2s;
-    margin-left: 5px;
 }
 
-.btn-search:hover {
+.chart-filter button:hover {
     background-color: #555;
 }
 
-
-/* 3. 막대 그래프 영역 스타일 */
-.chart-placeholder {
-    display: flex;
-    align-items: flex-end; /* 막대를 바닥에 정렬 */
-    justify-content: center; /* 데이터 없을 때 메시지 중앙 정렬 */
-    height: 350px;           /* 그래프 높이 */
-    border-bottom: 1px solid #ccc;
-    border-left: 1px solid #eee; 
-    padding: 0 30px;
+.canvas-container {
     position: relative;
-    
-    /* 배경 격자 무늬 효과 (50px 간격) */
-    background: repeating-linear-gradient(0deg, #fafafa, #fafafa 1px, transparent 1px, transparent 14.28%); 
-    /* 14.28%는 대략 7등분, 높이에 따라 조정 가능 */
-    background-size: 100% 50px; 
-}
-
-/* 데이터가 있을 때 막대 간격 정렬 */
-.chart-placeholder.has-data {
-    justify-content: space-around;
-    gap: 15px;
-}
-
-/* 개별 막대 컨테이너 */
-.bar-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    height: 100%;
-    width: 60px; /* 막대 영역 너비 */
-    position: relative;
-}
-
-/* 실제 막대 바 */
-.bar {
+    height: 400px;
     width: 100%;
-    background-color: #4CAF50; /* 기본 초록색 */
-    border-radius: 4px 4px 0 0;
-    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    cursor: pointer;
-    min-height: 1px; /* 값이 0이어도 선은 보이게 */
-}
-
-.bar:hover {
-    background-color: #45a049;
-    opacity: 0.9;
-}
-
-/* 막대 위 툴팁 (금액 표시) */
-.bar-tooltip {
-    position: absolute;
-    top: -32px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(33, 33, 33, 0.9);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.2s, top 0.2s;
-    pointer-events: none;
-    z-index: 10;
-    font-weight: 500;
-}
-
-/* 툴팁 화살표 */
-.bar-tooltip::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: rgba(33, 33, 33, 0.9) transparent transparent transparent;
-}
-
-/* 막대에 마우스 올리면 툴팁 표시 */
-.bar:hover + .bar-tooltip {
-    opacity: 1;
-    top: -38px; /* 살짝 위로 올라가는 효과 */
-}
-
-/* 하단 X축 라벨 (날짜) */
-.chart-labels {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 15px;
-    padding: 0 30px;
-    color: #666;
-    font-size: 13px;
-    font-weight: 500;
-    border-top: 1px solid transparent;
-}
-
-.label-item {
-    width: 60px;
-    text-align: center;
 }
