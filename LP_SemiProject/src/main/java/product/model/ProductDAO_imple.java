@@ -15,6 +15,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import product.domain.ProductDTO;
+import product.domain.ReviewDTO;
 import product.domain.TrackDTO;
 import util.security.AES256;
 import util.security.SecretMyKey;
@@ -368,4 +369,44 @@ public class ProductDAO_imple implements ProductDAO {
         }
         return list;
     }
+
+    
+    // 제품 상세페이지용 리뷰 조회
+    @Override
+    public List<ReviewDTO> selectReviewList(int productno) throws SQLException {
+        List<ReviewDTO> reviewList = new ArrayList<>();
+
+        try {
+            conn = ds.getConnection();
+            
+            String sql = " SELECT reviewno, fk_userid, rating, reviewcontent, to_char(writedate, 'yyyy-mm-dd') as writedate "
+                       + " FROM tbl_review "
+                       + " WHERE fk_productno = ? " 
+                       + " ORDER BY reviewno DESC ";
+
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, productno);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ReviewDTO rdto = new ReviewDTO();
+                
+                rdto.setReviewno(rs.getInt("reviewno"));
+                
+                rdto.setProductno(productno); 
+                rdto.setUserid(rs.getString("fk_userid")); 
+                rdto.setRating(rs.getInt("rating")); 
+                rdto.setReviewcontent(rs.getString("reviewcontent")); 
+                rdto.setWritedate(rs.getString("writedate"));
+
+                reviewList.add(rdto);
+            }
+
+        } finally {
+            close();
+        }
+
+        return reviewList;
+    }// end of public List<ReviewDTO> selectReviewList(int productno) throws SQLException {-------------------
 }

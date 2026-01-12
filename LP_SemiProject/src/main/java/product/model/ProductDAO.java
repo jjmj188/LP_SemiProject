@@ -5,6 +5,7 @@ import java.util.List;
 
 import product.domain.TrackDTO;
 import product.domain.ProductDTO;
+import product.domain.ReviewDTO;
 
 public interface ProductDAO {
 	
@@ -28,4 +29,7 @@ public interface ProductDAO {
 
     // 로그인 상태용 랜덤추천 : 특정 카테고리에서 지정된 개수(count)만큼 랜덤 추출
     List<ProductDTO> selectProductsByCategory(int categoryNo, int count) throws SQLException;
+    
+    // 제품 상세페이지용 리뷰 조회
+    List<ReviewDTO> selectReviewList(int productno) throws SQLException;
 }
