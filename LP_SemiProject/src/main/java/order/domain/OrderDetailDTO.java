@@ -13,6 +13,7 @@ public class OrderDetailDTO {
     private String productimg;
     private int lineprice;     // qty * unitprice
     
+    private int hasReview;
     
  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 	public int getOrderdetailno() {
@@ -62,6 +63,12 @@ public class OrderDetailDTO {
 	}
 	public void setLineprice(int lineprice) {
 		this.lineprice = lineprice;
+	}
+	public int getHasReview() {
+		return hasReview;
+	}
+	public void setHasReview(int hasReview) {
+		this.hasReview = hasReview;
 	}
 
     

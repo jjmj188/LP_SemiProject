@@ -346,21 +346,30 @@ public class OrderDAO_imple implements OrderDAO {
             conn = ds.getConnection();
 
             String sql =
-                " select od.orderdetailno, od.fk_orderno as orderno, od.fk_productno as productno, "
-              + "        od.qty, od.unitprice, (od.qty * od.unitprice) as lineprice, "
-              + "        p.productname, p.productimg "
-              + " from tbl_orderdetail od "
-              + " join tbl_order o "
-              + "   on o.orderno = od.fk_orderno "
-              + " join tbl_product p "
-              + "   on p.productno = od.fk_productno "
-              + " where od.fk_orderno = ? "
-              + "   and o.fk_userid = ? "
-              + " order by od.orderdetailno asc ";
+            	    " select tbl_orderdetail.orderdetailno "
+            	  + "     , tbl_orderdetail.fk_orderno as orderno "
+            	  + "     , tbl_orderdetail.fk_productno as productno "
+            	  + "     , tbl_product.productname "
+            	  + "     , tbl_product.productimg "
+            	  + "     , tbl_orderdetail.qty "
+            	  + "     , tbl_orderdetail.unitprice "
+            	  + "     , (tbl_orderdetail.unitprice * tbl_orderdetail.qty) as lineprice "
+            	  + "     , case when tbl_review.reviewno is null then 0 else 1 end as hasReview "
+            	  + " from tbl_orderdetail "
+            	  + " join tbl_product "
+            	  + "   on tbl_orderdetail.fk_productno = tbl_product.productno "
+            	  + " left join tbl_review "
+            	  + "   on tbl_review.fk_userid = ? "
+            	  + "  and tbl_review.fk_orderno = tbl_orderdetail.fk_orderno "
+            	  + "  and tbl_review.fk_productno = tbl_orderdetail.fk_productno "
+            	  + " where tbl_orderdetail.fk_orderno = ? "
+            	  + " order by tbl_orderdetail.orderdetailno asc ";
+
 
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, orderno);
-            pstmt.setString(2, userid);
+            pstmt.setString(1, userid);
+            pstmt.setInt(2, orderno);
+            
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -375,9 +384,11 @@ public class OrderDAO_imple implements OrderDAO {
 
                 dto.setProductname(rs.getString("productname"));
                 dto.setProductimg(rs.getString("productimg"));
+                dto.setHasReview(rs.getInt("hasReview"));
 
                 list.add(dto);
             }
+
 
         } finally {
             close();

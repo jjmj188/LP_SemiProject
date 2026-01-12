@@ -157,6 +157,18 @@
       color: #333;
     }
     .btn-toggle:hover { border-color: #222; }
+    
+    .btn-review-done {
+      padding: 8px 14px;
+      border: 1px solid #222;
+      
+      border-radius: 8px;
+      font-size: 14px;
+      transition: background .15s, color .15s, border-color .15s;
+      background: #222;
+      color: #fff;
+    }
+    
 
     /* 주문 상태 */
     .order-status {

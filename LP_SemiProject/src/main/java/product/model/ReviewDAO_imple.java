@@ -133,6 +133,68 @@ public class ReviewDAO_imple implements ReviewDAO {
         return exists;
     }
 
+    // 구매 검증 (내 주문의 상품인지)
+    @Override
+    public boolean isPurchasedItem(String userid, int orderno, int productno) throws SQLException {
+
+        boolean ok = false;
+
+        try {
+            conn = ds.getConnection();
+
+            String sql =
+                " select 1 " +
+                "   from tbl_order " +
+                "   join tbl_orderdetail " +
+                "     on tbl_order.orderno = tbl_orderdetail.fk_orderno " +
+                "  where tbl_order.fk_userid = ? " +
+                "    and tbl_order.orderno = ? " +
+                "    and tbl_orderdetail.fk_productno = ? ";
+
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userid);
+            pstmt.setInt(2, orderno);
+            pstmt.setInt(3, productno);
+
+            rs = pstmt.executeQuery();
+            ok = rs.next();
+
+        } finally {
+            close();
+        }
+
+        return ok;
+    }
+
+    // 리뷰 등록
+    @Override
+    public int insertReview(String userid, int productno, int orderno, int rating, String reviewcontent) throws SQLException {
+
+        int n = 0;
+
+        try {
+            conn = ds.getConnection();
+
+            String sql =
+                " insert into tbl_review (reviewno, fk_userid, fk_productno, fk_orderno, rating, reviewcontent, writedate) " +
+                " values (seq_reviewno.nextval, ?, ?, ?, ?, ?, sysdate) ";
+
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userid);
+            pstmt.setInt(2, productno);
+            pstmt.setInt(3, orderno);
+            pstmt.setInt(4, rating);
+            pstmt.setString(5, reviewcontent);
+
+            n = pstmt.executeUpdate();
+
+        } finally {
+            close();
+        }
+
+        return n;
+    }
+
 
  	
 

@@ -12,4 +12,10 @@ public interface ReviewDAO {
 	// 이미 리뷰 작성했으면 막기
 	boolean existsReview(String userid, int productno, int orderno)throws SQLException;
 
+	// 구매 검증 (내 주문의 상품인지)
+	boolean isPurchasedItem(String userid, int orderno, int productno)throws SQLException;
+
+	// 리뷰 등록
+	int insertReview(String userid, int productno, int orderno, int rating, String reviewcontent)throws SQLException;
+
 }
