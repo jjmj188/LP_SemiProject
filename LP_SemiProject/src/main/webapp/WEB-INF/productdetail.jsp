@@ -187,22 +187,39 @@
 
     <section class="reviews">
         <h2>Reviews</h2>
-        <div class="review-item">
-            <div class="review-header">
-                <span class="user-id">test_user</span>
-                <div class="review-rating">
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <span class="score">5.0 / 5.0</span>
-                </div>
+        
+        <c:if test="${empty requestScope.reviewList}">
+            <div class="review-item" style="justify-content: center;">
+                <p class="review-text" style="color: #999;">등록된 리뷰가 없습니다.</p>
             </div>
-            <p class="review-text">배송도 빠르고 노래도 너무 좋아요! (임시 리뷰입니다)</p>
-        </div>
+        </c:if>
+
+        <c:if test="${not empty requestScope.reviewList}">
+            <c:forEach var="review" items="${requestScope.reviewList}">
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="user-id">${fn:substring(review.userid, 0, 3)}***</span>
+                        
+                        <div class="review-rating">
+                            <c:forEach begin="1" end="${review.rating}">
+                                <i class="fa-solid fa-star"></i>
+                            </c:forEach>
+                            <c:forEach begin="1" end="${5 - review.rating}">
+                                <i class="fa-regular fa-star" style="color: #ccc;"></i>
+                            </c:forEach>
+                            
+                            <span class="score">${review.rating} / 5.0</span>
+                        </div>
+                    </div>
+                    <p class="review-text">${review.reviewcontent}</p>
+                    
+                    <span style="font-size: 12px; color: #aaa;">${review.writedate}</span>
+                </div>
+            </c:forEach>
+        </c:if>
+        
         <div class="review-more">
-            <button type="button">전체보기</button>
+             <button type="button">전체보기</button>
         </div>
     </section>
 
