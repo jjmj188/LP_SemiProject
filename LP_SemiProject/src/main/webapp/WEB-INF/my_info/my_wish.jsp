@@ -63,21 +63,10 @@
       </div>
       
       <div class="pagebar">
-        <c:if test="${requestScope.totalPage > 0}">
-        
-            <c:forEach var="i" begin="1" end="${requestScope.totalPage}">
-                <c:choose>
-                    <c:when test="${i == requestScope.currentShowPageNo}">
-                        <button type="button" class="page-num active">${i}</button>
-                    </c:when>
-                    <c:otherwise>
-                        <button type="button" class="page-num" onclick="goPage(${i})">${i}</button>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-            
-        </c:if>
-      </div>
+	      <ul class="pagination" style="margin:0; list-style:none; display:flex; justify-content:center; padding:0;">
+	          ${requestScope.pageBar}
+	      </ul>
+	  </div>
 
     </section>
 

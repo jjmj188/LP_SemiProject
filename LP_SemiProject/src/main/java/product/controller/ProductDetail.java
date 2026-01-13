@@ -51,35 +51,22 @@ public class ProductDetail extends AbstractController {
 		List<TrackDTO> trackList = pdao.selectTrackList(productno);
 		request.setAttribute("trackList", trackList);
 		
-		// 리뷰 리스트 조회 5개씩
+		// 3. 리뷰 리스트 조회 및 페이징
         String str_currentShowPageNo = request.getParameter("currentShowPageNo");
+        int currentShowPageNo = 1;
+        int sizePerPage = 5; 
+        int blockSize = 5; // 리뷰는 블록 크기 5로 설정
         
-        int currentShowPageNo = 0; // 현재 페이지 번호
-        int sizePerPage = 5;       // 한 페이지당 보여줄 리뷰 개수 (5개)
-        int totalReviewCount = 0;  // 총 리뷰 개수
-        int totalPage = 0;         // 총 페이지 수
-        
-        // 총 리뷰 개수 구하기
-        totalReviewCount = pdao.getTotalReviewCount(productno);
-        
-        // 총 페이지 수 계산
-        totalPage = (int) Math.ceil((double)totalReviewCount / sizePerPage);
-        
-        // 현재 페이지 번호 설정
-        if (str_currentShowPageNo == null) {
-            currentShowPageNo = 1;
-        } else {
-            try {
-                currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
-                if(currentShowPageNo < 1 || (totalPage > 0 && currentShowPageNo > totalPage)) {
-                    currentShowPageNo = 1;
-                }
-            } catch (NumberFormatException e) {
-                currentShowPageNo = 1;
-            }
+        if (str_currentShowPageNo != null) {
+            try { currentShowPageNo = Integer.parseInt(str_currentShowPageNo); } catch (Exception e) {}
         }
         
-        if(totalPage == 0) currentShowPageNo = 1; // 리뷰가 없어도 1페이지로 설정
+        int totalReviewCount = pdao.getTotalReviewCount(productno);
+        int totalPage = (int) Math.ceil((double)totalReviewCount / sizePerPage);
+        
+        if (currentShowPageNo > totalPage && totalPage != 0) {
+            currentShowPageNo = totalPage;
+        }
 
         Map<String, String> paraMap = new HashMap<>();
         paraMap.put("productno", String.valueOf(productno));
@@ -88,16 +75,47 @@ public class ProductDetail extends AbstractController {
         
         List<ReviewDTO> reviewList = pdao.selectReviewListPaging(paraMap);
         
-        // JSP로 데이터 전달
-        request.setAttribute("reviewList", reviewList);
-        request.setAttribute("totalPage", totalPage);
-        request.setAttribute("currentShowPageNo", currentShowPageNo);
-        request.setAttribute("totalReviewCount", totalReviewCount);
-        // --------------------------------------------------------------------
+        // 페이지바 생성
+        String pageBar = makePageBar(currentShowPageNo, totalPage, blockSize, productno, request.getContextPath());
+        request.setAttribute("pageBar", pageBar);
         
-		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/productdetail.jsp");
-		
-	}
+        request.setAttribute("reviewList", reviewList);
+        request.setAttribute("totalReviewCount", totalReviewCount);
+        
+        super.setRedirect(false);
+        super.setViewPage("/WEB-INF/productdetail.jsp");
+    }
+
+    // 리뷰용 페이지바 생성 메서드
+    private String makePageBar(int currentShowPageNo, int totalPage, int blockSize, int productno, String ctxPath) {
+        if (totalPage == 0) return "";
+
+        int pageNo = ((currentShowPageNo - 1) / blockSize) * blockSize + 1;
+        int loop = 1;
+
+        
+        String url = ctxPath + "/productdetail.lp?productno=" + productno + "&currentShowPageNo=";
+        String anchor = "#reviews";
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("<li class='page-item'><button class='page-btn first' " + (currentShowPageNo == 1 ? "disabled" : "onclick=\"location.href='" + url + "1" + anchor + "'\"") + "><span>맨처음</span></button></li>");
+        sb.append("<li class='page-item'><button class='page-btn prev' " + (currentShowPageNo == 1 ? "disabled" : "onclick=\"location.href='" + url + (currentShowPageNo - 1) + anchor + "'\"") + "><i class='fa-solid fa-chevron-left'></i></button></li>");
+
+        while (!(loop > blockSize || pageNo > totalPage)) {
+            if (pageNo == currentShowPageNo) {
+                sb.append("<li class='page-item'><button class='page-num active'>" + pageNo + "</button></li>");
+            } else {
+                sb.append("<li class='page-item'><button class='page-num' onclick=\"location.href='" + url + pageNo + anchor + "'\">" + pageNo + "</button></li>");
+            }
+            loop++;
+            pageNo++;
+        }
+
+        sb.append("<li class='page-item'><button class='page-btn next' " + (currentShowPageNo == totalPage ? "disabled" : "onclick=\"location.href='" + url + (currentShowPageNo + 1) + anchor + "'\"") + "><i class='fa-solid fa-chevron-right'></i></button></li>");
+        sb.append("<li class='page-item'><button class='page-btn last' " + (currentShowPageNo == totalPage ? "disabled" : "onclick=\"location.href='" + url + totalPage + anchor + "'\"") + "><span>맨마지막</span></button></li>");
+
+        return sb.toString();
+    }
 
 }
