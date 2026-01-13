@@ -1,8 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-	String ctxPath = request.getContextPath();
-	// /LP_SemiProject
+    String ctxPath = request.getContextPath();
+    // 세션 목록에서 확인된 'loginAdmin' 이름을 사용하여 로그인 여부를 판단합니다.
+    boolean isLogined = (session.getAttribute("loginAdmin") != null || session.getAttribute("loginuser") != null);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,17 +11,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<%= ctxPath%>/css/common/header.css">
-
-
-    <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-   <!-- Font Awesome 6 Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
 </head>
 <body>
 	
@@ -31,32 +24,40 @@
   
    <header class="topbar">
   <div class="logo">
-    <img src="<%= ctxPath%>/images/logo.png" alt="">
+    <img src="<%= ctxPath%>/images/logo.png" alt="Logo">
   </div>
 
-  <!-- PC 메뉴 -->
   <nav class="navlinks" aria-label="Primary">
     <a href="<%= ctxPath%>/index.lp">HOME</a> |
-    <a href="<%= ctxPath%>">LOGIN</a> |
+    
+    <% if (!isLogined) { %>
+      <a href="<%= ctxPath %>/login/login.lp">LOGIN</a> |
+    <% } else { %>
+      <a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a> |
+    <% } %>
+
     <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
     <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MYPAGE</a>
   </nav>
 
-  <!-- 모바일 햄버거 버튼 -->
   <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
     <i class="fa-solid fa-bars"></i>
   </button>
 
-  <!-- 모바일 드롭다운 -->
   <nav class="navlinks-mobile" aria-label="Mobile Primary">
     <a href="<%= ctxPath%>/index.lp">HOME</a>
-    <a href="<%= ctxPath%>">LOGIN</a>
+    
+    <% if (!isLogined) { %>
+      <a href="<%= ctxPath%>/login/login.lp">LOGIN</a>
+    <% } else { %>
+      <a href="<%= ctxPath%>/login/logout.lp">LOGOUT</a>
+    <% } %>
+  
     <a href="<%= ctxPath%>/order/cart.lp">CART</a>
     <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MY PROFILE</a>
   </nav>
 </header>
 
-<!-- ✅ 스크립트는 CSS 텍스트 뒤에 붙이지 말고, body 끝쪽에 두는 게 안전 -->
 <script>
   $(function () {
     const $btn = $(".nav-toggle");
@@ -97,4 +98,5 @@
     });
   });
 </script>
-   
+</body>
+</html>
