@@ -45,7 +45,7 @@ public class My_order extends AbstractController {
 
     	        String userid = loginuser.getUserid();
 
-    	        // 1) 페이징 변수 설정
+    	        // 페이징 변수 설정
     	        String str_currentShowPageNo = request.getParameter("currentShowPageNo");
     	        int currentShowPageNo = 1;
     	        int sizePerPage = 3;  // 한 페이지에 표시할 주문 개수 (3개로 설정)
@@ -57,7 +57,7 @@ public class My_order extends AbstractController {
     	            } catch (Exception e) {}
     	        }
 
-    	        // 2) 총 주문 수 계산
+    	        // 총 주문 수 계산
     	        int totalCount = odao.getTotalOrderCount(userid);  // 주문 목록의 총 개수 구하기
     	        int totalPage = (int) Math.ceil((double) totalCount / sizePerPage);  // 총 페이지 수 계산
 
@@ -66,11 +66,11 @@ public class My_order extends AbstractController {
     	            currentShowPageNo = totalPage;
     	        }
 
-    	        // 3) 주문 목록 조회 (페이징 처리)
+    	        //주문 목록 조회 (페이징 처리)
     	        int startRow = (currentShowPageNo - 1) * sizePerPage;
     	        List<OrderDTO> orderList = odao.selectMyOrderListPaging(userid, startRow, sizePerPage);  // 페이징된 주문 목록 가져오기
 
-    	        // 4) 각 주문에 대한 주문 상세 정보 추가
+    	        // 각 주문에 대한 주문 상세 정보 추가
     	        if (orderList != null) {
     	            for (OrderDTO o : orderList) {
     	                List<OrderDetailDTO> detailList = odao.selectMyOrderDetailList(o.getOrderno(), userid);
