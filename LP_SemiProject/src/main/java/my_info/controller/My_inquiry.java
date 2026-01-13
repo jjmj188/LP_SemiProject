@@ -19,6 +19,19 @@ public class My_inquiry extends AbstractController {
   @Override
   public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+	// GET 직접 접근 차단
+			String referer = request.getHeader("referer");
+
+			if (referer == null) {
+
+			    request.setAttribute("message", "잘못된 접근입니다.");
+			    request.setAttribute("loc", request.getContextPath() + "/index.lp");
+
+			    super.setRedirect(false);
+			    super.setViewPage("/WEB-INF/msg.jsp");
+			    return;
+			}
+	  
     HttpSession session = request.getSession();
     MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
 
@@ -31,6 +44,8 @@ public class My_inquiry extends AbstractController {
     String method = request.getMethod();
     String userid = loginuser.getUserid();
 
+    
+    
     if ("GET".equalsIgnoreCase(method)) {
 
       // ===== 페이징 정책: 회원목록과 동일 =====

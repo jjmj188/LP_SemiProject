@@ -14,6 +14,20 @@ public class My_taste extends AbstractController {
 	private MemberDAO mdao = new MemberDAO_imple();
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		// GET 직접 접근 차단
+				String referer = request.getHeader("referer");
+
+				if (referer == null) {
+
+				    request.setAttribute("message", "잘못된 접근입니다.");
+				    request.setAttribute("loc", request.getContextPath() + "/index.lp");
+
+				    super.setRedirect(false);
+				    super.setViewPage("/WEB-INF/msg.jsp");
+				    return;
+				}
+		
 		String method=request.getMethod();
 		HttpSession session=request.getSession();
 		MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
@@ -26,6 +40,9 @@ public class My_taste extends AbstractController {
 	            setViewPage("/WEB-INF/msg.jsp");
 	            return;
 	        }
+		
+		
+		
 		if ("GET".equalsIgnoreCase(method)) {
 	        // 1. 단순 페이지 이동 (취향 선택 화면 보여주기)
 			
