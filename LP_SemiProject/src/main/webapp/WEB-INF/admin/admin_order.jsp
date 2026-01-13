@@ -14,67 +14,26 @@
 <link rel="stylesheet" href="<%= ctxPath%>/css/admin/admin_order.css">
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="<%= ctxPath%>/js/admin/admin_order.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
 <script>
     const ctxPath = "<%= ctxPath %>";
 
-    // 배송 시작 버튼 클릭 (AJAX)
-    function goDeliveryStart(orderno) {
-        const receiver = $("#receiver_" + orderno).val();
+    // 택배사 선택 시 입력창의 maxlength를 동적으로 변경하는 함수
+    function updateMaxLength(orderno) {
         const company = $("#company_" + orderno).val();
-        const invoice = $("#invoice_" + orderno).val();
-
-        if(!receiver) { alert("받는 분 성함을 입력하세요."); return; }
-        if(!company)  { alert("택배사를 선택하세요."); return; }
-        if(!invoice)  { alert("송장번호를 입력하세요."); return; }
-
-        if(!confirm("주문번호 " + orderno + "번의 배송을 시작하시겠습니까?")) return;
-
-        $.ajax({
-            url: ctxPath + "/admin/admin_order.lp",
-            type: "POST",
-            data: {
-                "mode": "updateDelivery",
-                "orderno": orderno,
-                "receiverName": receiver,
-                "delivery_company": company,
-                "invoice_no": invoice
-            },
-            dataType: "json",
-            success: function(json) {
-                if(json.result == 1) {
-                    alert("배송 처리가 완료되었습니다.");
-                    location.reload();
-                } else {
-                    alert("배송 처리 실패. 다시 시도해주세요.");
-                }
-            },
-            error: function(request, status, error) {
-                alert("에러 발생: " + error);
-            }
-        });
-    }
-
-    // [추가] 배송 완료 버튼 클릭 (AJAX)
-    function goDeliveryEnd(orderno) {
-        if(!confirm("주문번호 " + orderno + "번을 [배송완료] 처리하시겠습니까?")) return;
+        const $invoiceInput = $("#invoice_" + orderno);
         
-        $.ajax({
-            url: ctxPath + "/admin/admin_order.lp",
-            type: "POST",
-            data: {
-                "mode": "updateDeliveryEnd",
-                "orderno": orderno
-            },
-            dataType: "json",
-            success: function(json) {
-                if(json.result == 1) {
-                    alert("배송완료 처리되었습니다.");
-                    location.reload();
-                } else {
-                    alert("처리 실패. 다시 시도해주세요.");
-                }
-            }
-        });
+        $invoiceInput.val(""); 
+
+        if (company === "CJ대한통운" || company === "한진택배") {
+            $invoiceInput.attr("maxlength", 12);
+        } else if (company === "우체국택배") {
+            $invoiceInput.attr("maxlength", 13);
+        } else {
+            $invoiceInput.removeAttr("maxlength");
+        }
     }
 </script>
 </head>
@@ -109,9 +68,6 @@
       </div>
 
       <table class="order-table">
-        <colgroup>
-            <col width="8%"> <col width="10%"> <col width="*"> <col width="12%"> <col width="10%"> <col width="10%"> <col width="22%">
-        </colgroup>
         <thead>
             <tr>
                 <th>주문번호</th>
@@ -132,16 +88,15 @@
                 <tr>
                     <td>${map.orderno}</td>
                     <td>
-                        <c:choose>
-                            <c:when test="${map.deliverystatus eq '배송준비중'}">
-                                <input type="text" id="receiver_${map.orderno}" class="input-name" value="${map.name}">
-                            </c:when>
-                            <c:otherwise><strong>${map.name}</strong></c:otherwise>
-                        </c:choose>
+                        <%-- [수정] 받는 분 이름을 모든 상태에서 텍스트로 출력 --%>
+                        <strong>${map.name}</strong>
+                        <%-- js에서 참조하기 위한 hidden 필드 --%>
+                        <input type="hidden" id="receiver_${map.orderno}" value="${map.name}">
                     </td>
                     <td class="addr-info">
                         [${map.postcode}] ${map.address} ${map.detailaddress} ${map.extraaddress}
-                        <div class="contact-info">Phone: ${map.mobile} / Email: ${map.email}</div>
+                        <button type="button" class="btn-addr-edit" 
+                                onclick="openAddrModal('${map.orderno}', '${map.postcode}', '${map.address}', '${map.detailaddress}', '${map.extraaddress}')">수정</button>
                     </td>
                     <td>${map.productname}</td>
                     <td><fmt:formatNumber value="${map.totalprice}" pattern="#,###" />원</td>
@@ -153,21 +108,27 @@
                     <td>
                         <c:choose>
                             <c:when test="${map.deliverystatus eq '배송준비중'}">
-                                <select id="company_${map.orderno}" class="select-courier">
+                                <%-- [수정] 키보드 입력 차단을 위한 onkeydown, onfocus, tabindex 추가 --%>
+                                <select id="company_${map.orderno}" class="select-courier" 
+                                        onchange="updateMaxLength('${map.orderno}')"
+                                        onkeydown="return false;"
+                                        onfocus="this.blur()"
+                                        tabindex="-1"
+                                        style="cursor: pointer;">
                                     <option value="">택배사 선택</option>
-                                    <option value="CJ대한통운">CJ대한통운</option>
-                                    <option value="우체국택배">우체국택배</option>
-                                    <option value="한진택배">한진택배</option>
+                                    <option value="CJ대한통운">CJ대한통운 (12자리)</option>
+                                    <option value="한진택배">한진택배 (12자리)</option>
+                                    <option value="우체국택배">우체국택배 (13자리)</option>
                                 </select>
-                                <div style="display:flex; justify-content:center; align-items:center; gap:2px;">
-                                    <input type="text" id="invoice_${map.orderno}" class="input-invoice" placeholder="송장번호 입력">
+                                <div style="display:flex; justify-content:center; align-items:center; gap:2px; margin-top:5px;">
+                                    <input type="text" id="invoice_${map.orderno}" class="input-invoice" placeholder="송장번호" 
+                                           oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                     <button type="button" class="btn-ship" onclick="goDeliveryStart('${map.orderno}')">발송</button>
                                 </div>
                             </c:when>
                             <c:when test="${map.deliverystatus eq '배송중'}">
-                                <button type="button" class="btn-ship" style="background-color:#28a745; margin-bottom:5px;" 
+                                <button type="button" class="btn-ship" style="background-color:#28a745;" 
                                         onclick="goDeliveryEnd('${map.orderno}')">배송완료 처리</button>
-                                <div style="font-size:11px; color:#777;">(운송장 등록됨)</div>
                             </c:when>
                             <c:otherwise>
                                 <span style="font-size:12px; color:#888;">배송 완료됨</span>
@@ -181,6 +142,26 @@
     </section>
   </div>
 </main>
+
+<div id="addrModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:white; padding:25px; width:400px;">
+        <h3>배송지 정보 수정</h3>
+        <div class="modal-body">
+            <input type="hidden" id="modal_orderno">
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                <input type="text" id="modal_zipcode" placeholder="우편번호" readonly style="flex:1; padding:8px;">
+                <button type="button" onclick="execDaumPostcode()" style="padding:0 15px; background:#222; color:#fff; border:none; cursor:pointer;">주소찾기</button>
+            </div>
+            <input type="text" id="modal_addr1" placeholder="주소" readonly style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd;">
+            <input type="text" id="modal_addr2" placeholder="상세주소" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd;">
+            <input type="text" id="modal_addr3" placeholder="참고항목" readonly style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd;">
+        </div>
+        <div style="text-align:right;">
+            <button type="button" onclick="closeModal()" style="padding:8px 16px; margin-right:5px; border:1px solid #ccc; background:#fff; cursor:pointer;">취소</button>
+            <button type="button" onclick="applyAddress()" style="padding:8px 16px; background:#333; color:white; border:none; cursor:pointer;">저장</button>
+        </div>
+    </div>
+</div>
 
 <jsp:include page="/WEB-INF/footer2.jsp" />
 </body>

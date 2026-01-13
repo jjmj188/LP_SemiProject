@@ -65,23 +65,26 @@ public interface InterAdminDAO {
 
     // 20. 배송 완료 처리 
 	int updateDeliveryEnd(String orderno) throws SQLException;
+	
+	// 21. 관리자 배송 주소 수정 
+	int updateOrderAddress(Map<String, String> paraMap) throws SQLException;
 
-    // 21. 리뷰 작성 순서 처리 
+    // 22. 리뷰 작성 순서 처리 
     int deleteMultiReviews(String[] reviewNos) throws SQLException;
     
-    // 22. 상품 전체 목록 조회 (페이징 계산용)
+    // 23. 상품 전체 목록 조회 (페이징 계산용)
    	int getTotalReviewCount(Map<String, String> paraMap) throws SQLException;
    	
-   	// 23. 상품 전체 목록 조회 (페이징 처리)
+   	// 24. 상품 전체 목록 조회 (페이징 처리)
    	List<Map<String, String>> getReviewListWithPaging(Map<String, String> paraMap) throws SQLException;
     
-    // 24. 문의내역 전체 목록 조회 (페이징 계산용)
+    // 25. 문의내역 전체 목록 조회 (페이징 계산용)
    	int getTotalInquiryCount(Map<String, String> paraMap) throws SQLException;
    	
-	// 25. 문의내역 전체 목록 조회 (페이징 처리)
+	// 26. 문의내역 전체 목록 조회 (페이징 처리)
    	List<InquiryVO> getInquiryListWithPaging(Map<String, String> paraMap) throws SQLException;
    	
-    // 26. 문의 내역 답변 등록 (상태 변경 포함)
+    // 27. 문의 내역 답변 등록 (상태 변경 포함)
     int replyInquiry(String inquiryno, String adminreply) throws SQLException;
 
 }
