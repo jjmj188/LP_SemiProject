@@ -88,6 +88,12 @@
                 <c:choose>
                     <%-- 1. 재고가 있을 경우 (기존 버튼 표시) --%>
                     <c:when test="${pDto.stock > 0}">
+                    
+                    <form id="buyForm" method="post" action="<%= ctxPath %>/order/buy.lp" style="display:inline;">
+						  <input type="hidden" name="productno" value="${pDto.productno}">
+						  <input type="hidden" name="qty" id="buyQty" value="1">
+					</form>
+                    
                         <button type="button" class="buy" onclick="goOrder()">구매하기</button>
         
                         <c:choose>
@@ -274,6 +280,9 @@
 
       const u = document.getElementById("updateQty");
       if (u) u.value = qty;
+      
+      const b = document.getElementById("buyQty");
+      if (b) b.value = qty;
     }
 
     // 찜하기 (AJAX 비동기 통신)
@@ -318,16 +327,18 @@
       });
     }
 
+    
     // 바로 구매하기
     function goOrder() {
-      if (!isLogin) {
-        alert("로그인이 필요한 서비스입니다.");
-        location.href = loginUrl;
-        return;
-      }
-      // buy.lp 구현 시 post 방식으로 변경 등 고려
-      location.href = "<%= ctxPath%>/order/buy.lp?productno=" + productNo + "&qty=" + qty;
-    }
+	  if (!isLogin) {
+	    alert("로그인이 필요한 서비스입니다.");
+	    location.href = loginUrl;
+	    return;
+	  }
+	
+	  const frm = document.getElementById("buyForm");
+	  frm.submit(); 
+	}
 
     function submitCart() {
       const updateForm = document.getElementById("cartUpdateForm");
