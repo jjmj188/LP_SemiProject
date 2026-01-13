@@ -57,31 +57,33 @@ public class InquiryDAO_imple implements InquiryDAO {
  	}// end of private void close()---------------
 
  	//마이페이지 문의작성하기
-	@Override
-	public int insertInquiry(String userid, String inquirycontent) throws SQLException {
-		
-		int result = 0;
+ 	
+ 	@Override
+ 	public int insertInquiry(String userid, String inquirycontent) throws SQLException {
 
-		try {
-			conn = ds.getConnection();
-			
-			String sql = " INSERT INTO tbl_inquiry "
-					+ " ( inquiryno, fk_userid, inquirycontent ) "
-					+ " VALUES "
-					+ " ( seq_inquiryno.nextval, ?, ? ) ";
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, userid);
-			pstmt.setString(2, inquirycontent);
+ 	    int result = 0;
 
-			result = pstmt.executeUpdate();
+ 	    try {
+ 	        conn = ds.getConnection();
 
-		} finally {
-			close();
-		}
+ 	        String sql = " INSERT INTO tbl_inquiry "
+ 	                   + " ( inquiryno, fk_userid, inquirycontent, inquirydate ) "
+ 	                   + " VALUES "
+ 	                   + " ( seq_inquiryno.nextval, ?, ?, sysdate ) ";
 
-		return result;
-	}
+ 	        pstmt = conn.prepareStatement(sql);
+ 	        pstmt.setString(1, userid);
+ 	        pstmt.setString(2, inquirycontent);
+
+ 	        result = pstmt.executeUpdate();
+
+ 	    } finally {
+ 	        close();
+ 	    }
+
+ 	    return result;
+ 	}
+
 
 	//마이페이지 자신의 문의내역 조회
 	@Override

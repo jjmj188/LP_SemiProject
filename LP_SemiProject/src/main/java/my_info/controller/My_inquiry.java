@@ -124,10 +124,13 @@ public class My_inquiry extends AbstractController {
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
-      message = "서버 오류로 문의 등록에 실패했습니다.";
-      loc = "javascript:history.back()";
+        e.printStackTrace();
+        System.out.println("### My_inquiry insertInquiry SQLException code=" + e.getErrorCode());
+        System.out.println("### My_inquiry insertInquiry SQLException msg=" + e.getMessage());
+        message = "서버 오류로 문의 등록에 실패했습니다.";
+        loc = "javascript:history.back()";
     }
+
 
     request.setAttribute("message", message);
     request.setAttribute("loc", loc);
