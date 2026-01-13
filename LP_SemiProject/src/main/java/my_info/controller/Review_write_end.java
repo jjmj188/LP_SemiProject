@@ -55,7 +55,7 @@ public class Review_write_end extends AbstractController {
             return;
         }
 
-        // ✅ 별점 1~5 강제
+        // 별점 1~5 강제
         if (rating < 1 || rating > 5) {
             writeJson(response, false, "별점은 1~5점만 가능합니다.");
             return;
@@ -64,7 +64,7 @@ public class Review_write_end extends AbstractController {
         if (content == null) content = "";
         content = content.trim();
 
-        // ✅ 100자 이내 강제 (프론트 조작 대비)
+        // 100자 이내 강제 (프론트 조작 대비)
         if (content.length() > 100) {
             writeJson(response, false, "리뷰 내용은 100자 이내로 작성해주세요.");
             return;
@@ -72,19 +72,19 @@ public class Review_write_end extends AbstractController {
 
         String userid = loginuser.getUserid();
 
-        // ✅ 구매 검증 (내 주문의 상품인지)
+        // 구매 검증 (내 주문의 상품인지)
         if (rdao.selectOrderItemForReview(userid, orderno, productno) == null) {
             writeJson(response, false, "구매한 상품만 리뷰를 작성할 수 있습니다.");
             return;
         }
 
-        // ✅ 중복 검증
+        // 중복 검증
         if (rdao.existsReview(userid, productno, orderno)) {
             writeJson(response, false, "이미 작성한 리뷰입니다.");
             return;
         }
 
-        // ✅ INSERT
+        //INSERT
         int n = rdao.insertReview(userid, productno, orderno, rating, content);
 
         if (n == 1) {
