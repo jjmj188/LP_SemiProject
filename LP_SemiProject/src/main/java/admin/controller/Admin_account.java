@@ -21,7 +21,7 @@ public class Admin_account extends AbstractController {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // =============================================================
-        // 관리자 로그인 여부 확인
+        // 1. 관리자 로그인 여부 확인 (보안)
         // =============================================================
         HttpSession session = request.getSession();
         AdminVO loginadmin = (AdminVO) session.getAttribute("loginAdmin"); 
@@ -39,70 +39,68 @@ public class Admin_account extends AbstractController {
         }
 
         // =============================================================
-        // DAO 및 파라미터 준비
+        // 2. DAO 및 파라미터 준비
         // =============================================================
-        InterAdminDAO adao = new AdminDAO();          
-        String mode = request.getParameter("mode"); // 차트 데이터 요청인지 구분
+        InterAdminDAO adao = new AdminDAO();
+        String mode = request.getParameter("mode"); // 차트 데이터 요청인지 일반 페이지 로딩인지 구분
 
         // =============================================================
-        // [CASE A] AJAX 요청 처리 (차트 데이터 조회) -> JSON 응답
+        // [CASE A] 차트 데이터 요청 (AJAX 전용 - JSON 응답)
         // =============================================================
         if("chartData".equals(mode)) {
             
-            // 검색 조건 받기
-            String searchType = request.getParameter("searchType"); // "month" or "year"
-            String startDate  = request.getParameter("startDate");
-            String endDate    = request.getParameter("endDate");
-            String startYear  = request.getParameter("startYear");
-            String endYear    = request.getParameter("endYear");
-
+            String searchType = request.getParameter("searchType"); // month 또는 year
+            String startDate = request.getParameter("startDate");
+            String endDate = request.getParameter("endDate");
+            String startYear = request.getParameter("startYear");
+            String endYear = request.getParameter("endYear");
+            
             Map<String, String> paraMap = new HashMap<>();
             paraMap.put("searchType", searchType);
             paraMap.put("startDate", startDate);
             paraMap.put("endDate", endDate);
             paraMap.put("startYear", startYear);
             paraMap.put("endYear", endYear);
-
-            // 차트 데이터 가져오기
+            
+            // DAO에서 차트 데이터(날짜별 매출액) 조회
             List<Map<String, String>> chartList = adao.getSalesChartData(paraMap);
-
-            // JSON 배열 생성
+            
             JSONArray jsonArr = new JSONArray();
-            if(chartList != null) {
+            
+            if(chartList != null && !chartList.isEmpty()) {
                 for(Map<String, String> map : chartList) {
                     JSONObject jsonObj = new JSONObject();
-                    jsonObj.put("label", map.get("label"));    // X축 (날짜)
+                    jsonObj.put("label", map.get("label"));    // X축 (날짜/연도)
                     jsonObj.put("amount", map.get("amount"));  // Y축 (매출액)
                     jsonArr.put(jsonObj);
                 }
             }
             
-            // JSON 응답 전송
-            String json = jsonArr.toString();
+            // ★ 중요: AJAX 요청이므로 JSON 문자열만 출력하고 종료
             response.setContentType("application/json; charset=UTF-8");
             PrintWriter out = response.getWriter();
-            out.write(json);
+            out.write(jsonArr.toString());
+            out.flush();
+            out.close();
             
-            return; // JSP로 이동하지 않고 여기서 종료
+            return; // 이후의 JSP 이동 로직(super.setViewPage)을 타지 않도록 종료
         }
 
         // =============================================================
-        // [CASE B] 페이지 로딩 처리 (매출 요약 정보 조회) -> JSP 이동
+        // [CASE B] 일반 페이지 로딩 처리 (매출 요약 정보 조회) -> JSP 이동
         // =============================================================
         
-        // [수정 포인트] DecimalFormat 사용 안 함!
-        // DB에서 숫자값 그대로 가져옵니다.
+        // 1. 상단 요약 카드 데이터 조회 (오늘/이번달/전체 매출)
         int todaySales = adao.getTodaySales(); 
         int monthSales = adao.getMonthSales();
         long totalSales = adao.getTotalSales();
         
-        // [수정 포인트] 숫자를 문자열로 변환하지 않고 그대로 setAttribute 합니다.
-        // JSP의 <fmt:formatNumber> 태그가 이 숫자를 받아서 쉼표(,)를 찍어줍니다.
+        // 2. 뷰(JSP)에서 <fmt:formatNumber>로 처리할 수 있도록 숫자 데이터 그대로 전달
         request.setAttribute("s_todaySales", todaySales);
         request.setAttribute("s_monthSales", monthSales);
         request.setAttribute("s_totalSales", totalSales);
 
-        // 뷰 페이지(JSP)로 이동
+        // 3. 페이지 이동 설정
         super.setRedirect(false);
         super.setViewPage("/WEB-INF/admin/admin_account.jsp");
     }
