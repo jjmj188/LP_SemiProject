@@ -18,8 +18,24 @@ public class My_reviewIframe extends AbstractController {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 	    
+		
+		// GET 직접 접근 차단
+				String referer = request.getHeader("referer");
+
+				if (referer == null) {
+
+				    request.setAttribute("message", "잘못된 접근입니다.");
+				    request.setAttribute("loc", request.getContextPath() + "/index.lp");
+
+				    super.setRedirect(false);
+				    super.setViewPage("/WEB-INF/msg.jsp");
+				    return;
+				}
+		
 	    HttpSession session = request.getSession();
 	    MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
+	    
+	    
 	    
 	    if(loginuser != null) {
 	        String userid = loginuser.getUserid();
