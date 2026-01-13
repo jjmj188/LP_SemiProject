@@ -185,11 +185,12 @@
         </section>
     </c:if>
 
-    <section class="reviews">
+    <section class="reviews" id="reviews">
         <h2>Reviews</h2>
         
+        <%-- 리뷰 리스트 출력 --%>
         <c:if test="${empty requestScope.reviewList}">
-            <div class="review-item" style="justify-content: center;">
+            <div class="review-item" style="justify-content: center; padding: 40px;">
                 <p class="review-text" style="color: #999;">등록된 리뷰가 없습니다.</p>
             </div>
         </c:if>
@@ -199,7 +200,6 @@
                 <div class="review-item">
                     <div class="review-header">
                         <span class="user-id">${fn:substring(review.userid, 0, 3)}***</span>
-                        
                         <div class="review-rating">
                             <c:forEach begin="1" end="${review.rating}">
                                 <i class="fa-solid fa-star"></i>
@@ -207,20 +207,36 @@
                             <c:forEach begin="1" end="${5 - review.rating}">
                                 <i class="fa-regular fa-star" style="color: #ccc;"></i>
                             </c:forEach>
-                            
-                            <span class="score">${review.rating} / 5.0</span>
+                            <span class="score">${review.rating}</span>
                         </div>
                     </div>
                     <p class="review-text">${review.reviewcontent}</p>
-                    
-                    <span style="font-size: 12px; color: #aaa;">${review.writedate}</span>
+                    <span style="font-size: 12px; color: #aaa; margin-top:5px; display:block;">${review.writedate}</span>
                 </div>
             </c:forEach>
         </c:if>
         
-        <div class="review-more">
-             <button type="button">전체보기</button>
+        <%-- PageBar --%>
+        <div class="pagebar" style="display:flex; justify-content:center; margin-top:30px; gap:5px;">
+            <c:if test="${requestScope.totalPage > 0}">
+                <c:forEach var="i" begin="1" end="${requestScope.totalPage}">
+                    <c:choose>
+                        
+                        <c:when test="${i == requestScope.currentShowPageNo}">
+                            <button type="button" class="active" style="width:30px; height:30px; border:1px solid #222; background:#222; color:#fff; cursor:default;">${i}</button>
+                        </c:when>
+                        <c:otherwise>
+                            <button type="button" 
+                                    onclick="location.href='productdetail.lp?productno=${pDto.productno}&currentShowPageNo=${i}#reviews'"
+                                    style="width:30px; height:30px; border:1px solid #ddd; background:#fff; cursor:pointer;">
+                                ${i}
+                            </button>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </c:if>
         </div>
+        
     </section>
 
     <jsp:include page="footer1.jsp" />

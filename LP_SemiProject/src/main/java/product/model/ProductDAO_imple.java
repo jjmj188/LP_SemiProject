@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -347,7 +348,9 @@ public class ProductDAO_imple implements ProductDAO {
         try {
             conn = ds.getConnection();
             String sql = " SELECT productno, productname, price, productimg, fk_categoryno "
-                       + " FROM (SELECT * FROM tbl_product WHERE fk_categoryno = ? ORDER BY DBMS_RANDOM.VALUE) "
+                       + " FROM (SELECT * FROM tbl_product "
+                       + "		 WHERE fk_categoryno = ? "
+                       + "	     ORDER BY DBMS_RANDOM.VALUE) "
                        + " WHERE ROWNUM <= ? ";
             
             pstmt = conn.prepareStatement(sql);
@@ -368,45 +371,76 @@ public class ProductDAO_imple implements ProductDAO {
             close();
         }
         return list;
-    }
+    }// end of public List<ProductDTO> selectProductsByCategory(int categoryNo, int count) throws SQLException {-----------
 
     
-    // 제품 상세페이지용 리뷰 조회
-    @Override
-    public List<ReviewDTO> selectReviewList(int productno) throws SQLException {
-        List<ReviewDTO> reviewList = new ArrayList<>();
 
+    // 특정 제품의 리뷰 총 개수 (페이징 계산용)
+    @Override
+    public int getTotalReviewCount(int productno) throws SQLException {
+        int count = 0;
         try {
             conn = ds.getConnection();
+            String sql = " SELECT count(*) "
+            		   + " FROM tbl_review "
+            		   + " WHERE fk_productno = ? ";
             
-            String sql = " SELECT reviewno, fk_userid, rating, reviewcontent, to_char(writedate, 'yyyy-mm-dd') as writedate "
-                       + " FROM tbl_review "
-                       + " WHERE fk_productno = ? " 
-                       + " ORDER BY reviewno DESC ";
-
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, productno);
-
+            
             rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                ReviewDTO rdto = new ReviewDTO();
-                
-                rdto.setReviewno(rs.getInt("reviewno"));
-                
-                rdto.setProductno(productno); 
-                rdto.setUserid(rs.getString("fk_userid")); 
-                rdto.setRating(rs.getInt("rating")); 
-                rdto.setReviewcontent(rs.getString("reviewcontent")); 
-                rdto.setWritedate(rs.getString("writedate"));
-
-                reviewList.add(rdto);
+            if(rs.next()) {
+            	count = rs.getInt(1);
             }
-
         } finally {
             close();
         }
+        return count;
+    }// end of public int getTotalReviewCount(int productno) throws SQLException 
 
+    // 페이징 처리된 리뷰 목록 (5개씩)
+    @Override
+    public List<ReviewDTO> selectReviewListPaging(Map<String, String> paraMap) throws SQLException {
+        List<ReviewDTO> reviewList = new ArrayList<>();
+        try {
+            conn = ds.getConnection();
+            
+            int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo"));
+            int sizePerPage = Integer.parseInt(paraMap.get("sizePerPage"));
+            int productno = Integer.parseInt(paraMap.get("productno"));
+            
+            int startRno = ((currentShowPageNo - 1) * sizePerPage) + 1;
+            int endRno = startRno + sizePerPage - 1;
+            
+            String sql = " SELECT reviewno, fk_userid, rating, reviewcontent, writedate "
+                       + " FROM ( "
+                       + "    SELECT row_number() over(order by reviewno desc) as rno, "
+                       + "           reviewno, fk_userid, rating, reviewcontent, to_char(writedate, 'yyyy-mm-dd') as writedate "
+                       + "    FROM tbl_review "
+                       + "    WHERE fk_productno = ? "
+                       + " ) V "
+                       + " WHERE V.rno BETWEEN ? AND ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, productno);
+            pstmt.setInt(2, startRno);
+            pstmt.setInt(3, endRno);
+            
+            rs = pstmt.executeQuery();
+            
+            while(rs.next()) {
+                ReviewDTO rdto = new ReviewDTO();
+                rdto.setReviewno(rs.getInt("reviewno"));
+                rdto.setUserid(rs.getString("fk_userid"));
+                rdto.setRating(rs.getInt("rating"));
+                rdto.setReviewcontent(rs.getString("reviewcontent"));
+                rdto.setWritedate(rs.getString("writedate"));
+                
+                reviewList.add(rdto);
+            }
+        } finally {
+            close();
+        }
         return reviewList;
-    }// end of public List<ReviewDTO> selectReviewList(int productno) throws SQLException {-------------------
+    }// end of public List<ReviewDTO> selectReviewListPaging(Map<String, String> paraMap) throws SQLException {---------------------------
 }
