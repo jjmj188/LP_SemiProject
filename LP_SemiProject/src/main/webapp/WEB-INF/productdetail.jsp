@@ -59,11 +59,10 @@
             </p>
             
             <div class="benefit">
-                <p class="discount">
-                    할인 적용 시 <b>₩ <fmt:formatNumber value="${pDto.price * 0.9}" pattern="#,###"/></b> (10%)
-                </p>
-                <p class="point">적립 포인트 <b><fmt:formatNumber value="${pDto.point}" pattern="#,###"/>P</b></p>
-            </div>
+			    <p class="discount">
+			        구매시 <b><span id="totalPoint"><fmt:formatNumber value="${pDto.point}" pattern="#,###"/></span>P 적립</b>
+			    </p>
+			</div>
             
             <p class="delivery">배송비 <b>3,000원</b></p>
 
@@ -246,6 +245,8 @@
     let qty = 1;
 
     const unitPrice = ${pDto.price};
+    const unitPoint = ${pDto.point};
+    
     const productNo = "${pDto.productno}";
     const isLogin = ${not empty sessionScope.loginuser};
     const loginUrl = "<%= ctxPath%>/login/login.lp";
@@ -264,6 +265,9 @@
 
       const total = unitPrice * qty;
       document.getElementById("totalPrice").innerText = "₩ " + total.toLocaleString();
+      
+      const totalPoint = unitPoint * qty;
+      document.getElementById("totalPoint").innerText = totalPoint.toLocaleString();
 
       const c = document.getElementById("cartQty");
       if (c) c.value = qty;
