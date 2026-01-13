@@ -7,8 +7,9 @@ import java.util.Map;
 import common.controller.AbstractController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpSession;
 import admin.model.AdminDAO;
+import admin.model.AdminVO;
 import admin.model.InterAdminDAO;
 import admin.model.InquiryVO;
 
@@ -16,12 +17,30 @@ public class Admin_inquiry extends AbstractController {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	
+    // =============================================================
+    // 관리자 로그인 여부 확인
+    // =============================================================
+    HttpSession session = request.getSession();
+    AdminVO loginadmin = (AdminVO) session.getAttribute("loginAdmin"); 
+
+    if (loginadmin == null) {
+        String message = "관리자만 접근 가능합니다.";
+        String loc = request.getContextPath() + "/admin/admin_login.lp"; 
         
+        request.setAttribute("message", message);
+        request.setAttribute("loc", loc);
+        
+        super.setRedirect(false);
+        super.setViewPage("/WEB-INF/msg.jsp");
+        return;
+    }
+
         String method = request.getMethod();
         
         InterAdminDAO adao = new AdminDAO();
         
-        // 1. 답변 등록 (POST 방식) - 기존 AdminInquiryReplyEnd 기능 통합
+        // 1. 답변 등록 (POST 방식)
         if("POST".equalsIgnoreCase(method)) {
             replyInquiry(request, response, adao);
         }
