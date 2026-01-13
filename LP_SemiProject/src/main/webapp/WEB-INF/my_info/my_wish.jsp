@@ -5,13 +5,10 @@
 
 <%
     String ctxPath = request.getContextPath();
-    // /LP_SemiProject
 %>
 
   <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
-
   <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/my_wish.css">
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
 
   <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
@@ -59,7 +56,6 @@
         
         <c:if test="${empty requestScope.wishList}">
             <div class="no-wish">
-            	<%-- 애초에 찜이 하나도 없을때 --%>
                 <p>찜한 상품이 없습니다.</p>
             </div>
         </c:if>
@@ -68,28 +64,22 @@
       
       <div class="pagebar">
         <c:if test="${requestScope.totalPage > 0}">
-    
-
+        
             <c:forEach var="i" begin="1" end="${requestScope.totalPage}">
                 <c:choose>
                     <c:when test="${i == requestScope.currentShowPageNo}">
                         <button type="button" class="page-num active">${i}</button>
                     </c:when>
-                    
                     <c:otherwise>
-                        <button type="button" class="page-num" 
-                                onclick="location.href='<%= ctxPath%>/my_info/my_wish.lp?currentShowPageNo=${i}'">
-                            ${i}
-                        </button>
+                        <button type="button" class="page-num" onclick="goPage(${i})">${i}</button>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
             
-            
         </c:if>
       </div>
 
-       </section>
+    </section>
 
   </div>
 </main>
@@ -99,35 +89,42 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
+    function goPage(pageNo) {
+        sessionStorage.setItem("wishScrollPos", window.scrollY);
+        // 페이지 이동
+        location.href = "<%= ctxPath%>/my_info/my_wish.lp?currentShowPageNo=" + pageNo;
+    }
+
+    $(document).ready(function(){
+        const scrollPos = sessionStorage.getItem("wishScrollPos");
+        if(scrollPos) {
+            window.scrollTo(0, scrollPos); // 스크롤 이동
+            sessionStorage.removeItem("wishScrollPos");
+        }
+    });
+
     function removeWish(productNo) {
-    	if( !confirm("정말 삭제하시겠습니까?") ) {
+        if( !confirm("정말 삭제하시겠습니까?") ) {
             return; 
         }
 
-    	$.ajax({
+        $.ajax({
             url: "<%= ctxPath%>/wishToggle.lp", 
             type: "POST",
             data: { "productno": productNo },
             dataType: "json",
             success: function(json) {
                 if(json.isSuccess) {
-                    // 성공 시 화면에서 해당 박스(div) 즉시 제거
                     const targetItem = $("#item-" + productNo);
                     targetItem.remove(); 
                     
                     const remainingItems = $("#wishContainer").find(".wish-item").length;
 
                     if(remainingItems === 0) {
-                        const emptyHtml = `
-                            <div class="no-wish">
-                                <p>찜한 상품이 없습니다.</p>
-                            </div>
-                        `;
-                        $("#wishContainer").html(emptyHtml);
+                        location.reload(); 
                     }
                 } 
                 else {
-                    // 로그인 풀림 등 에러 처리
                     if(json.requireLogin) {
                         alert("로그인이 필요합니다.");
                         location.href = "<%= ctxPath%>/login/login.lp";
@@ -145,6 +142,11 @@
 </script>
 
 <style>
+    .wish-list {
+        min-height: 600px;
+        margin-bottom: 20px;
+    }
+
     .wish-title-link {
         text-decoration: none;
         color: inherit;
@@ -155,9 +157,47 @@
         margin-top: 5px;
         font-weight: bold;
     }
-    /* 하트 버튼 위치 조정 (필요시) */
     .wish-heart {
-        color: red; /* 항상 빨간색 */
+        color: red; 
         cursor: pointer;
+    }
+
+    /* PAGE BAR 스타일 */
+    .pagebar {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pagebar button {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 10px;
+      margin: 0 3px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 14px;
+      color: #222;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pagebar .page-num {
+      font-weight: 500;
+    }
+
+    .pagebar .page-num.active {
+      background: #222;
+      color: #fff;
+      border-color: #222;
+      cursor: default; 
+    }
+
+    .pagebar button:not(.active):hover {
+      background: #222;
+      color: #fff;
+      border-color: #222;
     }
 </style>
