@@ -2,6 +2,7 @@ package product.model;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import product.domain.TrackDTO;
 import product.domain.ProductDTO;
@@ -30,6 +31,10 @@ public interface ProductDAO {
     // 로그인 상태용 랜덤추천 : 특정 카테고리에서 지정된 개수(count)만큼 랜덤 추출
     List<ProductDTO> selectProductsByCategory(int categoryNo, int count) throws SQLException;
     
-    // 제품 상세페이지용 리뷰 조회
-    List<ReviewDTO> selectReviewList(int productno) throws SQLException;
+    
+    // 페이징 처리된 리뷰 목록 (5개씩)
+    List<ReviewDTO> selectReviewListPaging(Map<String, String> paraMap) throws SQLException;
+    
+    // 특정 제품의 리뷰 총 개수 (페이징 계산용)
+    int getTotalReviewCount(int productno) throws SQLException;
 }
