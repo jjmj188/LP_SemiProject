@@ -32,9 +32,11 @@
   <div class="wrap">
   
    <header class="topbar">
-  <div class="logo">
-    <img src="<%= ctxPath%>/images/logo.png" alt="">
-  </div>
+<div class="logo">
+  <a href="<%= ctxPath%>/index.lp">
+    <img src="<%= ctxPath%>/images/logo.png" alt="홈으로 이동">
+  </a>
+</div>
 
   <!-- PC 메뉴 -->
   <nav class="navlinks" aria-label="Primary">
