@@ -7,7 +7,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<!-- jQuery (중복 로드 금지: 하나만 유지) -->
+<!-- jQuery-->
 <script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 
 <!-- 다음 주소 API -->
@@ -549,11 +549,6 @@ $(function () {
 
 				<div class="form-group">
 					<textarea id="requestText" placeholder="배송 요청사항을 입력하세요"></textarea>
-				</div>
-
-				<div class="save-box">
-					<label> <input type="checkbox"> 주소 및 주문자 정보 저장하기
-					</label>
 				</div>
 
 			</div>

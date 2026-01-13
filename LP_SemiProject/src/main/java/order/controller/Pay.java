@@ -25,7 +25,7 @@ import product.model.ProductDAO_imple;
 public class Pay extends AbstractController {
 
     private OrderDAO odao = new OrderDAO_imple();
-    private ProductDAO pdao = new ProductDAO_imple(); // ✅ 바로구매용 상품조회
+    private ProductDAO pdao = new ProductDAO_imple(); 
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
