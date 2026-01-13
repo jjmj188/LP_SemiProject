@@ -56,17 +56,22 @@ public class OrderDAO_imple implements OrderDAO {
     
     @Override
     public int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList, String[] cartnoArr) throws Exception {
-    	
+
         int orderno = 0;
+
+        // ✅ 바로구매 여부: cartnoArr가 비면 바로구매로 간주
+        boolean isDirectBuy = (cartnoArr == null || cartnoArr.length == 0);
 
         try {
             if (cartList == null || cartList.size() == 0) return 0;
-            if (cartnoArr == null || cartnoArr.length == 0) return 0;
+
+            // ✅ 장바구니 구매일 때만 cartnoArr 필수
+            if (!isDirectBuy && (cartnoArr == null || cartnoArr.length == 0)) return 0;
 
             conn = ds.getConnection();
             conn.setAutoCommit(false);
 
-            // 주문번호 채번
+            // 1) 주문번호 채번
             String sql = " select seq_orderno.nextval AS orderno from dual ";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -108,7 +113,7 @@ public class OrderDAO_imple implements OrderDAO {
                 return 0;
             }
 
-            // 재고 체크 + 차감 (동시성 안전) 
+            // 3) 재고 체크 + 차감 (동시성 안전)
             String sqlSelectStockForUpdate =
                 " select stock "
               + " from tbl_product "
@@ -121,7 +126,7 @@ public class OrderDAO_imple implements OrderDAO {
               + " where productno = ? "
               + "   and stock >= ? ";
 
-            // 4) tbl_orderdetail insert 준비
+            // 4) tbl_orderdetail insert
             String sqlInsertDetail =
                 " insert into tbl_orderdetail( "
               + " orderdetailno, fk_orderno, fk_productno, qty, unitprice "
@@ -129,11 +134,8 @@ public class OrderDAO_imple implements OrderDAO {
               + " seq_orderdetailno.nextval, ?, ?, ?, ? "
               + " ) ";
 
-            
             PreparedStatement pstmtDetail = null;
-           
             PreparedStatement pstmtStockSel = null;
-            
             PreparedStatement pstmtStockUp = null;
 
             try {
@@ -147,12 +149,11 @@ public class OrderDAO_imple implements OrderDAO {
                     int qty = cdto.getQty();
                     int unitprice = cdto.getPrice();
 
-                    
+                    // 재고 row lock + 조회
                     pstmtStockSel.setInt(1, productno);
                     rs = pstmtStockSel.executeQuery();
 
                     if (!rs.next()) {
-                        // 존재하지 않는 상품
                         if (rs != null) { rs.close(); rs = null; }
                         conn.rollback();
                         return 0;
@@ -167,7 +168,6 @@ public class OrderDAO_imple implements OrderDAO {
                     }
 
                     if (stock < qty) {
-                        // 재고 부족
                         conn.rollback();
                         return 0;
                     }
@@ -184,14 +184,13 @@ public class OrderDAO_imple implements OrderDAO {
                         return 0;
                     }
 
-                    // 재고 차감 (stock >= qty 조건으로 안전하게 한번 더 방어)
+                    // 재고 차감
                     pstmtStockUp.setInt(1, qty);
                     pstmtStockUp.setInt(2, productno);
                     pstmtStockUp.setInt(3, qty);
 
                     int nStock = pstmtStockUp.executeUpdate();
                     if (nStock != 1) {
-                        // 동시성 등으로 재고가 변했을 가능성
                         conn.rollback();
                         return 0;
                     }
@@ -204,7 +203,7 @@ public class OrderDAO_imple implements OrderDAO {
                 if (pstmtStockUp != null) { try { pstmtStockUp.close(); } catch (SQLException e) {} }
             }
 
-            // 회원 포인트 DB 갱신
+            // 5) 회원 포인트 DB 갱신
             sql = " update tbl_member "
                 + " set point = point - ? + ? "
                 + " where userid = ? ";
@@ -222,24 +221,30 @@ public class OrderDAO_imple implements OrderDAO {
                 return 0;
             }
 
-            // 장바구니 선택삭제
-            StringBuilder in = new StringBuilder();
-            for (int i = 0; i < cartnoArr.length; i++) {
-                if (i > 0) in.append(",");
-                in.append("?");
-            }
+            // 6) ✅ 장바구니 구매일 때만: 장바구니 선택삭제
+            if (!isDirectBuy) {
+                StringBuilder in = new StringBuilder();
+                for (int i = 0; i < cartnoArr.length; i++) {
+                    if (i > 0) in.append(",");
+                    in.append("?");
+                }
 
-            sql = " delete from tbl_cart "
-                + " where fk_userid = ? "
-                + "   and cartno in (" + in.toString() + ") ";
+                sql = " delete from tbl_cart "
+                    + " where fk_userid = ? "
+                    + "   and cartno in (" + in.toString() + ") ";
 
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, userid);
-            for (int i = 0; i < cartnoArr.length; i++) {
-                pstmt.setInt(2 + i, Integer.parseInt(cartnoArr[i]));
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, userid);
+                for (int i = 0; i < cartnoArr.length; i++) {
+                    pstmt.setInt(2 + i, Integer.parseInt(cartnoArr[i]));
+                }
+
+                // delete 결과가 0이어도 “주문 자체”는 성공일 수 있으니,
+                // 여기서 굳이 실패 처리하지 말고 그냥 진행(선택)
+                pstmt.executeUpdate();
+
+                pstmt.close(); pstmt = null;
             }
-            pstmt.executeUpdate();
-            pstmt.close(); pstmt = null;
 
             conn.commit();
             return orderno;
@@ -257,6 +262,7 @@ public class OrderDAO_imple implements OrderDAO {
             close();
         }
     }
+
 
     
   //주문목록(대표상품/총수량/배송정보 포함)

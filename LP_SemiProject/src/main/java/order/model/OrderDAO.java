@@ -11,9 +11,6 @@ public interface OrderDAO {
 	// 구매하기(저장, 업데이트)
 	int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList, String[] cartnoArr)throws Exception;
 
-	
-	
-	
 	// 구매내역 "주문 카드" 목록 (주문 단위)
     List<OrderDTO> selectMyOrderList(String userid) throws Exception;
 
