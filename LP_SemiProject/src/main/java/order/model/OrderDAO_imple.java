@@ -461,7 +461,113 @@ public class OrderDAO_imple implements OrderDAO {
 		
 	}
 
+	@Override
+	public int getTotalOrderCount(String userid) throws Exception {
+	    int totalCount = 0;
 
+	    try {
+	        conn = ds.getConnection();
+
+	        String sql = "select count(*) as totalCount "
+	                   + "from tbl_order o "
+	                   + "where o.fk_userid = ?";
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, userid);
+
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            totalCount = rs.getInt("totalCount");
+	        }
+
+	    } finally {
+	        close();
+	    }
+
+	    return totalCount;
+	}
+
+
+	// 주문 목록 페이징 처리
+	@Override
+	public List<OrderDTO> selectMyOrderListPaging(String userid, int startRow, int sizePerPage) throws Exception {
+	    List<OrderDTO> list = new ArrayList<>();
+
+	    try {
+	        conn = ds.getConnection();
+
+	        String sql =
+	            " select o.orderno, to_char(o.orderdate,'yyyy.mm.dd') as orderdate, "
+	            + "        o.totalprice, o.totalpoint, o.usepoint, "
+	            + "        nvl(d.deliverystatus,'배송준비중') as deliverystatus, "
+	            + "        d.delivery_company as deliveryCompany, "
+	            + "        d.invoice_no as invoiceNo, "
+	            + "        s.totalQty, s.itemCount, "
+	            + "        r.fk_productno as repProductno, p.productname as repProductname, p.productimg as repProductimg "
+	            + " from tbl_order o "
+	            + " left join tbl_delivery d "
+	            + "   on d.fk_orderno = o.orderno "
+	            + " join ( "
+	            + "   select fk_orderno, sum(qty) as totalQty, count(*) as itemCount "
+	            + "   from tbl_orderdetail "
+	            + "   group by fk_orderno "
+	            + " ) s "
+	            + "   on s.fk_orderno = o.orderno "
+	            + " join ( "
+	            + "   select od.fk_orderno, od.fk_productno "
+	            + "   from tbl_orderdetail od "
+	            + "   where od.orderdetailno = ( "
+	            + "     select min(od2.orderdetailno) "
+	            + "     from tbl_orderdetail od2 "
+	            + "     where od2.fk_orderno = od.fk_orderno "
+	            + "   ) "
+	            + " ) r "
+	            + "   on r.fk_orderno = o.orderno "
+	            + " join tbl_product p "
+	            + "   on p.productno = r.fk_productno "
+	            + " where o.fk_userid = ? "
+	            + " order by o.orderno desc "
+	            + " offset ? rows fetch next ? rows only"; // 페이징 처리
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, userid);
+	        pstmt.setInt(2, startRow);  // 시작 행
+	        pstmt.setInt(3, sizePerPage);  // 페이지 당 행 수
+
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            OrderDTO dto = new OrderDTO();
+	            dto.setOrderno(rs.getInt("orderno"));
+	            dto.setUserid(userid);
+	            dto.setOrderdate(rs.getString("orderdate"));
+	            dto.setTotalprice(rs.getInt("totalprice"));
+	            dto.setTotalpoint(rs.getInt("totalpoint"));
+	            dto.setUsepoint(rs.getInt("usepoint"));
+	            dto.setDeliverystatus(rs.getString("deliverystatus"));
+	            dto.setDeliveryCompany(rs.getString("deliveryCompany"));
+	            dto.setInvoiceNo(rs.getString("invoiceNo"));
+	            dto.setTotalQty(rs.getInt("totalQty"));
+	            dto.setItemCount(rs.getInt("itemCount")); // moreCount 자동 계산됨
+	            dto.setRepProductno(rs.getInt("repProductno"));
+	            dto.setRepProductname(rs.getString("repProductname"));
+	            dto.setRepProductimg(rs.getString("repProductimg"));
+
+	            list.add(dto);
+	        }
+
+	    } finally {
+	        close();
+	    }
+
+	    return list;
+	}
+
+	
+
+
+	
 	
 	
 }

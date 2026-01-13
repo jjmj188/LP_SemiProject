@@ -97,26 +97,6 @@
 	color: #666;
 }
 
-<style>
-    .wish-list {
-        min-height: 600px;
-        margin-bottom: 20px;
-    }
-
-    .wish-title-link {
-        text-decoration: none;
-        color: inherit;
-    }
-    .wish-price {
-        font-size: 14px;
-        color: #666;
-        margin-top: 5px;
-        font-weight: bold;
-    }
-    .wish-heart {
-        color: red; 
-        cursor: pointer;
-    }
 
     /* PAGE BAR 스타일 */
     .pagebar {
@@ -157,7 +137,7 @@
       border-color: #222;
     }
 </style>
-</style>
+
 
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
 
@@ -292,12 +272,14 @@
 					</div>
 				</c:forEach>
 
+				<!-- 페이지바 표시 부분 -->
 				<div class="pagebar">
-					<ul class="pagination"
-						style="margin: 0; list-style: none; display: flex; justify-content: center; padding: 0;">
-						${requestScope.pageBar}
-					</ul>
+				    <ul class="pagination"
+				        style="margin: 0; list-style: none; display: flex; justify-content: center; padding: 0;">
+				    ${requestScope.pageBar}
+				    </ul>
 				</div>
+
 
 			</div>
 		</section>
@@ -342,6 +324,14 @@
 
 <script type="text/javascript">
 "use strict";
+
+//페이지 이동 함수
+function goPage(pageNo) {
+    const currentURL = window.location.href;
+    const newURL = new URL(currentURL);
+    newURL.searchParams.set('currentShowPageNo', pageNo); // currentShowPageNo를 페이지 번호로 업데이트
+    window.location.href = newURL.toString(); // 페이지 리로드
+}
 
 (function () {
 
@@ -630,6 +620,8 @@
 </script>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
 
 
 <%-- <script src="<%=ctxPath%>/js/my_info/my_order.js"></script> --%>
