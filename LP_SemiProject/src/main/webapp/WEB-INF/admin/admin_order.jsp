@@ -116,9 +116,9 @@
                                         tabindex="-1"
                                         style="cursor: pointer;">
                                     <option value="">택배사 선택</option>
-                                    <option value="CJ대한통운">CJ대한통운 (12자리)</option>
-                                    <option value="한진택배">한진택배 (12자리)</option>
-                                    <option value="우체국택배">우체국택배 (13자리)</option>
+                                    <option value="CJ대한통운">CJ대한통운</option>
+                                    <option value="한진택배">한진택배</option>
+                                    <option value="우체국택배">우체국택배</option>
                                 </select>
                                 <div style="display:flex; justify-content:center; align-items:center; gap:2px; margin-top:5px;">
                                     <input type="text" id="invoice_${map.orderno}" class="input-invoice" placeholder="송장번호" 
