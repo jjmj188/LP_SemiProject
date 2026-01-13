@@ -222,25 +222,11 @@
         </c:if>
         
         <%-- PageBar --%>
-        <div class="pagebar" style="display:flex; justify-content:center; margin-top:30px; gap:5px;">
-            <c:if test="${requestScope.totalPage > 0}">
-                <c:forEach var="i" begin="1" end="${requestScope.totalPage}">
-                    <c:choose>
-                        
-                        <c:when test="${i == requestScope.currentShowPageNo}">
-                            <button type="button" class="active" style="width:30px; height:30px; border:1px solid #222; background:#222; color:#fff; cursor:default;">${i}</button>
-                        </c:when>
-                        <c:otherwise>
-                            <button type="button" 
-                                    onclick="location.href='productdetail.lp?productno=${pDto.productno}&currentShowPageNo=${i}#reviews'"
-                                    style="width:30px; height:30px; border:1px solid #ddd; background:#fff; cursor:pointer;">
-                                ${i}
-                            </button>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-            </c:if>
-        </div>
+        <div class="pagebar" style="margin-top:30px;">
+	        <ul class="pagination" style="margin:0; list-style:none; display:flex; justify-content:center; padding:0;">
+	            ${requestScope.pageBar}
+	        </ul>
+	    </div>
         
     </section>
 

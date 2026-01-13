@@ -684,33 +684,62 @@ main{
 }
 
 /* =====================
-   PAGINATION
+   PAGE BAR
 ===================== */
-.pagination {
-  margin-top: 50px;
+.pagebar {
+  margin-top: 40px;
   display: flex;
   justify-content: center;
-  gap: 10px;
-}
-
-.pagination a {
-  width: 42px;
-  height: 42px;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #333;
-  transition: 0.2s ease;
+  gap: 6px;
 }
 
-.pagination a.active,
-.pagination a:hover {
+/* 공통 버튼 */
+.pagebar button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  margin:0px 3px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 14px;
+  color: #222;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+}
+
+/* 페이지 숫자 */
+.pagebar .page-num {
+  font-weight: 500;
+}
+
+/* 활성 페이지 */
+.pagebar .page-num.active {
   background: #222;
   color: #fff;
   border-color: #222;
+}
+
+/* 이전/다음 */
+.pagebar .page-btn {
+
+  align-items: center;
+  justify-content: center;
+}
+
+/* hover */
+.pagebar button:not(:disabled):hover {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* 비활성 */
+.pagebar button:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* =====================

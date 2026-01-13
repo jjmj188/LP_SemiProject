@@ -323,11 +323,6 @@ body {
   color: #444;
 }
 
-/* 전체보기 버튼 */
-.review-more {
-  margin-top: 30px;
-  text-align: center;
-}
 
 .review-more button {
   padding: 10px 24px;
@@ -498,5 +493,64 @@ body {
 
 .album{
   margin: 1rem 0;          /* (기존: 1rem 100px) 제거 */
+}
+
+/* =====================
+   PAGE BAR
+===================== */
+.pagebar {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 공통 버튼 */
+.pagebar button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  margin:0px 3px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 14px;
+  color: #222;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+}
+
+/* 페이지 숫자 */
+.pagebar .page-num {
+  font-weight: 500;
+}
+
+/* 활성 페이지 */
+.pagebar .page-num.active {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* 이전/다음 */
+.pagebar .page-btn {
+
+  align-items: center;
+  justify-content: center;
+}
+
+/* hover */
+.pagebar button:not(:disabled):hover {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* 비활성 */
+.pagebar button:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
