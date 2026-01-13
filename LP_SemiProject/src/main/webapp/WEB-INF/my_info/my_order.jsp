@@ -96,6 +96,67 @@
 	text-align: center;
 	color: #666;
 }
+
+<style>
+    .wish-list {
+        min-height: 600px;
+        margin-bottom: 20px;
+    }
+
+    .wish-title-link {
+        text-decoration: none;
+        color: inherit;
+    }
+    .wish-price {
+        font-size: 14px;
+        color: #666;
+        margin-top: 5px;
+        font-weight: bold;
+    }
+    .wish-heart {
+        color: red; 
+        cursor: pointer;
+    }
+
+    /* PAGE BAR 스타일 */
+    .pagebar {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pagebar button {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 10px;
+      margin: 0 3px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 14px;
+      color: #222;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pagebar .page-num {
+      font-weight: 500;
+    }
+
+    .pagebar .page-num.active {
+      background: #222;
+      color: #fff;
+      border-color: #222;
+      cursor: default; 
+    }
+
+    .pagebar button:not(.active):hover {
+      background: #222;
+      color: #fff;
+      border-color: #222;
+    }
+</style>
 </style>
 
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
@@ -232,7 +293,8 @@
 				</c:forEach>
 
 				<div class="pagebar">
-					<ul class="pagination" style="margin: 0;">
+					<ul class="pagination"
+						style="margin: 0; list-style: none; display: flex; justify-content: center; padding: 0;">
 						${requestScope.pageBar}
 					</ul>
 				</div>
