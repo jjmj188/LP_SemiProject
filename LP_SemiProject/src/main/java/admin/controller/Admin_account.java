@@ -21,7 +21,7 @@ public class Admin_account extends AbstractController {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // =============================================================
-        // 1. 관리자 로그인 여부 확인
+        // 관리자 로그인 여부 확인
         // =============================================================
         HttpSession session = request.getSession();
         AdminVO loginadmin = (AdminVO) session.getAttribute("loginAdmin"); 
@@ -39,7 +39,7 @@ public class Admin_account extends AbstractController {
         }
 
         // =============================================================
-        // 2. DAO 및 파라미터 준비
+        // DAO 및 파라미터 준비
         // =============================================================
         InterAdminDAO adao = new AdminDAO();          
         String mode = request.getParameter("mode"); // 차트 데이터 요청인지 구분

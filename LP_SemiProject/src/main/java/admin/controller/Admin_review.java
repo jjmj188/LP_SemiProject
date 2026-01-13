@@ -9,14 +9,33 @@ import org.json.JSONObject; // JSON 처리를 위해 필요
 import common.controller.AbstractController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpSession;
 import admin.model.AdminDAO;
+import admin.model.AdminVO;
 import admin.model.InterAdminDAO;
 
 public class Admin_review extends AbstractController {
 
-    @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	  @Override
+	    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    	
+	    // =============================================================
+	    // 관리자 로그인 여부 확인
+	    // =============================================================
+	    HttpSession session = request.getSession();
+	    AdminVO loginadmin = (AdminVO) session.getAttribute("loginAdmin"); 
+
+	    if (loginadmin == null) {
+	        String message = "관리자만 접근 가능합니다.";
+	        String loc = request.getContextPath() + "/admin/admin_login.lp"; 
+	        
+	        request.setAttribute("message", message);
+	        request.setAttribute("loc", loc);
+	        
+	        super.setRedirect(false);
+	        super.setViewPage("/WEB-INF/msg.jsp");
+	        return;
+	    }
         
         String method = request.getMethod();
         String mode = request.getParameter("mode"); // 기능 구분 (목록:null, 삭제:delete)
