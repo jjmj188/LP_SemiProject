@@ -791,7 +791,31 @@ public class AdminDAO implements InterAdminDAO {
         return result;
     }
     
-    // 20. 배송 완료 처리 메서드
+    // 20. 관리자 배송 주소 수정 메서드 
+    @Override
+    public int updateOrderAddress(Map<String, String> paraMap) throws SQLException {
+        int result = 0;
+        try {
+            conn = ds.getConnection();
+            // 회원 테이블의 주소를 주문 데이터 기준으로 업데이트 (또는 별도 주문 주소지 테이블 업데이트)
+            String sql = " UPDATE tbl_member SET postcode = ?, address = ?, detailaddress = ?, extraaddress = ? "
+                       + " WHERE userid = (SELECT fk_userid FROM tbl_order WHERE orderno = ?) ";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, paraMap.get("postcode"));
+            pstmt.setString(2, paraMap.get("address"));
+            pstmt.setString(3, paraMap.get("detailaddress"));
+            pstmt.setString(4, paraMap.get("extraaddress"));
+            pstmt.setString(5, paraMap.get("orderno"));
+            
+            result = pstmt.executeUpdate();
+        } finally {
+            close();
+        }
+        return result;
+    }
+    
+    // 21. 배송 완료 처리 메서드
     @Override
     public int updateDeliveryEnd(String orderno) throws SQLException {
         int result = 0;
@@ -813,7 +837,7 @@ public class AdminDAO implements InterAdminDAO {
         return result;
     }
     
-    // 21. 리뷰 선택 삭제
+    // 22. 리뷰 선택 삭제
     @Override
     public int deleteMultiReviews(String[] reviewNos) throws SQLException {
         int result = 0;
@@ -838,7 +862,7 @@ public class AdminDAO implements InterAdminDAO {
         return result;
     }
     
-    // 22. 리뷰 총 개수 조회
+    // 23. 리뷰 총 개수 조회
     @Override
     public int getTotalReviewCount(Map<String, String> paraMap) throws SQLException {
         int totalCount = 0;
@@ -852,7 +876,7 @@ public class AdminDAO implements InterAdminDAO {
         return totalCount;
     }
 
-    // 23. 페이징 처리된 리뷰 목록 조회
+    // 24. 페이징 처리된 리뷰 목록 조회
     @Override
     public List<Map<String, String>> getReviewListWithPaging(Map<String, String> paraMap) throws SQLException {
         List<Map<String, String>> reviewList = new ArrayList<>();
@@ -889,7 +913,7 @@ public class AdminDAO implements InterAdminDAO {
         return reviewList;
     }
     
-    // 24. 문의 총 개수 조회
+    // 25. 문의 총 개수 조회
     @Override
     public int getTotalInquiryCount(Map<String, String> paraMap) throws SQLException {
         int totalCount = 0;
@@ -903,7 +927,7 @@ public class AdminDAO implements InterAdminDAO {
         return totalCount;
     }
 
-    // 25. 페이징 처리된 문의 목록 조회
+    // 26. 페이징 처리된 문의 목록 조회
     @Override
     public List<InquiryVO> getInquiryListWithPaging(Map<String, String> paraMap) throws SQLException {
         List<InquiryVO> inquiryList = new ArrayList<>();
@@ -939,7 +963,7 @@ public class AdminDAO implements InterAdminDAO {
         return inquiryList;
     }
     
-    // 26. 문의 답변 등록 및 수정
+    // 27. 문의 답변 등록 및 수정
     @Override
     public int replyInquiry(String inquiryno, String adminreply) throws SQLException {
         int result = 0;
