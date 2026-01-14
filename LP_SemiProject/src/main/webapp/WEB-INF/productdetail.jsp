@@ -9,21 +9,19 @@
 
 <%
     String ctxPath = request.getContextPath();
-    
-    boolean isLiked = false;
+	boolean isLiked = false;
     MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
     ProductDTO pDto = (ProductDTO) request.getAttribute("pDto");
-
-    if(loginuser != null && pDto != null) {
+	if(loginuser != null && pDto != null) {
         WishListDAO wdao = new WishListDAO_imple();
-        try {
+		try {
             int n = wdao.checkWishStatus(loginuser.getUserid(), pDto.getProductno());
-            if(n == 1) {
+			if(n == 1) {
                 isLiked = true;
-            }
+			}
         } catch(Exception e) {
             e.printStackTrace();
-        }
+		}
     }
 %>
 
@@ -48,11 +46,13 @@
     <main class="product-container">
 
         <div class="product-image">
-            <img src="<%= ctxPath %>/${pDto.productimg}" alt="${pDto.productname}">
+            <%-- 수정된 부분: /images/productimg/ 경로 추가 --%>
+            <img src="<%= ctxPath %>/images/productimg/${pDto.productimg}" alt="${pDto.productname}">
         </div>
 
         <div class="product-info">
-            <h1>${pDto.productname}</h1>
+           
+             <h1>${pDto.productname}</h1>
             
             <p class="price" id="totalPrice">
                 ₩ <fmt:formatNumber value="${pDto.price}" pattern="#,###"/>
@@ -70,13 +70,13 @@
                 <button type="button" onclick="changeQty(-1)">−</button>
                 <span id="qty">1</span>
                 <button type="button" onclick="changeQty(1)">+</button>
-            </div>
+             </div>
 
             <div class="wishlist">
                 <button type="button" id="wishBtn" onclick="toggleWish()">
                     <% if(isLiked) { %>
                         <i class="fa-solid fa-heart" id="heartIcon" style="color: red;"></i>
-                        <span id="wishText">찜취소</span>
+                         <span id="wishText">찜취소</span>
                     <% } else { %>
                         <i class="fa-regular fa-heart" id="heartIcon"></i>
                         <span id="wishText">찜하기</span>
@@ -93,12 +93,12 @@
 						  <input type="hidden" name="productno" value="${pDto.productno}">
 						  <input type="hidden" name="qty" id="buyQty" value="1">
 					</form>
-                    
+                   
                         <button type="button" class="buy" onclick="goOrder()">구매하기</button>
         
                         <c:choose>
                             <%-- 장바구니 수정 모드 --%>
-                            <c:when test="${not empty param.cartno}">
+                             <c:when test="${not empty param.cartno}">
                                 <form id="cartUpdateForm" method="post" action="<%= ctxPath %>/order/cartUpdate.lp" style="display:inline;">
                                     <input type="hidden" name="cartno" value="${param.cartno}">
                                     <input type="hidden" name="qty" id="updateQty" value="1">
@@ -107,10 +107,10 @@
                             </c:when>
                         
                             <%-- 일반 장바구니 담기 모드 --%>
-                            <c:otherwise>
+                             <c:otherwise>
                                 <form id="cartForm" style="display:inline;">
                                     <input type="hidden" name="productno" value="${pDto.productno}">
-                                    <input type="hidden" id="cartQty" name="qty" value="1">
+                                     <input type="hidden" id="cartQty" name="qty" value="1">
                                     <button type="button" class="cart" onclick="submitCart()">장바구니</button>
                                 </form>
                             </c:otherwise>
@@ -125,7 +125,7 @@
                         </div>
                     </c:otherwise>
                 </c:choose>
-            </div>
+             </div>
 
         </div>
 
@@ -139,10 +139,12 @@
     <div class="container-top">
         <div class="album">
           <div class="cover">
-             <img src="<%= ctxPath %>/${pDto.productimg}" alt="Album Cover">
+             <%-- 앨범 커버 경로 수정 --%>
+             <img src="<%= ctxPath %>/images/productimg/${pDto.productimg}" alt="Album Cover">
           </div>
           <div class="vinyl">
-             <div class="vinyl-cover" style="background-image: url('<%= ctxPath %>/${pDto.productimg}');"></div>
+             <%-- 바이닐(LP판) 커버 이미지 경로 수정 --%>
+             <div class="vinyl-cover" style="background-image: url('<%= ctxPath %>/images/productimg/${pDto.productimg}');"></div>
           </div>
        </div>
     </div>
@@ -151,14 +153,14 @@
         <h2>TRACK LIST</h2>
         <ol>
             <c:if test="${not empty requestScope.trackList}">
-                <c:forEach var="track" items="${requestScope.trackList}">
+                 <c:forEach var="track" items="${requestScope.trackList}">
                     <li>${track.tracktitle}</li>
                 </c:forEach>
             </c:if>
             <c:if test="${empty requestScope.trackList}">
                 <li>등록된 트랙 정보가 없습니다.</li>
             </c:if>
-        </ol>
+           </ol>
     </section>
 
     <c:if test="${not empty pDto.youtubeurl}">
@@ -167,7 +169,7 @@
             <p class="desc-text" style="white-space: pre-wrap;"> 전체 5곡 중 맨 처음 1곡을 들려드립니다</p>
             <c:set var="videoUrl" value="${pDto.youtubeurl}" />
             <c:set var="youtubeId" value="" />
-            <c:choose>
+             <c:choose>
                 <c:when test="${fn:contains(videoUrl, 'v=')}">
                     <c:set var="youtubeId" value="${fn:substringAfter(videoUrl, 'v=')}" />
                 </c:when>
@@ -178,14 +180,14 @@
                     <c:set var="youtubeId" value="${fn:substringAfter(videoUrl, 'embed/')}" />
                 </c:when>
             </c:choose>
-            <c:if test="${fn:contains(youtubeId, '&')}">
+             <c:if test="${fn:contains(youtubeId, '&')}">
                 <c:set var="youtubeId" value="${fn:substringBefore(youtubeId, '&')}" />
             </c:if>
             <c:if test="${fn:contains(youtubeId, '?')}">
                 <c:set var="youtubeId" value="${fn:substringBefore(youtubeId, '?')}" />
             </c:if>
             <div class="video">
-                <iframe src="https://www.youtube.com/embed/${youtubeId}" title="${pDto.productname}" allowfullscreen></iframe>
+                 <iframe src="https://www.youtube.com/embed/${youtubeId}" title="${pDto.productname}" allowfullscreen></iframe>
             </div>
         </section>
     </c:if>
@@ -203,18 +205,19 @@
         <c:if test="${not empty requestScope.reviewList}">
             <c:forEach var="review" items="${requestScope.reviewList}">
                 <div class="review-item">
-                    <div class="review-header">
+                
+                     <div class="review-header">
                         <span class="user-id">${fn:substring(review.userid, 0, 3)}***</span>
                         <div class="review-rating">
                             <c:forEach begin="1" end="${review.rating}">
-                                <i class="fa-solid fa-star"></i>
+                                 <i class="fa-solid fa-star"></i>
                             </c:forEach>
                             <c:forEach begin="1" end="${5 - review.rating}">
-                                <i class="fa-regular fa-star" style="color: #ccc;"></i>
+                                 <i class="fa-regular fa-star" style="color: #ccc;"></i>
                             </c:forEach>
                             <span class="score">${review.rating}</span>
                         </div>
-                    </div>
+                     </div>
                     <p class="review-text">${review.reviewcontent}</p>
                     <span style="font-size: 12px; color: #aaa; margin-top:5px; display:block;">${review.writedate}</span>
                 </div>
@@ -285,21 +288,22 @@
             data: { "productno": productNo },
             dataType: "json",
             success: function(json) {
-                if(json.isSuccess) {
+              
+               if(json.isSuccess) {
                     const icon = $("#heartIcon");
                     const text = $("#wishText");
                     
                     if(json.result == 1) { // 찜 추가됨
-                        icon.removeClass("fa-regular").addClass("fa-solid").css("color", "red");
+                         icon.removeClass("fa-regular").addClass("fa-solid").css("color", "red");
                         text.text("찜취소");
                     } 
                     else { // 찜 삭제됨
-                        icon.removeClass("fa-solid").addClass("fa-regular").css("color", "");
+                         icon.removeClass("fa-solid").addClass("fa-regular").css("color", "");
                         text.text("찜하기");
                     }
                 } 
                 else {
-                    if(json.requireLogin) {
+                     if(json.requireLogin) {
                         alert("로그인이 필요합니다.");
                         location.href = loginUrl;
                     } else {
@@ -318,18 +322,17 @@
     function goOrder() {
 	  if (!isLogin) {
 	    alert("로그인이 필요한 서비스입니다.");
-	    location.href = loginUrl;
+        location.href = loginUrl;
 	    return;
 	  }
 	
 	  const frm = document.getElementById("buyForm");
-	  frm.submit(); 
-	}
+	  frm.submit();
+    }
 
     function submitCart() {
       const updateForm = document.getElementById("cartUpdateForm");
       const addForm = document.getElementById("cartForm");
-
       if (updateForm) {
         const choice = confirm("장바구니 수량을 수정하시겠습니까?");
         if (!choice) return;

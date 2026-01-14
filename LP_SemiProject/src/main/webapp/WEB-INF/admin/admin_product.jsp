@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 
 <% String ctxPath = request.getContextPath(); %>
 
@@ -168,10 +169,24 @@
                 <div class="product-item">
                   <input type="checkbox" name="pseq" value="${pvo.productno}">
                   
-                  <%-- [수정] 이미지 경로에 /images/productimg/ 추가 --%>
-                  <img src="<%= ctxPath%>/images/productimg/${pvo.productimg}" 
-                       onerror="this.src='<%= ctxPath%>/images/no_image.png'" 
-                       alt="${pvo.productname}" style="width: 80px; height: 80px; object-fit: cover;">
+                  <%-- [수정] 이미지 경로 분기 처리 (기존 데이터와 신규 데이터 호환) --%>
+                  <c:choose>
+                      <%-- Case 1: DB 데이터에 이미 '/images' 경로가 들어있는 경우 (기존 데이터) --%>
+                      <c:when test="${fn:contains(pvo.productimg, '/images/')}">
+                          <img src="<%= ctxPath%>${pvo.productimg}" 
+                               onerror="this.src='<%= ctxPath%>/images/no_image.png'" 
+                               alt="${pvo.productname}" 
+                               style="width: 80px; height: 80px; object-fit: cover;">
+                      </c:when>
+                      
+                      <%-- Case 2: DB 데이터에 파일명만 있는 경우 (신규 등록 데이터) --%>
+                      <c:otherwise>
+                          <img src="<%= ctxPath%>/images/productimg/${pvo.productimg}" 
+                               onerror="this.src='<%= ctxPath%>/images/no_image.png'" 
+                               alt="${pvo.productname}" 
+                               style="width: 80px; height: 80px; object-fit: cover;">
+                      </c:otherwise>
+                  </c:choose>
                        
                   <div class="product-info">
                     <p class="artist-en" style="font-weight: bold;">[${pvo.categoryname}]</p>

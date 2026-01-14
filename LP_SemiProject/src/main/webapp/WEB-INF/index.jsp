@@ -3,6 +3,8 @@
     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%-- 문자열 처리 함수(fn) 라이브러리 추가 --%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%
 	String ctxPath = request.getContextPath();
@@ -11,8 +13,7 @@
  <link rel="stylesheet" href="<%= ctxPath%>/css/index.css">
 
   
-  <!-- HEADER -->
-<jsp:include page="header1.jsp"></jsp:include>
+  <jsp:include page="header1.jsp"></jsp:include>
 
         <main>
       <section class="hero">
@@ -22,7 +23,7 @@
           <p>
  			 A carefully curated vinyl collection,<br>
   				for modern music lovers who enjoy slow, intentional listening.
-			</p>
+		 </p>
 
          <button class="main-btn" id="btnShowAll" type="button">Show all Records</button>
 
@@ -30,12 +31,8 @@
       </section>
 
       <section class="strip" aria-label="Showcase carousel">
-        <!-- black semicircle accents (approximation) -->
-       
-
         <div class="rail">
           <div class="track" id="track">
-            <!-- 1 set (JS에서 복제해서 무한루프) -->
             <div class="card" style="--rot:-12deg">
               <img alt="" src="./images/main_1.jpeg">
             </div>
@@ -45,7 +42,7 @@
             </div>
 
             <div class="card" style="--rot:-8deg">
-              <img alt="" src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=900&q=60">
+               <img alt="" src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=900&q=60">
             </div>
 
             <div class="badge" aria-label="15K lessons badge">
@@ -70,7 +67,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path d="M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               <path d="M7 15l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+             </svg>
           </span>
 
           <span>Scroll to see more</span>
@@ -81,18 +78,15 @@
               <path d="M7 15l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-
         </div>
-	
       </section>
 	  
-		  	  <img class="main-line" src="<%= ctxPath%>/images/main_line.png" alt="">
+	  <img class="main-line" src="<%= ctxPath%>/images/main_line.png" alt="">
 	
     </main>
 
 
 	
-  <!-- 장르 바 (메인에서만 사용) -->
   <div class="genre-bar">
     <div class="genre-bar-inner">
       <button type="button" 
@@ -139,7 +133,7 @@
           <input type="hidden" name="categoryno" value="${requestScope.categoryNo}" />
       </c:if>
       <input type="hidden" name="sort" value="${requestScope.sort}" />
-    </div>
+     </div>
 
     <button class="main-search__btn" type="submit">검색</button>
   </form>
@@ -147,11 +141,8 @@
 
 
 
-<!-- ===== MAIN ===== -->
-
 <div id="main-container">
 
-<!-- 신곡 추천 -->
 <section class="carousel">
   
  <div class="main-section-title">
@@ -170,12 +161,23 @@
 		<c:if test="${not empty requestScope.newProductList}">
             <c:forEach var="np" items="${requestScope.newProductList}">
                 <a class="carousel-item" href="<%= ctxPath%>/productdetail.lp?productno=${np.productno}">
-                  <img src="<%= ctxPath%>${np.productimg}" alt="${np.productname}" />
+                  
+                  <%-- [수정] DB데이터에 'images' 경로가 있는지 확인 후 처리 --%>
+                  <c:choose>
+                    <c:when test="${fn:contains(np.productimg, 'images')}">
+                        <%-- 경로가 이미 있으면 그대로 출력 --%>
+                        <img src="<%= ctxPath%>${np.productimg}" alt="${np.productname}" />
+                    </c:when>
+                    <c:otherwise>
+                        <%-- 경로가 없으면(파일명만 있으면) 붙여서 출력 --%>
+                        <img src="<%= ctxPath%>/images/productimg/${np.productimg}" alt="${np.productname}" />
+                    </c:otherwise>
+                  </c:choose>
                   
                   <div class="ci-text">
                     <p class="ci-name">${np.productname}</p>
                     <p class="ci-price">₩ <fmt:formatNumber value="${np.price}" pattern="#,###"/></p>
-                  </div>
+                   </div>
                 </a>
             </c:forEach>
         </c:if>
@@ -193,7 +195,7 @@
       <div class="main-section-title">
         <h2>MUSIC FOR YOU</h2>
         <c:choose>
-            <c:when test="${not empty sessionScope.loginuser}">
+             <c:when test="${not empty sessionScope.loginuser}">
                 <p>${sessionScope.loginuser.name}님의 취향을 분석하여 선별한 레코드입니다.</p>
             </c:when>
             <c:otherwise>
@@ -202,20 +204,32 @@
         </c:choose>
       </div>
 
-      <div id="lpData" hidden>
+       <div id="lpData" hidden>
          <c:if test="${not empty requestScope.recommendList}">
             <c:forEach var="item" items="${requestScope.recommendList}">
+               
+               <%-- [수정] data-img 속성값 설정 로직 --%>
+               <c:set var="finalImgPath" value="" />
+               <c:choose>
+                    <c:when test="${fn:contains(item.productimg, 'images')}">
+                        <c:set var="finalImgPath" value="${item.productimg}" />
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="finalImgPath" value="/images/productimg/${item.productimg}" />
+                    </c:otherwise>
+               </c:choose>
+
                <li class="lp-item"
                    data-album="${item.productname}"
                    data-emblem="Feel the Music, Love the Vinyl"
                    data-accent="#d0d0d0" 
-                   data-img="<%= ctxPath%>${item.productimg}"
+                   data-img="<%= ctxPath%>${finalImgPath}"
                    data-link="<%= ctxPath%>/productdetail.lp?productno=${item.productno}">
                </li>
             </c:forEach>
          </c:if>
          
-         <c:if test="${empty requestScope.recommendList}">
+          <c:if test="${empty requestScope.recommendList}">
             <li class="lp-item"
                 data-album="Ready for Music"
                 data-emblem="Vinyl Shop"
@@ -232,7 +246,7 @@
             <span class="dot"></span>
             바로가기
           </a>
-        </div>
+         </div>
 
         <div class="emblem-container">
           <div class="emblem text"></div>  
@@ -252,7 +266,6 @@
   </section>
  
  
-  <!-- LP 상품 -->
   <section class="product-list">
 	<div id="product-list" style="position:relative; top:-80px;"></div>
     <div class="main-section-title">
@@ -276,7 +289,7 @@
             const searchWord = "${requestScope.searchWord}";
             
             location.href = "<%= ctxPath%>/index.lp?categoryno=" + categoryNo + "&q=" + searchWord + "&sort=" + sortVal + "#product-list";
-        }
+		}
     </script>
     
     <div class="grid">
@@ -284,12 +297,22 @@
             <c:forEach var="p" items="${requestScope.productList}">
                 <div class="product">
                     <a href="<%= ctxPath%>/productdetail.lp?productno=${p.productno}">
-                        <img src="<%= ctxPath%>${p.productimg}" alt="${p.productname}">
+                        
+                        <%-- [수정] 스토어 목록 이미지 경로 처리 --%>
+                        <c:choose>
+                            <c:when test="${fn:contains(p.productimg, 'images')}">
+                                <img src="<%= ctxPath%>${p.productimg}" alt="${p.productname}">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<%= ctxPath%>/images/productimg/${p.productimg}" alt="${p.productname}">
+                            </c:otherwise>
+                        </c:choose>
+
                     </a>
                     <p class="main-product-name">${p.productname}</p>
                     <p class="price">
                         ₩ <fmt:formatNumber value="${p.price}" pattern="#,###"/>
-                    </p>
+                     </p>
                 </div>
             </c:forEach>
         </c:if>
@@ -298,20 +321,19 @@
             <div style="width:100%; text-align:center; padding: 50px;">
                 <script type="text/javascript">
                     alert("검색어에 해당하는 제품이 없습니다.");
-                    
-                    if (history.replaceState) {
+					if (history.replaceState) {
                         var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + window.location.search;
-                        window.history.replaceState({path:cleanUrl}, '', cleanUrl);
+ 						window.history.replaceState({path:cleanUrl}, '', cleanUrl);
                     }
 
                     var searchInput = document.querySelector("input[name='q']");
-                    if(searchInput) {
+					if(searchInput) {
                         searchInput.focus();
-                        searchInput.select();
+ 						searchInput.select();
                     }
                 </script>
                 등록된 상품이 없습니다.
-            </div>
+			</div>
         </c:if>
     </div>
 
@@ -326,12 +348,8 @@
 
 </div>
 
-  <!-- footer -->
- <jsp:include page="footer1.jsp"></jsp:include>
+  <jsp:include page="footer1.jsp"></jsp:include>
   
-<!-- 캐러셀 JS -->
 <script src="<%= ctxPath%>/js/carousel.js"></script>
 
 <script src="<%= ctxPath%>/js/index.js"></script>
-
-

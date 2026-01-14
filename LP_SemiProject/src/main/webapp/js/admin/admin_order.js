@@ -1,5 +1,6 @@
 $(document).ready(function(){
     
+    // 택배사 입력란에 직접 타이핑 방지 (선택만 가능하게)
     $(document).on("keydown", ".select-courier", function(e){
         e.preventDefault(); 
         return false;
@@ -20,12 +21,12 @@ function goDeliveryStart(orderno) {
     if(!receiver) { alert("받는 분 성함을 입력하세요."); return; } 
     if(!company)  { alert("택배사를 선택하세요."); return; } 
     
-    // 택배사별 유효성 검사 규칙
+    // 택배사별 송장번호 유효성 검사
     let regExp_invoice;
     let lengthMsg = "";
 
     if (company === "CJ대한통운" || company === "한진택배") {
-        regExp_invoice = /^[0-9]{12}$/; // 12자리 숫자 [cite: 29]
+        regExp_invoice = /^[0-9]{12}$/; [cite_start]// 12자리 숫자 [cite: 29]
         lengthMsg = "12자리";
     } else if (company === "우체국택배") {
         regExp_invoice = /^[0-9]{13}$/; // 13자리 숫자
@@ -47,7 +48,7 @@ function goDeliveryStart(orderno) {
         url: ctxPath + "/admin/admin_order.lp", 
         type: "POST", 
         data: {
-            "mode": "updateDelivery", 
+            "mode": "updateDeliveryStart", // [수정] updateDelivery -> updateDeliveryStart
             "orderno": orderno, 
             "receiverName": receiver, 
             "delivery_company": company, 
@@ -61,6 +62,9 @@ function goDeliveryStart(orderno) {
             } else {
                 alert("배송 처리 실패."); 
             }
+        },
+        error: function(request, status, error){
+            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
         }
     });
 }
@@ -71,13 +75,18 @@ function goDeliveryEnd(orderno) {
     $.ajax({
         url: ctxPath + "/admin/admin_order.lp", 
         type: "POST", 
-        data: { "mode": "updateDeliveryEnd", "orderno": orderno }, 
+        data: { "mode": "updateDeliveryEnd", "orderno": orderno }, // [확인] 일치함
         dataType: "json", 
         success: function(json) {
             if(json.result == 1) { 
                 alert("완료되었습니다."); 
                 location.reload(); 
+            } else {
+                alert("처리 실패");
             }
+        },
+        error: function(request, status, error){
+            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
         }
     });
 }
@@ -128,7 +137,7 @@ function applyAddress() {
         url: ctxPath + "/admin/admin_order.lp",
         type: "POST",
         data: {
-            "mode": "updateAddress",
+            "mode": "updateOrderAddress", // [수정] updateAddress -> updateOrderAddress
             "orderno": orderno,
             "postcode": postcode,
             "address": address,
@@ -140,7 +149,12 @@ function applyAddress() {
             if(json.result == 1) {
                 alert("수정되었습니다.");
                 location.reload();
+            } else {
+                alert("수정 실패");
             }
+        },
+        error: function(request, status, error){
+            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
         }
     });
 }
