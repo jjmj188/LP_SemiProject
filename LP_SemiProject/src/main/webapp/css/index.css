@@ -378,7 +378,6 @@ main{
       align-items: center;
       border-radius: 12px;
       overflow: hidden;
-      border: 1px solid var(--line);
       box-shadow: 0 12px 30px rgba(0,0,0,0.10);
     }
 
@@ -392,12 +391,10 @@ main{
 
     .button-container {
   position: absolute;          /* 🔥 section 기준으로 겹치기 */
-  top: 50%;                    /* 세로 중앙 */
+  top: 64%;                    /* 세로 중앙 */
   left: 0;
   width: 100%;
-
-  transform: translateY(-50%); /* 정확한 중앙 */
-  
+  transform: translateY(-64%); /* 정확한 중앙 */
   padding: 0 5vw;
   display: flex;
   justify-content: space-between;
@@ -528,8 +525,8 @@ main{
     #lp-container h1 span { width: 100%; }
 
     #lp-container .album-title { 
-   
-		text-align: left;
+   		 width:380px;
+		 text-align: center;
 		 position: relative;    
 		 
 		 }
