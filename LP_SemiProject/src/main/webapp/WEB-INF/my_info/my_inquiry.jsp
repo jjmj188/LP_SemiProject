@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
   String ctxPath = request.getContextPath();
 %>
@@ -48,17 +47,23 @@
           <tbody>
             <c:if test="${not empty requestScope.inquiryList}">
               <c:forEach var="dto" items="${requestScope.inquiryList}">
-                <tr>
+                <tr class="inquiry-row" 
+                    data-inquirydate="${dto.inquirydate}"
+                    data-inquirycontent="${dto.inquirycontent}"
+                    data-adminreply="${dto.adminreply}"
+                    data-inquirystatus="${dto.inquirystatus}">
                   <td><c:out value="${dto.inquirydate}" /></td>
 
                   <td class="td-ellipsis">
-                    <c:out value="${dto.inquirycontent}" />
+                    <c:out value="${fn:substring(dto.inquirycontent, 0, 20)}" />
+                    <c:if test="${fn:length(dto.inquirycontent) > 20}">...</c:if>
                   </td>
 
                   <td class="td-ellipsis">
                     <c:choose>
                       <c:when test="${not empty dto.adminreply}">
-                        <c:out value="${dto.adminreply}" />
+                        <c:out value="${fn:substring(dto.adminreply, 0, 20)}" />
+                        <c:if test="${fn:length(dto.adminreply) > 20}">...</c:if>
                       </c:when>
                       <c:otherwise>-</c:otherwise>
                     </c:choose>
@@ -91,30 +96,15 @@
 
      <!-- ✅ 페이징바 (회원목록 방식 그대로) -->
       <div class="pagebar">
-		  <ul class="pagination" style="margin:0;">
-		    ${requestScope.pageBar}
-		  </ul>
-	  </div> 
-	
-<%-- 	    <!-- 페이징 영역 -->
-<div class="pagebar">
-  <button class="page-btn prev" disabled>
-    <i class="fa-solid fa-chevron-left"></i>
-  </button>
-
-  <button class="page-num">${requestScope.pageBar}</button>
-
-  <button class="page-btn next">
-    <i class="fa-solid fa-chevron-right"></i>
-  </button>
-</div> --%>
-
-
+        <ul class="pagination" style="margin:0;">
+          ${requestScope.pageBar}
+        </ul>
+      </div> 
     </section>
   </div>
 </main>
 
-<!-- 문의작성 모달(그대로) -->
+<!-- 문의 작성 및 상세보기 모달 (하나로 통합) -->
 <div class="modal" id="inquiryModal" aria-hidden="true">
   <div class="modal-dim" id="inquiryModalDim"></div>
 
@@ -125,6 +115,7 @@
     </div>
 
     <div class="modal-body">
+      <!-- 문의 내용 작성 폼 (문의 작성) -->
       <form class="inquiry-form" id="inquiryForm" method="post" action="<%=ctxPath%>/my_info/my_inquiry.lp">
         <div class="form-row">
           <div class="form-group half">
@@ -174,65 +165,65 @@
           <button type="submit" class="btn-submit">제출하기</button>
         </div>
       </form>
+
+      <!-- 문의 내용 확인 -->
+      <div class="modal-content" id="modalInquiryContent" style="display:none;">
+        <p><strong>작성일자:</strong> <span id="modal-inquirydate"></span></p>
+        <p><strong>문의내용:</strong> <span id="modal-inquirycontent"></span></p>
+        <p><strong>관리자 답변:</strong> <span id="modal-adminreply"></span></p>
+      </div>
     </div>
   </div>
 </div>
 
 <jsp:include page="/WEB-INF/footer1.jsp" />
+
 <script type="text/javascript">
 $(function () {
+  // 문의작성 버튼 클릭 시 모달 열기
+  $("#btnOpenInquiry").on("click", function () {
+    // 문의 작성 폼 표시
+    $("#inquiryForm").show();
+    $("#modalInquiryContent").hide();
+    $("#modalTitle").text("문의 작성");
+    $("#inquiryModal").addClass("open");
+    $("body").addClass("no-scroll");
+  });
 
-	  $("#btnOpenInquiry").on("click", function () {
-	    $("#inquiryModal").addClass("open");
-	    $("body").addClass("no-scroll");
-	  });
+  // 각 tr 클릭 시, 모달에 내용 표시 (상세 보기)
+  $(".inquiry-row").on("click", function() {
+    var inquirydate = $(this).data("inquirydate");
+    var inquirycontent = $(this).data("inquirycontent");
+    var adminreply = $(this).data("adminreply");
+    var inquirystatus = $(this).data("inquirystatus");
 
-	  function closeInquiryModal() {
-	    $("#inquiryModal").removeClass("open");
-	    $("body").removeClass("no-scroll");
-	    $("#inquiryForm")[0].reset();
-	  }
+    // 문의 작성 폼 숨기기, 상세보기 표시
+    $("#inquiryForm").hide();
+    $("#modalInquiryContent").show();
+    $("#modalTitle").text("문의 내용 확인");
 
-	  $("#btnCloseInquiry, #inquiryModalDim").on("click", closeInquiryModal);
+    // 모달에 데이터 삽입
+    $("#modal-inquirydate").text(inquirydate);
+    $("#modal-inquirycontent").text(inquirycontent);
+    $("#modal-adminreply").text(adminreply || "-");
+    $("#modal-inquirystatus").text(inquirystatus);
 
-	  $(document).on("keydown", function (e) {
-	    if (e.key === "Escape" && $("#inquiryModal").hasClass("open")) {
-	      closeInquiryModal();
-	    }
-	  });
+    // 모달 열기
+    $("#inquiryModal").addClass("open");
+    $("body").addClass("no-scroll");
+  });
 
-	  // ✅ submit 중복 바인딩 방지
-	  $("#inquiryForm").off("submit").on("submit", function (e) {
-	    e.preventDefault();
+  // 모달 닫기
+  $("#btnCloseInquiry, #inquiryModalDim").on("click", function() {
+    $("#inquiryModal").removeClass("open");
+    $("body").removeClass("no-scroll");
+  });
 
-	    const inquirycontent = $.trim($(this).find("textarea[name='inquirycontent']").val());
-
-	    if (!inquirycontent) {
-	      alert("문의 내용을 입력하세요.");
-	      return;
-	    }
-
-	    if (!$("#agree").is(":checked")) {
-	      alert("개인정보 수집·이용 동의가 필요합니다.");
-	      return;
-	    }
-		
-		const ctxPath = "<%= request.getContextPath() %>";
-		  
-
-		// 전송 (POST)
-	  	const frm = document.getElementById("inquiryForm");
-	  	frm.method = "post";
-		frm.action = ctxPath + "/my_info/my_inquiry.lp";
-	  	frm.submit();
-		
-	 
-	    closeInquiryModal();
-		
-		
-	  });
-
-	  
-	});
-
+  $(document).on("keydown", function (e) {
+    if (e.key === "Escape" && $("#inquiryModal").hasClass("open")) {
+      $("#inquiryModal").removeClass("open");
+      $("body").removeClass("no-scroll");
+    }
+  });
+});
 </script>
