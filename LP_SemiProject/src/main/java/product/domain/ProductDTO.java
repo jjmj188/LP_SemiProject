@@ -13,10 +13,18 @@ public class ProductDTO {
 	private String registerday; // 발매일
 	private int point; // 포인트 점수
 	
-	
+	private double avgRating; // 제품 별점 평균
 	private String categoryname;
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 	
+	
+	public double getAvgRating() {
+        return avgRating;
+    }
+    public void setAvgRating(double avgRating) {
+        this.avgRating = avgRating;
+    }
+    
 	public String getCategoryname() {
         return categoryname;
     }
