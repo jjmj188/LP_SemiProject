@@ -11,9 +11,6 @@ public interface OrderDAO {
 	// 구매하기(저장, 업데이트)
 	int insertOrderPay(OrderDTO odto, String userid, List<CartDTO> cartList, String[] cartnoArr)throws Exception;
 
-	
-	
-	
 	// 구매내역 "주문 카드" 목록 (주문 단위)
     List<OrderDTO> selectMyOrderList(String userid) throws Exception;
 
@@ -22,4 +19,10 @@ public interface OrderDAO {
 
     //주문주소 + 배송정보(송장) 조회
 	OrderDTO selectTrackingInfo(int orderno, String userid)throws Exception;
+
+	//총 주문 수 
+	int getTotalOrderCount(String userid)throws Exception;
+
+	//주문 목록 조회 (페이징 처리)
+	List<OrderDTO> selectMyOrderListPaging(String userid, int startRow, int sizePerPage)throws Exception;
 }

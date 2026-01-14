@@ -16,7 +16,19 @@ public class My_wish extends AbstractController {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // 1. 로그인 체크
+    		// GET 직접 접근 차단
+		String referer = request.getHeader("referer");
+	
+		if (referer == null) {
+	
+		    request.setAttribute("message", "잘못된 접근입니다.");
+		    request.setAttribute("loc", request.getContextPath() + "/index.lp");
+	
+		    super.setRedirect(false);
+		    super.setViewPage("/WEB-INF/msg.jsp");
+		    return;
+		}
+    	
         HttpSession session = request.getSession();
         MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
 
@@ -29,50 +41,88 @@ public class My_wish extends AbstractController {
         WishListDAO wdao = new WishListDAO_imple();
         String userid = loginuser.getUserid();
 
-        // 2. 페이징 처리를 위한 변수 설정
+        // 1. 페이징 변수 설정
         String str_currentShowPageNo = request.getParameter("currentShowPageNo");
-        
-        int currentShowPageNo = 0; // 현재 보여주는 페이지 번호
-        int sizePerPage = 8;       // 한 페이지당 보여줄 개수 (8개)
-        int totalCount = 0;        // 총 찜 상품 개수
-        int totalPage = 0;         // 총 페이지 수
+        int currentShowPageNo = 1;
+        int sizePerPage = 8;
+        int blockSize = 10;
 
-        // 3. 총 찜 개수 구해오기
-        totalCount = wdao.getTotalWishListCount(userid);
-
-        // 4. 총 페이지 수 계산
-        totalPage = (int) Math.ceil((double)totalCount / sizePerPage);
-
-        // 5. 현재 페이지 번호 유효성
-        if (str_currentShowPageNo == null) {
-            currentShowPageNo = 1;
-        } else {
-            try {
-                currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
-                
-                if(currentShowPageNo < 1 || (totalPage > 0 && currentShowPageNo > totalPage)) {
-                    currentShowPageNo = 1;
-                }
-            } catch (NumberFormatException e) {
-                currentShowPageNo = 1;
-            }
-        }
-        
-        if(totalPage == 0) {
-        	currentShowPageNo = 1;
+        if (str_currentShowPageNo != null) {
+            try { currentShowPageNo = Integer.parseInt(str_currentShowPageNo); } catch (Exception e) {}
         }
 
-        // 6. 현재 페이지에 해당하는 찜 목록(8개)만 조회해오기
+        int totalCount = wdao.getTotalWishListCount(userid);
+        int totalPage = (int) Math.ceil((double)totalCount / sizePerPage);
+
+        if (currentShowPageNo > totalPage && totalPage != 0) {
+            currentShowPageNo = totalPage;
+        }
+
+        // 2. 찜 목록 조회
         List<ProductDTO> wishList = wdao.selectWishListPaging(userid, sizePerPage, currentShowPageNo);
+
+        // 3. [수정됨] 페이지바 생성 (goPage 함수 호출 방식)
+        String pageBar = makePageBar(currentShowPageNo, totalPage, blockSize, request.getContextPath());
+        request.setAttribute("pageBar", pageBar);
 
         request.setAttribute("wishList", wishList);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("currentShowPageNo", currentShowPageNo);
         request.setAttribute("totalCount", totalCount);
-        
-        // 7. 뷰 페이지 이동
+
         super.setRedirect(false);
         super.setViewPage("/WEB-INF/my_info/my_wish.jsp");
     }
 
+    // [수정된 메서드] 찜 목록 페이지바 생성 (Javascript goPage 함수 호출)
+    private String makePageBar(int currentShowPageNo, int totalPage, int blockSize, String ctxPath) {
+        if (totalPage == 0) return "";
+
+        int pageNo = ((currentShowPageNo - 1) / blockSize) * blockSize + 1;
+        int loop = 1;
+
+        StringBuilder sb = new StringBuilder();
+
+        // [맨처음]
+        if(currentShowPageNo == 1) {
+            sb.append("<li class='page-item'><button class='page-btn first' disabled><span>맨처음</span></button></li>");
+        } else {
+            sb.append("<li class='page-item'><button class='page-btn first' onclick='goPage(1)'><span>맨처음</span></button></li>");
+        }
+
+        // [이전]
+        if(currentShowPageNo == 1) {
+            sb.append("<li class='page-item'><button class='page-btn prev' disabled><i class='fa-solid fa-chevron-left'></i></button></li>");
+        } else {
+            sb.append("<li class='page-item'><button class='page-btn prev' onclick='goPage(" + (currentShowPageNo - 1) + ")'><i class='fa-solid fa-chevron-left'></i></button></li>");
+        }
+
+        // [페이지 번호]
+        while (!(loop > blockSize || pageNo > totalPage)) {
+            if (pageNo == currentShowPageNo) {
+                sb.append("<li class='page-item'><button class='page-num active'>" + pageNo + "</button></li>");
+            } else {
+                // 클릭 시 자바스크립트 goPage(페이지번호) 호출
+                sb.append("<li class='page-item'><button class='page-num' onclick='goPage(" + pageNo + ")'>" + pageNo + "</button></li>");
+            }
+            loop++;
+            pageNo++;
+        }
+
+        // [다음]
+        if(currentShowPageNo == totalPage) {
+            sb.append("<li class='page-item'><button class='page-btn next' disabled><i class='fa-solid fa-chevron-right'></i></button></li>");
+        } else {
+            sb.append("<li class='page-item'><button class='page-btn next' onclick='goPage(" + (currentShowPageNo + 1) + ")'><i class='fa-solid fa-chevron-right'></i></button></li>");
+        }
+
+        // [맨마지막]
+        if(currentShowPageNo == totalPage) {
+            sb.append("<li class='page-item'><button class='page-btn last' disabled><span>맨마지막</span></button></li>");
+        } else {
+            sb.append("<li class='page-item'><button class='page-btn last' onclick='goPage(" + totalPage + ")'><span>맨마지막</span></button></li>");
+        }
+
+        return sb.toString();
+    }
 }

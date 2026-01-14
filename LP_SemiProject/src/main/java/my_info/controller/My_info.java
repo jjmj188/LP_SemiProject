@@ -14,7 +14,6 @@ public class My_info extends AbstractController {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        
 
     	//GET 직접 접근 차단
     			String referer = request.getHeader("referer");
@@ -30,11 +29,14 @@ public class My_info extends AbstractController {
     			}
     	
 
+    	
+
         String method = request.getMethod();
         HttpSession session = request.getSession();
         MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
         
         
+
      // 1. 로그인 체크 및 휴면 여부 체크
         Boolean isLogin = (Boolean) session.getAttribute("isLogin");
 
@@ -63,6 +65,10 @@ public class My_info extends AbstractController {
             super.setViewPage("/WEB-INF/msg.jsp");
             return;
         }
+
+
+
+        
 
         /* ============================================================
            GET 방식 : 페이지 보여주기 (새로고침 시 최신 포인트/정보 반영)

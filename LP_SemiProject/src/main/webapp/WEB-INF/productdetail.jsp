@@ -59,11 +59,10 @@
             </p>
             
             <div class="benefit">
-                <p class="discount">
-                    할인 적용 시 <b>₩ <fmt:formatNumber value="${pDto.price * 0.9}" pattern="#,###"/></b> (10%)
-                </p>
-                <p class="point">적립 포인트 <b><fmt:formatNumber value="${pDto.point}" pattern="#,###"/>P</b></p>
-            </div>
+			    <p class="discount">
+			        구매시 <b><span id="totalPoint"><fmt:formatNumber value="${pDto.point}" pattern="#,###"/></span>P 적립</b>
+			    </p>
+			</div>
             
             <p class="delivery">배송비 <b>3,000원</b></p>
 
@@ -89,6 +88,12 @@
                 <c:choose>
                     <%-- 1. 재고가 있을 경우 (기존 버튼 표시) --%>
                     <c:when test="${pDto.stock > 0}">
+                    
+                    <form id="buyForm" method="post" action="<%= ctxPath %>/order/buy.lp" style="display:inline;">
+						  <input type="hidden" name="productno" value="${pDto.productno}">
+						  <input type="hidden" name="qty" id="buyQty" value="1">
+					</form>
+                    
                         <button type="button" class="buy" onclick="goOrder()">구매하기</button>
         
                         <c:choose>
@@ -185,11 +190,12 @@
         </section>
     </c:if>
 
-    <section class="reviews">
+    <section class="reviews" id="reviews">
         <h2>Reviews</h2>
         
+        <%-- 리뷰 리스트 출력 --%>
         <c:if test="${empty requestScope.reviewList}">
-            <div class="review-item" style="justify-content: center;">
+            <div class="review-item" style="justify-content: center; padding: 40px;">
                 <p class="review-text" style="color: #999;">등록된 리뷰가 없습니다.</p>
             </div>
         </c:if>
@@ -199,7 +205,6 @@
                 <div class="review-item">
                     <div class="review-header">
                         <span class="user-id">${fn:substring(review.userid, 0, 3)}***</span>
-                        
                         <div class="review-rating">
                             <c:forEach begin="1" end="${review.rating}">
                                 <i class="fa-solid fa-star"></i>
@@ -207,20 +212,22 @@
                             <c:forEach begin="1" end="${5 - review.rating}">
                                 <i class="fa-regular fa-star" style="color: #ccc;"></i>
                             </c:forEach>
-                            
-                            <span class="score">${review.rating} / 5.0</span>
+                            <span class="score">${review.rating}</span>
                         </div>
                     </div>
                     <p class="review-text">${review.reviewcontent}</p>
-                    
-                    <span style="font-size: 12px; color: #aaa;">${review.writedate}</span>
+                    <span style="font-size: 12px; color: #aaa; margin-top:5px; display:block;">${review.writedate}</span>
                 </div>
             </c:forEach>
         </c:if>
         
-        <div class="review-more">
-             <button type="button">전체보기</button>
-        </div>
+        <%-- PageBar --%>
+        <div class="pagebar" style="margin-top:30px;">
+	        <ul class="pagination" style="margin:0; list-style:none; display:flex; justify-content:center; padding:0;">
+	            ${requestScope.pageBar}
+	        </ul>
+	    </div>
+        
     </section>
 
     <jsp:include page="footer1.jsp" />
@@ -230,6 +237,8 @@
     let qty = 1;
 
     const unitPrice = ${pDto.price};
+    const unitPoint = ${pDto.point};
+    
     const productNo = "${pDto.productno}";
     const isLogin = ${not empty sessionScope.loginuser};
     const loginUrl = "<%= ctxPath%>/login/login.lp";
@@ -248,12 +257,18 @@
 
       const total = unitPrice * qty;
       document.getElementById("totalPrice").innerText = "₩ " + total.toLocaleString();
+      
+      const totalPoint = unitPoint * qty;
+      document.getElementById("totalPoint").innerText = totalPoint.toLocaleString();
 
       const c = document.getElementById("cartQty");
       if (c) c.value = qty;
 
       const u = document.getElementById("updateQty");
       if (u) u.value = qty;
+      
+      const b = document.getElementById("buyQty");
+      if (b) b.value = qty;
     }
 
     // 찜하기 (AJAX 비동기 통신)
@@ -298,16 +313,18 @@
       });
     }
 
+    
     // 바로 구매하기
     function goOrder() {
-      if (!isLogin) {
-        alert("로그인이 필요한 서비스입니다.");
-        location.href = loginUrl;
-        return;
-      }
-      // buy.lp 구현 시 post 방식으로 변경 등 고려
-      location.href = "<%= ctxPath%>/order/buy.lp?productno=" + productNo + "&qty=" + qty;
-    }
+	  if (!isLogin) {
+	    alert("로그인이 필요한 서비스입니다.");
+	    location.href = loginUrl;
+	    return;
+	  }
+	
+	  const frm = document.getElementById("buyForm");
+	  frm.submit(); 
+	}
 
     function submitCart() {
       const updateForm = document.getElementById("cartUpdateForm");

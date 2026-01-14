@@ -207,7 +207,7 @@
             <c:forEach var="item" items="${requestScope.recommendList}">
                <li class="lp-item"
                    data-album="${item.productname}"
-                   data-emblem="￦ <fmt:formatNumber value='${item.price}' pattern='#,###'/>"
+                   data-emblem="Feel the Music, Love the Vinyl"
                    data-accent="#d0d0d0" 
                    data-img="<%= ctxPath%>${item.productimg}"
                    data-link="<%= ctxPath%>/productdetail.lp?productno=${item.productno}">
@@ -253,8 +253,8 @@
  
  
   <!-- LP 상품 -->
-  <section class="product-list" id="product-list">
-
+  <section class="product-list">
+	<div id="product-list" style="position:relative; top:-80px;"></div>
     <div class="main-section-title">
         <h2>STORE</h2>
         <p>다양한 레코드 상품들을 만나보세요.</p>
@@ -315,19 +315,10 @@
         </c:if>
     </div>
 
-    <div class="pagination">
-        <c:if test="${requestScope.totalPage > 0}">
-            <c:forEach var="i" begin="1" end="${requestScope.totalPage}">
-                <c:choose>
-                    <c:when test="${i == requestScope.currentPage}">
-                        <a class="active">${i}</a> 
-                    </c:when>
-                    <c:otherwise>
-                        <a href="<%= ctxPath%>/index.lp?pageNo=${i}&categoryno=${requestScope.categoryNo}&q=${requestScope.searchWord}&sort=${requestScope.sort}#product-list">${i}</a>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-        </c:if>
+    <div class="pagebar">
+        <ul class="pagination" style="margin:0; list-style:none; display:flex; justify-content:center; padding:0;">
+            ${requestScope.pageBar}
+        </ul>
     </div>
     
 </section>
@@ -342,4 +333,5 @@
 <script src="<%= ctxPath%>/js/carousel.js"></script>
 
 <script src="<%= ctxPath%>/js/index.js"></script>
+
 
