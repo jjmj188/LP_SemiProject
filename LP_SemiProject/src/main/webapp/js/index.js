@@ -179,3 +179,6 @@ document.getElementById("btnShowAll").addEventListener("click", () => {
 
   // 초기화 (앨범 있으면 첫 번째 보여주기)
   if (albums.length > 0) updateDisplay(index);
+  
+  
+  
