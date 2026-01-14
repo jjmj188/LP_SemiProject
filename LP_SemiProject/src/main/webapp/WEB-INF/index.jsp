@@ -207,7 +207,7 @@
             <c:forEach var="item" items="${requestScope.recommendList}">
                <li class="lp-item"
                    data-album="${item.productname}"
-                   data-emblem="Feel the Music, Love the Vinyl"
+                   data-emblem="￦ <fmt:formatNumber value='${item.price}' pattern='#,###'/>"
                    data-accent="#d0d0d0" 
                    data-img="<%= ctxPath%>${item.productimg}"
                    data-link="<%= ctxPath%>/productdetail.lp?productno=${item.productno}">
@@ -323,6 +323,219 @@
     
 </section>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+	header {
+    position: relative; /* z-index가 작동하려면 필요 (원래 헤더가 fixed면 fixed로 변경) */
+    z-index: 999999 !important; /* 팝업보다 무조건 높게 설정 */
+	}
+    /* 팝업 공통 스타일 */
+    .main-popup {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 380px;
+        max-width: 90vw; /* 모바일 대응 */
+        background-color: #fff;
+        border-radius: 12px; /* 둥근 모서리 */
+        box-shadow: 0 15px 40px rgba(0,0,0,0.18); /* 부드럽고 깊은 그림자 */
+        display: none; 
+        font-family: 'Pretendard', sans-serif;
+        z-index: 9999;
+        overflow: hidden; /* 내부 요소가 둥근 모서리 넘지 않게 */
+        animation: popupFadeIn 0.4s ease-out; /* 등장 애니메이션 */
+    }
+
+    @keyframes popupFadeIn {
+        from { opacity: 0; transform: translate(-50%, -45%); }
+        to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    /* 팝업 내용 영역 */
+    .popup-content {
+        padding: 32px 24px 24px;
+        text-align: center;
+        color: #2a2a2a;
+    }
+
+    /* 앨범 이미지 스타일 */
+    .popup-album-img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        margin: 0 auto 20px;
+        display: block;
+        border-radius: 6px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* 앨범 그림자 */
+    }
+
+    /* 아이콘 스타일 (배송지연) */
+    .popup-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        background: #f8d7da; /* 연한 빨강 배경 */
+        color: #d32f2f;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        font-size: 24px;
+    }
+
+    /* 타이틀 */
+    .popup-header {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+        color: #111;
+    }
+    
+    /* 설명 텍스트 */
+    .popup-desc {
+        font-size: 15px;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 0;
+        word-break: keep-all;
+    }
+
+    /* 하단 버튼 영역 */
+    .popup-footer {
+        background-color: #f9f9f9;
+        padding: 14px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #eee;
+    }
+
+    /* 버튼 스타일 */
+    .btn-close-today {
+        font-size: 13px;
+        color: #888;
+        cursor: pointer;
+        transition: color 0.2s;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+    .btn-close-today:hover { color: #555; text-decoration: underline; }
+
+    .btn-close {
+        font-size: 14px;
+        color: #222;
+        font-weight: 700;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        transition: opacity 0.2s;
+    }
+    .btn-close:hover { opacity: 0.7; }
+
+    /* 겹침 처리 & 위치 미세 조정 */
+    #popup_delivery {
+        z-index: 10000; 
+        transform: translate(-52%, -52%); /* 살짝 왼쪽 위 */
+    }
+
+    #popup_album {
+        z-index: 9999; 
+        transform: translate(-48%, -48%); /* 살짝 오른쪽 아래 */
+    }
+</style>
+
+<div id="popup_delivery" class="main-popup">
+    <div class="popup-content">
+        <div class="popup-icon-wrapper">
+            <i class="fa-solid fa-truck"></i>
+        </div>
+        
+        <div class="popup-header">
+            배송 지연 안내
+        </div>
+        
+        <p class="popup-desc">
+            주문량 급증으로 인해 배송이<br>
+            평소보다 <strong>2~3일 지연</strong>되고 있습니다.<br>
+            양해 부탁드립니다.
+        </p>
+    </div>
+    
+    <div class="popup-footer">
+        <button type="button" class="btn-close-today" onclick="closePopupToday('popup_delivery')">오늘 하루 보지 않기</button>
+        <button type="button" class="btn-close" onclick="closePopup('popup_delivery')">닫기</button>
+    </div>
+</div>
+
+<div id="popup_album" class="main-popup">
+    <div class="popup-content">
+        <img src="<%= ctxPath%>/images/productimg/75.png" alt="New Album" class="popup-album-img">
+
+        <div class="popup-header">
+            NEW ALBUM
+        </div>
+        
+        <p class="popup-desc">
+            <strong>Moby - Reprise</strong><br>
+            기다리시던 한정판 바이닐이 입고되었습니다.<br>
+            품절되기 전에 만나보세요.
+        </p>
+    </div>
+
+    <div class="popup-footer">
+        <button type="button" class="btn-close-today" onclick="closePopupToday('popup_album')">오늘 하루 보지 않기</button>
+        <button type="button" class="btn-close" onclick="closePopup('popup_album')">닫기</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        // 페이지 로드 시 쿠키 확인
+        checkPopupCookie('popup_delivery');
+        checkPopupCookie('popup_album');
+    });
+
+    function checkPopupCookie(popupId) {
+        if (getCookie(popupId) != "done") {
+            $("#" + popupId).fadeIn(300); // 부드럽게 등장
+        }
+    }
+
+    function closePopup(popupId) {
+        $("#" + popupId).fadeOut(200);
+    }
+
+    function closePopupToday(popupId) {
+        setCookie(popupId, "done", 1); 
+        $("#" + popupId).fadeOut(200);
+    }
+
+    function setCookie(name, value, expiredays) {
+        var todayDate = new Date();
+        todayDate.setDate(todayDate.getDate() + expiredays); 
+        document.cookie = name + "=" + escape(value) + "; path=/; expires=" + todayDate.toGMTString() + ";";
+    }
+
+    function getCookie(name) {
+        var nameOfCookie = name + "=";
+        var x = 0;
+        while (x <= document.cookie.length) {
+            var y = (x + nameOfCookie.length);
+            if (document.cookie.substring(x, y) == nameOfCookie) {
+                if ((endOfCookie = document.cookie.indexOf(";", y)) == -1)
+                    endOfCookie = document.cookie.length;
+                return unescape(document.cookie.substring(y, endOfCookie));
+            }
+            x = document.cookie.indexOf(" ", x) + 1;
+            if (x == 0) break;
+        }
+        return "";
+    }
+</script>
 
 </div>
 
