@@ -29,7 +29,7 @@ public class VerifyCertification extends AbstractController {
 			}
 			else {
 				message = "발급된 인증코드가 아닙니다.\\n인증코드를 다시 발급받으세요!!";
-				loc = request.getContextPath()+"/login/pwd_find.lp";
+				loc = "javascript:history.back()";
 			}
 			
 			request.setAttribute("message", message);
