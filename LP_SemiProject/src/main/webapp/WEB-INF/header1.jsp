@@ -39,20 +39,20 @@
 </div>
 
   <!-- PC 메뉴 -->
-  <nav class="navlinks" aria-label="Primary">
-    <a href="<%= ctxPath%>/index.lp">HOME</a> |
-      <!--  비로그인 상태 -->
-    <c:if test="${empty sessionScope.loginuser}">
-      <a href="<%= ctxPath %>/login/login.lp">LOGIN</a> |
-    </c:if>
+ <nav class="navlinks" aria-label="Primary">
+  <a href="<%= ctxPath%>/index.lp">HOME</a> |
 
-    <!--  로그인 상태 -->
-    <c:if test="${not empty sessionScope.loginuser}">
-      <a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a> |
+  <c:if test="${empty sessionScope.loginuser || sessionScope.isLogin == false}">
+    <a href="<%= ctxPath %>/login/login.lp">LOGIN</a> |
+  </c:if>
+
+  <c:if test="${not empty sessionScope.loginuser && sessionScope.isLogin == true}">
+    <a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a> |
     </c:if>
     <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
     <a href="<%= ctxPath%>/my_info/my_info.lp">MYPAGE</a>
-  </nav>
+ 
+</nav>
 
   <!-- 모바일 햄버거 버튼 -->
   <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
@@ -64,15 +64,14 @@
     <a href="<%= ctxPath%>/index.lp">HOME</a>
     
   <!--  비로그인 -->
-  <c:if test="${empty sessionScope.loginuser}">
+  <c:if test="${empty sessionScope.loginuser || sessionScope.isLogin == false}">
     <a href="<%= ctxPath%>/login/login.lp">LOGIN</a>
   </c:if>
 
   <!--  로그인 -->
-  <c:if test="${not empty sessionScope.loginuser}">
+    <c:if test="${not empty sessionScope.loginuser && sessionScope.isLogin == true}">
     <a href="<%= ctxPath%>/login/logout.lp">LOGOUT</a>
-  </c:if>
-  
+  	</c:if>
     <a href="<%= ctxPath%>/order/cart.lp">CART</a>
     <a href="<%= ctxPath%>/my_info/my_info.lp">MY PROFILE</a>
   </nav>

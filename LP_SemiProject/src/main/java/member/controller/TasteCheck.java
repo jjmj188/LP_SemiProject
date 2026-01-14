@@ -14,9 +14,22 @@ public class TasteCheck extends AbstractController {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    	String method = request.getMethod();
         HttpSession session = request.getSession();
         MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
+       
+         // GET 직접 접근 차단
+        String referer = request.getHeader("referer");
+
+        if (referer == null) {
+
+            request.setAttribute("message", "잘못된 접근입니다.");
+            request.setAttribute("loc", request.getContextPath() + "/index.lp");
+
+            super.setRedirect(false);
+            super.setViewPage("/WEB-INF/msg.jsp");
+            return;
+        }
 
          //1️ 로그인 체크
         if (loginuser == null) {
@@ -25,7 +38,6 @@ public class TasteCheck extends AbstractController {
             return;
         }
 
-        String method = request.getMethod();
 
         // 2️ GET → 취향 선택 화면
         if ("GET".equalsIgnoreCase(method)) {
@@ -65,3 +77,5 @@ public class TasteCheck extends AbstractController {
         }
     }
 }
+
+

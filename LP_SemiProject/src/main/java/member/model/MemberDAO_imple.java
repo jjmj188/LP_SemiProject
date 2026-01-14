@@ -190,8 +190,8 @@ public class MemberDAO_imple implements MemberDAO {
 				 }
 		  return n;
 		}
-
-		//로그인메서드==================================================================================
+		 //==================================================================================
+	     //로그인메서드
 	 	@Override
 	 	public MemberDTO login(Map<String, String> paraMap) {
 	 	    MemberDTO member = null;
@@ -237,24 +237,6 @@ public class MemberDAO_imple implements MemberDAO {
 	 	            int lastLoginGap = rs.getInt("last_login_gap");
 	 	            member.setLastLoginGap(lastLoginGap);
 
-	 	            // --- 실시간 휴면 처리 추가 로직 --- //
-	 	            
-	 	            // 만약 DB에는 활동중(0)인데, 날짜 계산 결과 12개월 이상 지났다면
-	 	            if (member.getIdle() == 0 && lastLoginGap >= 12) {
-	 	                
-	 	                // 1) 자바 객체 상태를 휴면(1)으로 변경
-	 	                member.setIdle(1);
-	 	                
-	 	                // 2) DB 테이블의 idle 컬럼도 1로 즉시 업데이트
-	 	                sql = " UPDATE tbl_member SET idle = 1 WHERE userid = ? ";
-	 	                pstmt = conn.prepareStatement(sql);
-	 	                pstmt.setString(1, member.getUserid());
-	 	                pstmt.executeUpdate();
-	 	                
-	 	                // 참고: 이 경우 컨트롤러에서는 loginuser.getIdle() == 1 조건을 타서 
-	 	                // idle_release.lp 페이지로 가게 됩니다.
-	 	            }
-	 	         
 	 	        }
 	 	    } catch (SQLException | GeneralSecurityException | UnsupportedEncodingException e) {
 	 	        e.printStackTrace();
@@ -328,7 +310,9 @@ public class MemberDAO_imple implements MemberDAO {
 		    int result = 0;
 
 		    try {
-		        conn = ds.getConnection();
+		    	conn = ds.getConnection();
+		    	conn.setAutoCommit(false);
+
 
 		        // 1️ 기존 비밀번호와 동일한지 검사
 		        String sql = "SELECT pwd FROM tbl_member WHERE userid = ?";
@@ -338,11 +322,16 @@ public class MemberDAO_imple implements MemberDAO {
 
 		        if (rs.next()) {
 		            String oldPwd = rs.getString("pwd");
+		            
+		            if(rs != null) { rs.close(); rs = null; } 
+		            if(pstmt != null) { pstmt.close(); pstmt = null; } 
+		            
 		            String newPwdEnc = Sha256.encrypt(newPwd);
 
 		            if (oldPwd.equals(newPwdEnc)) {
 		                return -1; //  기존 비밀번호와 동일
 		            }
+		            
 		        }
 
 		        // 2️. 비밀번호 변경 + 휴면 해제
@@ -360,6 +349,7 @@ public class MemberDAO_imple implements MemberDAO {
 
 		        // 3️. 로그인 기록 INSERT 
 		        if (result == 1) {
+		        	if(pstmt != null) { pstmt.close(); pstmt = null; }
 		            sql = "INSERT INTO tbl_loginhistory "
 		                + " (historyno, fk_userid, logindate, clientip) "
 		                + " VALUES (seq_historyno.nextval, ?, SYSDATE, ?)";
@@ -370,18 +360,26 @@ public class MemberDAO_imple implements MemberDAO {
 
 		            pstmt.executeUpdate();
 		            
-		            conn.commit();
+		            conn.commit(); 
+		        } else {
+		            conn.rollback(); 
 		        }
 
 		    } catch (Exception e) {
+		       
+		        if (conn != null) {
+		            try { conn.rollback(); } catch (SQLException ex) { } 
+		        }
 		        e.printStackTrace();
+		        throw new SQLException(e); 
 		    } finally {
-		        close();
+		        close(); 
 		    }
 
 		    return result;
 		}
 
+		//=====================================================================================//
 		// 아이디 찾기(성명, 이메일을 입력받아서 해당 사용자의 아이디를 알려준다)
 		@Override
 		public String findUserid(Map<String, String> paraMap) throws SQLException {
@@ -414,13 +412,16 @@ public class MemberDAO_imple implements MemberDAO {
 			return userid;
 		}// end of public String findUserid(Map<String, String> paraMap) throws SQLException-------
 
-
+		//=====================================================================================//
 		// 비밀번호 찾기(아이디, 이메일을 입력받아서 해당 사용자가 존재하는지 여부를 알려준다)
 				@Override
 				public boolean isUserExists(Map<String, String> paraMap) throws SQLException {
 					
 					boolean isUserExists = false;
-					
+					// 멤버 변수가 아닌 지역 변수로 선언하여 스레드 간 간섭 방지
+				    Connection conn = null;
+				    PreparedStatement pstmt = null;
+				    ResultSet rs = null;
 					try {
 						 conn = ds.getConnection();
 								 
@@ -446,7 +447,9 @@ public class MemberDAO_imple implements MemberDAO {
 					} catch(GeneralSecurityException | UnsupportedEncodingException e) {
 						  e.printStackTrace();
 					} finally {
-						close();
+						if(rs != null) rs.close();
+				        if(pstmt != null) pstmt.close();
+				        if(conn != null) conn.close();
 					}		
 					
 					return isUserExists;
@@ -454,51 +457,67 @@ public class MemberDAO_imple implements MemberDAO {
 
 		//===========================================================================
 		// 비밀번호 찾기 시 현재 비밀번호와 같은지 여부 확인 및 update
-				@Override
-				public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
-				    int result = 0;
-				    
-				    try {
-				        conn = ds.getConnection();
-				        
-				        // 1️ 먼저 기존 비밀번호를 가져와서 비교합니다.
-				        String sql = " select pwd from tbl_member where userid = ? ";
-				        
-				        pstmt = conn.prepareStatement(sql);
-				        pstmt.setString(1, paraMap.get("userid"));
-				        rs = pstmt.executeQuery();
-				        
-				        if(rs.next()) {
-				            String current_pwd = rs.getString("pwd");
-				            String new_pwd_enc = Sha256.encrypt(paraMap.get("new_pwd"));
-				            
-				            // 기존 암호와 새 암호가 같다면 업데이트를 하지 않고 -1을 리턴함
-				            if(current_pwd.equals(new_pwd_enc)) {
-				                return -1; 
-				            }
-				        }
-				        
-				        // 2️ 기존 암호와 다를 경우에만 실제로 업데이트를 진행
-				        sql = " update tbl_member set pwd = ?, lastpwdchangedate = sysdate " 
-				            + " where userid = ? ";
-				         
-				        pstmt = conn.prepareStatement(sql);
-				        pstmt.setString(1, Sha256.encrypt(paraMap.get("new_pwd")));
-				        pstmt.setString(2, paraMap.get("userid"));  
-				            
-				        result = pstmt.executeUpdate(); // 성공하면 1
-				         
-				    } finally {
-				        close();
-				    }
-				    
-				    return result;
-				}
+			@Override
+			public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
+			    int result = 0;
+			    
+			    try {
+			    	conn = ds.getConnection();
+			        conn.setAutoCommit(false); // [트랜잭션 시작]
+			        
+			        
+			        // 1️ 먼저 기존 비밀번호를 가져와서 비교합니다.
+			        String sql = " select pwd from tbl_member where userid = ? ";
+			        
+			        pstmt = conn.prepareStatement(sql);
+			        pstmt.setString(1, paraMap.get("userid"));
+			        rs = pstmt.executeQuery();
+			        
+			        
+			        if(rs.next()) {
+			            String current_pwd = rs.getString("pwd");
 
-		
-		
+				        if(rs != null) { rs.close(); rs = null; }     
+				        if(pstmt != null) { pstmt.close(); pstmt = null; }
+				        
+			            String new_pwd_enc = Sha256.encrypt(paraMap.get("new_pwd"));
+			            
+			            // 기존 암호와 새 암호가 같다면 업데이트를 하지 않고 -1을 리턴함
+			            if(current_pwd.equals(new_pwd_enc)) {
+			                return -1; 
+			            }
+			        }
+			        
+			        // 2️ 기존 암호와 다를 경우에만 실제로 업데이트를 진행
+			        sql = " update tbl_member set pwd = ?, lastpwdchangedate = sysdate " 
+			            + " where userid = ? ";
+			         
+			        pstmt = conn.prepareStatement(sql);
+			        pstmt.setString(1, Sha256.encrypt(paraMap.get("new_pwd")));
+			        pstmt.setString(2, paraMap.get("userid"));  
+			            
+			        result = pstmt.executeUpdate(); // 성공하면 1
+			        if (result == 1) {
+			            conn.commit();   // select && update 성공시 db저장
+			        } else {
+			            conn.rollback(); // 실패시 롤백
+			        }
 
-			//회원탈퇴시 비밀번호가 맞는지 확인========================================
+			    } catch (Exception e) {
+			        if (conn != null) {
+			            try { conn.rollback(); } catch (SQLException ex) { }
+			        }
+			        e.printStackTrace();
+			        throw new SQLException(e); 
+			    } finally {
+			        close(); 
+			    }
+
+			    return result;
+			}
+		
+			//===============================================================
+			//회원탈퇴시 비밀번호가 맞는지 확인
 			@Override
 			public boolean checkPassword(String userid, String pwd) {
 			    boolean isCorrect = false;
@@ -532,13 +551,8 @@ public class MemberDAO_imple implements MemberDAO {
 		
 
 
-
-
-
-
-
-		//주문내역 / 리뷰 / 결제 / 로그 남아야 FK 걸린 테이블 다 깨짐 실무에서 회원 DELETE 거의 안 함
-		//비밀번호가 맞을 경우 회원탈퇴
+		//===================================================================================
+		//비밀번호가 맞을 경우 회원탈퇴  
 		
 			public int withdrawMember(String userid) {
 			    int n = 0;
@@ -564,9 +578,6 @@ public class MemberDAO_imple implements MemberDAO {
 			    return n;
 			}
 			
-		
-
-
 
 		//마이페이지 업데이트하기
 		@Override
@@ -601,6 +612,7 @@ public class MemberDAO_imple implements MemberDAO {
 			    return result;
 
 		}
+		
 		//내가 선택한 취향 먼저 보여주기 
 				@Override
 				public List<Integer> getUserPreference(String userid) throws SQLException {
@@ -633,137 +645,149 @@ public class MemberDAO_imple implements MemberDAO {
 				    return prefList;
 				}
 				
-		
+		//=====================================================================
 		//취향수정하기
 		@Override
 		public boolean updateMemberPreference(String userid, String[] categoryArr) throws SQLException {
 			boolean result=false;
 			
 	  try {
-				conn=ds.getConnection();
-				conn.setAutoCommit(false);
-				//delete insert 둘다 해야하는데 하나라도 실패할 경우 하나라도 실패 → ROLLBACK
-				
-				
-				//기존취향 전부 삭제 
-			    String sql="DELETE FROM tbl_member_preference WHERE fk_userid = ?";
-				
-			    pstmt=conn.prepareStatement(sql);
-				pstmt.setString(1, userid);
-				pstmt.executeUpdate();
-					
-				 sql = "INSERT INTO tbl_member_preference (fk_userid, fk_categoryno) VALUES (?, ?)";
-				
-				 pstmt=conn.prepareStatement(sql);
-				 
-				 
-				 for(String categoryno : categoryArr) {
-					 pstmt.setString(1, userid);
-			            pstmt.setInt(2, Integer.parseInt(categoryno));
-			            pstmt.executeUpdate();
-			        }
-			    
-			    conn.commit();
-		        result = true;
+			conn=ds.getConnection();
+			conn.setAutoCommit(false);
+			//delete insert 둘다 해야하는데 하나라도 실패할 경우 하나라도 실패 → ROLLBACK
 			
-	         } catch(Exception e) {
-			        e.printStackTrace();
-			  } finally {
-			        close();
-		 }
-		  return result;
+			
+			//기존취향 전부 삭제 
+		    String sql="DELETE FROM tbl_member_preference WHERE fk_userid = ?";
+			
+		    pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, userid);
+			pstmt.executeUpdate();
+				
+			 sql = "INSERT INTO tbl_member_preference (fk_userid, fk_categoryno) VALUES (?, ?)";
+			
+			 pstmt=conn.prepareStatement(sql);
+			 
+			 
+			 for(String categoryno : categoryArr) {
+				 pstmt.setString(1, userid);
+		            pstmt.setInt(2, Integer.parseInt(categoryno));
+		            pstmt.executeUpdate();
+		        }
+		    
+		    conn.commit();
+	        result = true;
+		
+	  		} catch (Exception e) {
+	        // 5. 에러 발생 시 롤백 수행
+	        if (conn != null) {
+	            try {
+	                conn.rollback(); // 지금까지 했던 DELETE, INSERT 다 취소!
+	            } catch (SQLException e2) {
+	                e2.printStackTrace();
+	            }
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        close();
+	    }
+	    
+	    return result;
 	}
 
 
+	// ==================================================================
+    //마이페이지 현재 내 정보 보여주기
+	@Override
+	public MemberDTO getMemberByUserid(String userid) throws SQLException {
+	    MemberDTO member = null;
 
-		// MemberDAO_imple.java
-		@Override
-		public MemberDTO getMemberByUserid(String userid) throws SQLException {
-		    MemberDTO member = null;
+	    try {
+	        conn = ds.getConnection();
 
-		    try {
-		        conn = ds.getConnection();
+	        // 포인트(point)를 포함하여 필요한 컬럼들을 모두 조회합니다.
+	        String sql = " SELECT userid, name, email, mobile, postcode, address, detailaddress, extraaddress, point, registerday, idle "
+	                   + " FROM tbl_member "
+	                   + " WHERE userid = ? ";
 
-		        // 포인트(point)를 포함하여 필요한 컬럼들을 모두 조회합니다.
-		        String sql = " SELECT userid, name, email, mobile, postcode, address, detailaddress, extraaddress, point, registerday, idle "
-		                   + " FROM tbl_member "
-		                   + " WHERE userid = ? ";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, userid);
 
-		        pstmt = conn.prepareStatement(sql);
-		        pstmt.setString(1, userid);
+	        rs = pstmt.executeQuery();
 
-		        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            member = new MemberDTO();
+	            member.setUserid(rs.getString("userid"));
+	            member.setName(rs.getString("name"));
+	            member.setPoint(rs.getInt("point")); // 이 부분이 있어야 포인트가 갱신됩니다!
+	            member.setIdle(rs.getInt("idle"));
+	            member.setRegisterday(rs.getString("registerday"));
+	            
+	            // 이메일과 전화번호는 암호화되어 저장되어 있다면 복호화 처리를 해줍니다.
+	            member.setEmail(aes.decrypt(rs.getString("email")));
+	            member.setMobile(aes.decrypt(rs.getString("mobile")));
+	            
+	            member.setPostcode(rs.getString("postcode"));
+	            member.setAddress(rs.getString("address"));
+	            member.setDetailaddress(rs.getString("detailaddress"));
+	            member.setExtraaddress(rs.getString("extraaddress"));
+	        }
+	    } catch (GeneralSecurityException | UnsupportedEncodingException e) {
+	        e.printStackTrace();
+	    } finally {
+	        close(); // 자원 반납
+	    }
 
-		        if (rs.next()) {
-		            member = new MemberDTO();
-		            member.setUserid(rs.getString("userid"));
-		            member.setName(rs.getString("name"));
-		            member.setPoint(rs.getInt("point")); // 이 부분이 있어야 포인트가 갱신됩니다!
-		            member.setIdle(rs.getInt("idle"));
-		            member.setRegisterday(rs.getString("registerday"));
-		            
-		            // 이메일과 전화번호는 암호화되어 저장되어 있다면 복호화 처리를 해줍니다.
-		            member.setEmail(aes.decrypt(rs.getString("email")));
-		            member.setMobile(aes.decrypt(rs.getString("mobile")));
-		            
-		            member.setPostcode(rs.getString("postcode"));
-		            member.setAddress(rs.getString("address"));
-		            member.setDetailaddress(rs.getString("detailaddress"));
-		            member.setExtraaddress(rs.getString("extraaddress"));
-		        }
-		    } catch (GeneralSecurityException | UnsupportedEncodingException e) {
-		        e.printStackTrace();
-		    } finally {
-		        close(); // 자원 반납
-		    }
+	    return member;
+	}
 
-		    return member;
-		}
+	//============================================================================
+	//내리뷰보기 
+	@Override
+	public List<ReviewDTO> selectMyReviewList(String userid) throws SQLException {
 
-		//내리뷰보기 
-		@Override
-		public List<ReviewDTO> selectMyReviewList(String userid) throws SQLException {
+	    List<ReviewDTO> reviewList = new ArrayList<>();
 
-		    List<ReviewDTO> reviewList = new ArrayList<>();
+	    try {
+	        conn = ds.getConnection();
 
-		    try {
-		        conn = ds.getConnection();
+	        // 제품명(productname), 이미지(productimg), 리뷰내용, 별점, 날짜를 조인해서 가져옴
+	        String sql = " SELECT R.reviewno, R.fk_productno AS Productno , R.rating, R.reviewcontent, "
+	                   + "        TO_CHAR(R.writedate, 'yyyy-mm-dd') AS writedate, "
+	                   + "        P.productname, P.productimg "
+	                   + " FROM tbl_review R "
+	                   + " JOIN tbl_product P ON R.fk_productno = P.productno "
+	                   + " WHERE R.fk_userid = ? "
+	                   + " ORDER BY R.writedate DESC ";
 
-		        // 제품명(productname), 이미지(productimg), 리뷰내용, 별점, 날짜를 조인해서 가져옴
-		        String sql = " SELECT R.reviewno, R.fk_productno AS Productno , R.rating, R.reviewcontent, "
-		                   + "        TO_CHAR(R.writedate, 'yyyy-mm-dd') AS writedate, "
-		                   + "        P.productname, P.productimg "
-		                   + " FROM tbl_review R "
-		                   + " JOIN tbl_product P ON R.fk_productno = P.productno "
-		                   + " WHERE R.fk_userid = ? "
-		                   + " ORDER BY R.writedate DESC ";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, userid);
 
-		        pstmt = conn.prepareStatement(sql);
-		        pstmt.setString(1, userid);
+	        rs = pstmt.executeQuery();
 
-		        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            ReviewDTO rdto = new ReviewDTO();
+	            rdto.setReviewno(rs.getInt("reviewno"));
+	            rdto.setProductno(rs.getInt("productno"));
+	            rdto.setRating(rs.getInt("rating")); // 정수형 별점 (1~5)
+	            rdto.setReviewcontent(rs.getString("reviewcontent")); // "제품이 너무 좋아요..."
+	            rdto.setWritedate(rs.getString("writedate"));
 
-		        while (rs.next()) {
-		            ReviewDTO rdto = new ReviewDTO();
-		            rdto.setReviewno(rs.getInt("reviewno"));
-		            rdto.setProductno(rs.getInt("productno"));
-		            rdto.setRating(rs.getInt("rating")); // 정수형 별점 (1~5)
-		            rdto.setReviewcontent(rs.getString("reviewcontent")); // "제품이 너무 좋아요..."
-		            rdto.setWritedate(rs.getString("writedate"));
+	         // JOIN으로 가져온 상품 정보 세팅
+	            rdto.setProductname(rs.getString("productname")); 
+	            rdto.setProductimg(rs.getString("productimg"));
 
-		         // JOIN으로 가져온 상품 정보 세팅
-		            rdto.setProductname(rs.getString("productname")); 
-		            rdto.setProductimg(rs.getString("productimg"));
+	            reviewList.add(rdto);
+	        }
 
-		            reviewList.add(rdto);
-		        }
+	    } finally {
+	        close();
+	    }
 
-		    } finally {
-		        close();
-		    }
-
-		    return reviewList;
-		}
+	    return reviewList;
+	}
+		
+		//==================================================================================//
 		// 특정 리뷰 1개 상세 조회 (리뷰번호 기준)
 		@Override
 		public ReviewDTO selectOneReview(int reviewno) throws SQLException {
@@ -800,6 +824,7 @@ public class MemberDAO_imple implements MemberDAO {
 		    return rdto;
 		}
 		
+		//=============================================================================
 		// 내 리뷰 삭제하기
 		@Override
 		public int deleteReview(String reviewno) throws SQLException {

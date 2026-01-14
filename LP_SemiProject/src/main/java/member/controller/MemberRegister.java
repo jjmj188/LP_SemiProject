@@ -18,7 +18,18 @@ public class MemberRegister extends AbstractController {
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		String method = request.getMethod(); // "GET" 또는 "POST"
-		
+		 HttpSession session = request.getSession();
+		    MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
+
+		    if (loginuser != null) { 
+		        request.setAttribute("message", "이미 로그인된 상태이므로 회원가입을 하실 수 없습니다.");
+		        request.setAttribute("loc", request.getContextPath() + "/index.lp");
+
+		        super.setRedirect(false);
+		        super.setViewPage("/WEB-INF/msg.jsp");
+		        return; 
+		    }
+		    
 		if("GET".equalsIgnoreCase(method)) {
 			super.setRedirect(false);
 			super.setViewPage("/WEB-INF/member/member_register.jsp");	
@@ -61,9 +72,7 @@ public class MemberRegister extends AbstractController {
 			try {
 				int n = mdao.registerMember(member);
 				if(n==1) {
-					// 1. 세션 가져오기
-				    HttpSession session = request.getSession();
-				    
+					
 				    // 2. 로그인과 동일한 '객체'와 '키값'으로 세션 저장 
 				    // 가입할 때 사용한 member 객체(MemberDTO)를 그대로 활용합니다.
 				    session.setAttribute("loginuser", member); 

@@ -20,7 +20,19 @@ public class Login extends AbstractController {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String method = request.getMethod(); // GET / POST
+         
+        // 0. 이미 로그인된 사용자가 접근할 경우 메인으로 이동
+        HttpSession session = request.getSession();
+        MemberDTO loginuser_session = (MemberDTO) session.getAttribute("loginuser");
+        Boolean isLogin = (Boolean) session.getAttribute("isLogin");
 
+        //로그인값이 null이 아니고 로그인값이 참일 경우에는 메인으로 이동
+        if (loginuser_session != null && isLogin != null && isLogin) {
+            setRedirect(true);
+            setViewPage(request.getContextPath() + "/index.lp");
+            return; 
+        }
+        
         if ("GET".equalsIgnoreCase(method)) {
             setRedirect(false);
             setViewPage("/WEB-INF/login/login.jsp");
@@ -40,7 +52,7 @@ public class Login extends AbstractController {
         paraMap.put("pwd", pwd);
         paraMap.put("clientip", clientip);
 
-        //  1. 로그인 시도
+           //  1. 로그인 시도
         MemberDTO loginuser = mdao.login(paraMap);
 
         if (loginuser != null) {
@@ -48,11 +60,15 @@ public class Login extends AbstractController {
             //  2. 휴면 판정 
         	if(loginuser.getIdle() == 1 || loginuser.getLastLoginGap() >= 12) {
             	
-            	HttpSession session = request.getSession();
-                session.setAttribute("loginuser", loginuser);
-                session.setAttribute("isLogin", false); //휴면해제 전 로그인이 된 상태를 막아줌 
+        		// [휴면 상태]->idle_release로 이동 
+                // 객체 전체(loginuser)를 세션에 담지 않고 아이디만 저장합니다.
+                session.setAttribute("idle_userid", userid);
+                session.setAttribute("isLogin", false);
                
+                if(loginuser.getIdle()==0) {
                 mdao.updateIdle(userid);
+                }
+                
                 setRedirect(true);
                 setViewPage(request.getContextPath() + "/login/idle_release.lp");
                 return;
@@ -75,11 +91,11 @@ public class Login extends AbstractController {
             }
 
             //  5. 세션 저장
-            HttpSession session = request.getSession();
+          
             session.setAttribute("loginuser", loginuser);
             session.setAttribute("isLogin", true);
 
-            //  6. 비밀번호 변경 안내
+            //  6. 로그인 성공 후 비밀번호 변경 안내
             if (loginuser.isRequirePwdChange()) {
 
             	String message = "비밀번호를 변경하신지 3개월이 지났습니다.\\n비밀번호 변경 페이지로 이동합니다.";

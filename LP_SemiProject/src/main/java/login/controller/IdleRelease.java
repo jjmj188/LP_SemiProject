@@ -19,11 +19,22 @@ public class IdleRelease extends AbstractController {
         
     	String method = request.getMethod(); // GET 또는 POST
         HttpSession session = request.getSession();
+        
+        String idle_userid = (String) session.getAttribute("idle_userid");
         Boolean isLogin = (Boolean) session.getAttribute("isLogin");
-        MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
-    
-        // 1️ 세션 체크 
-        if (loginuser == null) {
+       //이미 로그인 된 사람 메인페이지로 이동
+        if (isLogin != null && isLogin) {
+        	request.setAttribute("message", "잘못된 접근입니다.");
+            request.setAttribute("loc", request.getContextPath() + "/index.lp");
+        	
+            super.setRedirect(false);
+            super.setViewPage("/WEB-INF/msg.jsp");
+            return;
+        }
+        
+        
+        //로그인조차 하지 않은 경우 메인페이지로 이동
+        if (idle_userid == null) {
             request.setAttribute("message", "잘못된 접근입니다. 로그인을 먼저 하세요.");
             request.setAttribute("loc", request.getContextPath() + "/login/login.lp");
             
@@ -31,7 +42,7 @@ public class IdleRelease extends AbstractController {
             super.setViewPage("/WEB-INF/msg.jsp");
             return;
         }
-
+     
         // 2️ GET 방식: 비밀번호 변경(휴면해제) 화면 보여주기
         if ("GET".equalsIgnoreCase(method)) {
         	super.setRedirect(false);
@@ -42,7 +53,7 @@ public class IdleRelease extends AbstractController {
         // 3️ POST 방식: 실제 비밀번호 변경 로직 수행
         if ("POST".equalsIgnoreCase(method)) {
             
-            String userid = loginuser.getUserid();
+            String userid = idle_userid;
             String newPwd = request.getParameter("newPwd");
             String newPwdCheck = request.getParameter("newPwdCheck");
 
@@ -56,7 +67,7 @@ public class IdleRelease extends AbstractController {
                 return;
             }
 
-            String clientip = request.getRemoteAddr();
+            String clientip = request.getRemoteAddr(); //사용자 주소의 ip주소 
             int result = mdao.changePassword(userid, newPwd, clientip);
             
             String message = "";
@@ -67,11 +78,14 @@ public class IdleRelease extends AbstractController {
                 loc = "javascript:history.back()";
             } 
             else if (result == 1) {
+            	
+            	MemberDTO loginuser = mdao.getMemberByUserid(userid);
                 // 성공 시 세션 정보 동기화
                 loginuser.setIdle(0); 
                 loginuser.setRequirePwdChange(false);
                 session.setAttribute("loginuser", loginuser);
                 session.setAttribute("isLogin", true);
+                session.removeAttribute("idle_userid");
                 
                 message = "비밀번호가 성공적으로 변경되어 휴면 상태가 해제되었습니다.";
                 loc = request.getContextPath() + "/index.lp";
