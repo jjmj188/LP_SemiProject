@@ -1,262 +1,217 @@
 let b_idcheck_click = false;
 let b_emailcheck_click = false;
 
-$(function(){
-	
-    /* =========================
-       아이디 중복확인 
-    ========================= */
-    $("#idcheck").click(function(){
-        const userid = $("#userid").val().trim();
-        const regUserid = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/;
-
-        if(userid === ""){
-            alert("아이디를 입력하세요.");
-            $("#userid").focus();
-            return;
+// 유효성 UI 업데이트 함수
+function setValidation(selector, isValid, msg = "", isSuccess = false) {
+    const $el = $(selector);
+    const $error = $(selector + "_error");
+    
+    if (!isValid) {
+        $el.addClass("input-error");
+        if($error.length) $error.text(msg).css("color", "red").show();
+    } else {
+        $el.removeClass("input-error");
+        if($error.length) {
+            if(isSuccess) $error.text(msg).css("color", "green").show();
+            else $error.hide();
         }
-
-        if(!regUserid.test(userid)){
-            alert("아이디는 8~15자의 영문자와 숫자를 포함해야 합니다.");
-            $("#userid").focus();
-            return;
-        }
-        
-        $.ajax({
-            url: ctxPath + "/member/idDuplicateCheck.lp",
-            type: "post",
-            data: { userid },
-            dataType: "json",
-            success:function(json){
-                if(json.isExists){
-                    $("#idCheckResult").text("이미 사용중인 아이디입니다.").css("color","red");
-                    $("#userid").val("").focus();
-                    b_idcheck_click = false;
-                } else {
-                    $("#idCheckResult").text("사용 가능한 아이디입니다.").css("color","green");
-                    b_idcheck_click = true;
-                }
-            }
-        });
-    });
-	/* ================================
-	   아이디 중복확인 후 수정했을 경우 중복 재확인 
-	    ================================*/
-	$("#userid").on("input", function () {
-	    b_idcheck_click = false;
-	    $("#idCheckResult")
-	        .text("아이디 중복확인을 해주세요.")
-	        .css("color", "red");
-	});
-
-    /* =========================
-       이메일 중복확인 
-    ========================= */
-    $("#emailcheck").click(function(){
-        const email = $("#email").val().trim();
-        const regEmail =  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
-
-        if(email === ""){
-            alert("이메일을 입력하세요.");
-            $("#email").focus();
-            return;
-        }
-
-        if(!regEmail.test(email)){
-            alert("이메일 형식이 올바르지 않습니다.");
-            $("#email").focus();
-            return;
-        }
-
-        $.ajax({
-            url: ctxPath + "/member/emailDuplicateCheck.lp", 
-            type: "post",
-            data: { email },
-            dataType: "json",
-            success:function(json){
-                if(json.isExists){
-                    $("#emailCheckResult").text("이미 사용중인 이메일입니다.").css("color","red");
-                    $("#email").val("").focus();
-                    b_emailcheck_click = false;
-                } else {
-                    $("#emailCheckResult").text("사용 가능한 이메일입니다.").css("color","green");
-                    b_emailcheck_click = true;
-                }
-            }
-        });
-    });
-	/* ================================
-	   이메일 중복확인 후 수정했을 경우 중복 재확인 
-	   ================================*/
-	
-	$("#email").on("input", function () {
-	    b_emailcheck_click = false;
-	    $("#emailCheckResult")
-	        .text("이메일 중복확인을 해주세요.")
-	        .css("color", "red");
-	});
-	//7.핸드폰 
-		$("#hp2, #hp3").on("input", function () {
-		    this.value = this.value.replace(/[^0-9]/g, "");
-		});
-		/* =========================
-		   datepicker 설정 수정
-		========================= */
-		$("#birthday").datepicker({
-		    dateFormat: "yy-mm-dd",
-		    changeYear: true,
-		    changeMonth: true,
-		    yearRange: "1900:+0",
-		    maxDate: 0  // 0은 오늘을 의미하며, 오늘 이후 날짜는 선택 불가(회색 처리)
-		});
-		/* =========================
-		   주소 유효성 검사
-		========================= */
-	
-	
-	
-});
-function validateAddress() {
-
-		    const postcode = $("#postcode").val().trim();
-		    const address  = $("#address").val().trim();
-		    const detail   = $("#detailAddress").val().trim();
-
-		    // 1️ 우편번호
-		    if (postcode === "") {
-		        alert("우편번호를 입력하세요.");
-		        $("#postcode").focus();
-		        return false;
-		    }
-
-		    // 2️ 도로명 주소
-		    if (address === "") {
-		        alert("도로명 주소를 입력하세요.");
-		        $("#address").focus();
-		        return false;
-		    }
-
-		    // 3️ 상세 주소
-		    if (detail === "") {
-		        alert("상세 주소를 입력하세요.");
-		        $("#detailAddress").focus();
-		        return false;
-		    }
-
-		    return true;
-		}
-/* ======================================================
-   회원가입 전송 함수 (goRegister)
-   이 함수가 실행될 때 최종적으로 POST로 전송
-====================================================== */
-function goRegister() {
-	const regName = /^([가-힣]{2,10}|[a-zA-Z]{2,20})$/;
-    // 1. 성명 검사
-	const name = $("#name").val().trim();
-	
-	if($("#name").val().trim() === ""){
-        alert("성명을 입력하세요.");
-        $("#name").focus();
-        return;
     }
-	
-
-	if (!regName.test(name)) {
-	    alert("성명은 한글 2~10자 또는 영문 2~20자만 가능합니다.");
-	    $("#name").focus();
-	    return;
-	}
-	
-    // 2. 아이디 중복확인 검사
-	const userid = $("#userid").val().trim();
-
-	if (userid === "") {
-	    alert("아이디를 입력하세요.");
-	    $("#userid").focus();
-	    return;
-	}
-
-	const regUserid = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/;
-
-	if (!regUserid.test(userid)) {
-	    alert("아이디는 8~15자의 영문자와 숫자를 반드시 포함해야 합니다.");
-	    $("#userid").focus();
-	    return;
-	}
-	
-	if (!b_idcheck_click) {
-	    alert("아이디 중복확인을 해주세요.");
-	    return;
-	}
-    // 3. 비밀번호 유효성 및 일치 검사
-    const pwd = $("#pwd").val();
-    const regPwd = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,15}$/;
-
-    if(!regPwd.test(pwd)){
-        alert("비밀번호는 8~15자의 영문자, 숫자, 특수문자를 포함해야 합니다.");
-        $("#pwd").focus();
-        return;
-    }
-
-    if(pwd !== $("#password_check").val()){
-        alert("비밀번호가 일치하지 않습니다.");
-        $("#password_check").focus();
-        return;
-    }
-
-    // 4. 이메일 중복확인 검사
-    if(!b_emailcheck_click){
-        alert("이메일 중복확인을 해주세요.");
-        return;
-    }
-
-    // 5. 성별 선택 검사
-    if($("input[name='gender']:checked").length === 0){
-        alert("성별을 선택하세요.");
-        return;
-    }
-
-	// 6. 휴대폰 검사 & 조합
-		const hp1 = $("#hp1").val(); // "010"
-		const hp2 = $("#hp2").val().trim();
-		const hp3 = $("#hp3").val().trim();
-
-		if (!/^\d{4}$/.test(hp2) || !/^\d{4}$/.test(hp3)) {
-		    alert("연락처는 숫자 4자리씩 입력하세요.");
-		    $("#hp2").focus();
-		    return;
-		}
-
-		// hidden mobile 세팅
-		$("#mobile").val(hp1 + hp2 + hp3);
-	
-    // 7. 생년월일 검사
-    if($("#birthday").val().trim() === ""){
-        alert("생년월일을 선택하세요.");
-        return;
-    }
-	
-	
-	// 8. 주소 유효성 검사
-	if (!validateAddress()) {
-	    return;
-	}
-	// 8. 최종 전송 (POST)
-	const frm = document.getElementById("registerForm");
-	frm.method = "post";
-	frm.action = "member_register.lp";
-	frm.submit();
 }
 
+// 주소 API (바깥으로 빼두는 것이 안전합니다)
+function openDaumPOST() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            let addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+            $("#postcode").val(data.zonecode);
+            $("#address").val(addr);
+            $("#postcode, #address").removeClass("input-error");
+            $("#address_error").hide();
+            $("#detailAddress").focus();
+        }
+    }).open();
+}
 
-$(".pw-toggle").on("click", function () {
-    const target = $("#" + $(this).data("target"));
+$(function(){
+	$(".pw-toggle").on("click", function() {
+	        const targetId = $(this).attr("data-target");
+	        const $pwdInput = $("#" + targetId);
 
-    if (target.attr("type") === "password") {
-        target.attr("type", "text");
-        $(this).text("숨김");
-    } else {
-        target.attr("type", "password");
-        $(this).text("보기");
-    }
+	        if ($pwdInput.attr("type") === "password") {
+	            $pwdInput.attr("type", "text");
+	            $(this).removeClass("fa-eye-slash").addClass("fa-eye");
+	        } else {
+	            $pwdInput.attr("type", "password");
+	            $(this).removeClass("fa-eye").addClass("fa-eye-slash");
+	        }
+	    });
+    /* ======================================================
+       2. 각 필드 Blur 시 유효성 검사
+    ====================================================== */
+    $("#name").on("blur", function() {
+        const reg = /^([가-힣]{2,10}|[a-zA-Z]{2,20})$/;
+        if($(this).val().trim() === "") setValidation("#name", false, "이름을 입력해 주세요.");
+        else if(!reg.test($(this).val().trim())) setValidation("#name", false, "한글 2~10자 또는 영문 2~20자 이내로 작성해 주세요.");
+        else setValidation("#name", true);
+    });
+
+    $("#userid").on("blur", function() {
+        const val = $(this).val().trim();
+        const reg = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/;
+        if(val === "") setValidation("#userid", false, "아이디를 입력해 주세요.");
+        else if(!reg.test(val)) setValidation("#userid", false, "특수문자를 제외한 8~15자의 영문 소문자, 숫자를 조합해 주세요.");
+        else if(!b_idcheck_click) setValidation("#userid", true, "중복 확인을 진행해 주세요.");
+    });
+
+    $("#pwd").on("blur", function() {
+        const reg = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,15}$/;
+        if($(this).val() === "") setValidation("#pwd", false, "비밀번호를 입력해 주세요.");
+        else if(!reg.test($(this).val())) setValidation("#pwd", false, "8~15자의 영문 대/소문자, 숫자, 특수문자를 조합해 주세요.");
+        else setValidation("#pwd", true);
+    });
+
+    $("#password_check").on("blur", function() {
+        const pwd = $("#pwd").val();
+        const pwdCheck = $(this).val();
+        if(pwdCheck === "") setValidation("#password_check", false, "비밀번호를 한 번 더 입력해 주세요.");
+        else if(pwd !== pwdCheck) setValidation("#password_check", false, "비밀번호가 일치하지 않습니다.");
+        else setValidation("#password_check", true);
+    });
+
+    $("#email").on("blur", function() {
+        const reg = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+        const val = $(this).val().trim();
+        if(val === "") setValidation("#email", false, "이메일 주소를 입력해 주세요.");
+        else if(!reg.test(val)) setValidation("#email", false, "올바른 이메일 형식을 입력해 주세요.");
+        else if(!b_emailcheck_click) setValidation("#email", true, "이메일 중복 확인을 진행해 주세요.");
+    });
+
+    /* ======================================================
+       3. 중복확인 버튼 클릭 이벤트
+    ====================================================== */
+    $("#idcheck").click(function(){
+        const userid = $("#userid").val().trim();
+        if(!/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/.test(userid)) {
+            setValidation("#userid", false, "형식에 맞는 아이디를 먼저 입력해 주세요.");
+            return;
+        }
+        $.ajax({
+            url: ctxPath + "/member/idDuplicateCheck.lp",
+            type: "post", data: { userid }, dataType: "json",
+            success: function(json) {
+                if(json.isExists) {
+                    b_idcheck_click = false;
+                    setValidation("#userid", false, "이미 사용 중인 아이디입니다.다른 아이디를 입력해 주세요.");
+                } else {
+                    b_idcheck_click = true;
+                    setValidation("#userid", true, "사용 가능한 아이디입니다.", true);
+                }
+            }
+        });
+    });
+
+    $("#emailcheck").click(function(){
+        const email = $("#email").val().trim();
+        if(email === "") { setValidation("#email", false, "이메일을 입력해 주세요."); return; }
+        $.ajax({
+            url: ctxPath + "/member/emailDuplicateCheck.lp",
+            type: "post", data: { email }, dataType: "json",
+            success: function(json) {
+                if(json.isExists) {
+                    b_emailcheck_click = false;
+                    setValidation("#email", false, "이미 사용 중인 이메일입니다.다른 이메일을 입력해 주세요.");
+                } else {
+                    b_emailcheck_click = true;
+                    setValidation("#email", true, "사용 가능한 이메일입니다.", true);
+                }
+            }
+        });
+    });
+
+    /* ======================================================
+       4. 기타 필드 (연락처, 생년월일, 성별)
+    ====================================================== */
+    $("#hp2, #hp3").on("blur", function() {
+        const hp2 = $("#hp2").val();
+        const hp3 = $("#hp3").val();
+        if(!/^\d{4}$/.test(hp2) || !/^\d{4}$/.test(hp3)) {
+            $("#hp2, #hp3").addClass("input-error");
+            $("#hp_error").text("연락처는 각각 4자리의 숫자로 입력해 주세요.").css("color", "red").show();
+        } else {
+            $("#hp2, #hp3").removeClass("input-error");
+            $("#hp_error").hide();
+        }
+    });
+
+	/* ======================================================
+	       4. 생년월일 (오늘 이후 날짜 선택 불가)
+	    ====================================================== */
+	    $("#birthday").datepicker({
+	        dateFormat: "yy-mm-dd",
+	        changeYear: true,
+	        yearRange: "1900:+0",
+	        maxDate: 0, //  오늘 이후 날짜는 비활성화 (고쳐진 부분)
+	        onSelect: function() {
+	            $("#birthday").removeClass("input-error");
+	            $("#birthday_error").hide();
+	        }
+	    });
+
+	// --- [수정] 성별 선택 시 로직 ---
+	$("input[name='gender']").on("change", function() {
+	    // 성별을 고르는 순간 에러 메시지만 딱 숨깁니다.
+	    $("#gender_error").hide();
+	});
+    $("#detailAddress").on("blur", function() {
+        if($(this).val().trim() !== "") {
+            $(this).removeClass("input-error");
+            $("#address_error").hide();
+        }
+    });
 });
+
+/* ======================================================
+   5. 최종 가입 버튼 함수
+====================================================== */
+function goRegister() {
+    $("input").trigger("blur");
+
+    let canSubmit = true;
+    if(!b_idcheck_click) { setValidation("#userid", false, "아이디 중복 확인이 필요합니다."); canSubmit = false; }
+    if(!b_emailcheck_click) { setValidation("#email", false, "이메일 중복 확인이 필요합니다."); canSubmit = false; }
+    
+	// --- [수정] 성별 체크 부분 ---
+	    if($("input[name='gender']:checked").length === 0) {
+	        // 라벨 색상은 건드리지 않고, 에러 메시지만 보여줍니다.
+	        $("#gender_error").text("성별을 선택해 주세요.").show();
+	        canSubmit = false;
+	    }
+		
+		// --- 생년월일 체크 ---
+		if($("#birthday").val() === "") {
+		    $("#birthday").addClass("input-error");
+		    $("#birthday_error").text("생년월일을 입력해 주세요.").show(); // 메시지 추가
+		    canSubmit = false;
+		} else {
+		    $("#birthday").removeClass("input-error");
+		    $("#birthday_error").hide();
+		}
+		// 3. 우편번호/주소 체크 (여기가 추가된 부분입니다)
+		    if($("#postcode").val() === "" || $("#address").val() === "") {
+		        $("#postcode, #address,#detailAddress").addClass("input-error"); // 테두리 빨갛게
+		        $("#address_error").text("우편번호 찾기를 진행해 주세요.").css("color", "red").show();
+		        canSubmit = false;
+		    }
+
+    if($(".input-error").length > 0) canSubmit = false;
+
+    if(canSubmit) {
+        $("#registerForm").attr("action", ctxPath + "/member/member_register.lp").submit();
+    } else {
+        const $firstError = $(".input-error").first();
+        if($firstError.length) {
+            $('html, body').animate({ scrollTop: $firstError.offset().top - 100 }, 300);
+            $firstError.focus();
+        }
+    }
+}

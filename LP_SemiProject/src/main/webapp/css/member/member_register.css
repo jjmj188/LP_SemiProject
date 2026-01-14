@@ -39,9 +39,6 @@ body {
   border: 1px solid #ddd;
 }
 
-/* =====================
-   TITLE
-===================== */
 .login-title {
   text-align: center;
   margin-bottom: 20px;
@@ -50,7 +47,7 @@ body {
 }
 
 /* =====================
-   INPUT BOX
+   INPUT BOX & LABELS
 ===================== */
 .input-box {
   margin-bottom: 14px;
@@ -60,6 +57,7 @@ body {
   display: block;
   font-size: 14px;
   margin-bottom: 6px;
+  font-weight: 500;
 }
 
 .input-box input[type="text"],
@@ -70,6 +68,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
+  transition: border-color 0.2s;
 }
 
 .input-box input:focus {
@@ -78,40 +77,76 @@ body {
 }
 
 /* =====================
-   ID / EMAIL CHECK (아래 배치)
+   CHECK ROW (ID/EMAIL 버튼 + 메시지 수평정렬)
 ===================== */
 .check-row {
-   
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 10px;           /* 버튼과 에러메시지 사이 간격 */
+  margin-top: 8px;
 }
 
 .check-btn {
-  padding: 6px 12px;
-  margin-top: 13px;
+  padding: 8px 14px;
   font-size: 13px;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
+  white-space: nowrap; /* 버튼 글자 줄바꿈 방지 */
 }
 
 .check-btn:hover {
   background: #f5f5f5;
-}
-
-.check-msg {
-  font-size: 13px;
-  min-width: 140px;
+  border-color: #111;
 }
 
 /* =====================
-   PHONE
+   ERROR & SUCCESS MESSAGES
+===================== */
+.error-msg {
+  display: none;        /* JS에서 show()로 제어 */
+  font-size: 0.75rem;   /* 약 12px */
+  color: red;
+  margin: 0;            /* p태그 기본 마진 제거 */
+  white-space: nowrap;  /* 메시지가 길어도 버튼 옆에 유지 */
+}
+
+/* 유효성 검사 실패 시 입력창 스타일 */
+.input-error {
+  border: 1.5px solid #ff4d4d !important;
+  background-color: #fffafa !important;
+}
+
+
+/* 컨테이너에서 수직 중앙 정렬 */
+.hp-flex-container {
+    display: flex;
+    align-items: center; /* 핵심: 수직 중앙 정렬 */
+    gap: 5px;
+}
+
+/* 하이픈 위치 미세 조정 */
+.hp-dash {
+    display: inline-block;
+    position: relative;
+    top: 2px; /* 💡 수직 중앙 상태에서 2px 정도 더 내립니다. (값은 조절 가능) */
+    font-weight: bold;
+    color: #555;
+}
+
+/* input 창들도 높이를 통일해주면 정렬이 더 잘 맞습니다 */
+.hp-flex-container input {
+    height: 35px; /* 본인의 디자인에 맞춰 조절 */
+    text-align: center;
+}
+
+
+/* =====================
+   PHONE (CONTACT)
 ===================== */
 #hp1, #hp2, #hp3 {
   width: 30%;
-  display: inline-block;
 }
 
 #hp2 { margin: 0 4px; }
@@ -130,71 +165,9 @@ body {
   gap: 20px;
 }
 
-/* =====================
-   PASSWORD EYE
-===================== */
-.password-wrap {
-  position: relative;
-}
-
-.password-wrap input {
-  padding-right: 36px;
-}
-
-.toggle-eye {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-
-/* =====================
-   ERROR
-===================== */
-.error {
-  font-size: 13px;
+.gender-label.error-style {
   color: red;
-  margin-top: 6px;
-  display: block;
 }
-
-/* =====================
-   REGISTER BUTTON (UPDATED)
-===================== */
-.register-btn {
-  all: unset;
-  box-sizing: border-box;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 100%;
-  height: 56px;                 /* 🔥 더 큼 */
-  margin: 32px auto 0;          /* 🔥 가운데 + 위 여백 */
-
-  background: #000;             /* 🔥 검정 */
-  color: #fff;
-
-  border-radius: 14px;          /* 살짝 더 둥글게 */
-  font-size: 17px;              /* 글자도 조금 키움 */
-  font-weight: 600;
-
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.register-btn:hover {
-  background: #111;
-  transform: translateY(-1px);  /* 살짝 떠오르는 느낌 */
-}
-
-.register-btn:active {
-  transform: translateY(0);
-}
-
-
 
 /* =====================
    ADDRESS (ZIPCODE)
@@ -207,36 +180,31 @@ body {
   display: block;
   font-size: 14px;
   margin-bottom: 8px;
-  font-weight: 500;
 }
 
-/* 우편번호 입력창과 버튼 한 줄 배치 */
 .zipcode-row {
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
+  align-items: center;
 }
 
 #postcode {
-  width: 140px; /* 우편번호는 짧으므로 고정폭 */
-  background-color: #f9f9f9; /* 읽기 전용 느낌 */
+  width: 120px;
+  background-color: #f9f9f9;
 }
+
 #postcode,
 .btn-outline {
-  height: 42px;
-  box-sizing: border-box;     /* 🔥 제일 중요 */
+  height: 40px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
   padding: 0 12px;
 }
-/* 우편번호 찾기 버튼 */
+
 .btn-outline {
-  padding: 0 16px;
-  font-size: 13px;
   background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -246,7 +214,6 @@ body {
   border-color: #111;
 }
 
-/* 도로명주소, 상세주소 입력창 */
 .address-input {
   width: 100%;
   padding: 10px 12px;
@@ -254,23 +221,83 @@ body {
   border-radius: 6px;
   font-size: 14px;
   margin-bottom: 8px;
-  border:2px soild red
-}
-
-.address-input:last-child {
-  margin-bottom: 0;
 }
 
 #address {
-  background-color: #f9f9f9; /* 읽기 전용 */
+  background-color: #f9f9f9;
 }
 
+/* =====================
+   REGISTER BUTTON
+===================== */
+.register-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 56px;
+  margin: 32px auto 0;
+  background: #000;
+  color: #fff;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.register-btn:hover {
+  background: #222;
+  transform: translateY(-1px);
+}
+
+.register-btn:active {
+  transform: translateY(0);
+}
+/* 비밀번호 입력창 감싸는 wrap */
+.password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+/* 1. 브라우저 기본 눈 제거 */
+input::-ms-reveal, input::-ms-clear { display: none !important; }
+
+/* 2. 비밀번호 감싸는 박스 */
+.password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* 3. 눈 모양 아이콘 설정 */
+.pw-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 16px;
+  z-index: 10;
+  
+  /* 중요: 폰트 어썸 로드를 위해 아래 설정 필수 */
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 400 !important; /* 900이어야 아이콘이 그려집니다 */
+}
+
+/* 4. 혹시 아이콘이 안 그려진다면 강제로 유니코드 주입 */
+.fa-eye-slash::before { content: "\f070" !important; }
+.fa-eye::before { content: "\f06e" !important; }
 /* =====================
    RESPONSIVE
 ===================== */
 @media (max-width: 768px) {
   .login-form {
-    width: 100%;
-    margin: 0 16px;
+    width: 95%;
+    padding: 20px;
   }
 }
