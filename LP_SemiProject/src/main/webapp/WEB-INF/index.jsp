@@ -207,7 +207,7 @@
             <c:forEach var="item" items="${requestScope.recommendList}">
                <li class="lp-item"
                    data-album="${item.productname}"
-                   data-emblem="￦ <fmt:formatNumber value='${item.price}' pattern='#,###'/>"
+                   data-emblem="Feel the Music, Love the Vinyl"
                    data-accent="#d0d0d0" 
                    data-img="<%= ctxPath%>${item.productimg}"
                    data-link="<%= ctxPath%>/productdetail.lp?productno=${item.productno}">
