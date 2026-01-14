@@ -11,22 +11,21 @@
 <title>관리자 페이지 - 상품관리</title>
 
 <link rel="stylesheet" href="<%= ctxPath%>/css/admin/admin_layout.css">
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <style>
-    /* [중요] 메뉴바 스타일 강제 적용 (가로 정렬 및 색상 고정) */
+    /* [중요] 메뉴바 스타일 강제 적용 */
     .admin-menu {
-        display: flex; /* 가로 정렬 */
-        gap: 20px;     /* 메뉴 간격 */
+        display: flex;
+        gap: 20px;
         border-bottom: 1px solid #ddd;
         padding: 10px 0;
         margin-bottom: 20px;
-        background: #fff; /* 배경 흰색 */
+        background: #fff;
     }
     .admin-menu a {
         text-decoration: none;
-        color: #555 !important; /* 글자색 강제 고정 (사라짐 방지) */
+        color: #555 !important;
         font-weight: bold;
         font-size: 16px;
         padding-bottom: 5px;
@@ -37,7 +36,7 @@
     }
     .admin-menu a.active {
         color: #000 !important;
-        border-bottom: 2px solid #000; /* 활성화된 메뉴 밑줄 */
+        border-bottom: 2px solid #000;
     }
 
     /* === 상품 리스트 스타일 === */
@@ -50,16 +49,19 @@
     .control-left { font-size: 14px; color: #333; }
     
     .btn-add {
-        background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold;
+        background: #333;
+        color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold;
     }
     .btn-delete {
-        background: #d9534f; color: #fff; border: none; padding: 6px 12px; cursor: pointer; font-size: 13px; margin-bottom: 10px;
+        background: #d9534f; color: #fff; border: none;
+        padding: 6px 12px; cursor: pointer; font-size: 13px; margin-bottom: 10px;
     }
 
     .product-list { display: flex; flex-direction: column; gap: 10px; }
     
     .product-item {
-        display: flex; align-items: center; border: 1px solid #eee; padding: 15px; border-radius: 5px; background: #fff;
+        display: flex;
+        align-items: center; border: 1px solid #eee; padding: 15px; border-radius: 5px; background: #fff;
     }
     .product-item input[type=checkbox] { margin-right: 15px; }
     .product-item img { margin-right: 20px; border: 1px solid #ddd; }
@@ -72,33 +74,39 @@
     
     .product-btns { display: flex; gap: 5px; }
     .product-btns button {
-        padding: 5px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 12px;
+        padding: 5px 10px;
+        border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 12px;
     }
     .btn-remove { color: #d9534f; border-color: #d9534f !important; }
 
     /* 페이징 */
     .pagination { text-align: center; margin-top: 30px; }
     .pagination a {
-        display: inline-block; padding: 5px 10px; border: 1px solid #ddd; color: #555; text-decoration: none; margin: 0 2px;
+        display: inline-block; padding: 5px 10px;
+        border: 1px solid #ddd; color: #555; text-decoration: none; margin: 0 2px;
     }
     .pagination a.active { background: #333; color: #fff; border-color: #333; }
 
     /* === 모달 스타일 === */
     .modal-overlay {
-        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        display: none;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
     }
     .modal-window {
-        background: #fff; width: 500px; border-radius: 5px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        background: #fff; width: 500px; border-radius: 5px;
+        overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
     .modal-header {
-        padding: 15px; background: #f1f1f1; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;
+        padding: 15px;
+        background: #f1f1f1; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;
     }
     .modal-header h3 { margin: 0; font-size: 18px; }
     .btn-close-modal { border: none; background: none; font-size: 24px; cursor: pointer; }
     
     .modal-body {
-        padding: 20px; max-height: 60vh; overflow-y: auto; /* 스크롤 */
+        padding: 20px;
+        max-height: 60vh; overflow-y: auto;
     }
     
     .form-group { margin-bottom: 15px; }
@@ -114,7 +122,8 @@
     .btn-remove-track { padding: 5px 8px; background: #fff; border: 1px solid #ccc; color: red; cursor: pointer; font-weight: bold; border-radius: 3px; }
 
     .modal-footer {
-        padding: 15px; border-top: 1px solid #ddd; text-align: right; background: #f9f9f9;
+        padding: 15px;
+        border-top: 1px solid #ddd; text-align: right; background: #f9f9f9;
     }
     .btn-submit-modal { background: #333; color: #fff; padding: 8px 20px; border: none; cursor: pointer; }
     .btn-cancel-modal { background: #fff; border: 1px solid #ccc; padding: 8px 15px; margin-right: 5px; cursor: pointer; }
@@ -139,8 +148,8 @@
     <section class="admin-content">
       <div class="product-control">
         <div class="control-left">
-          <strong>전체관리</strong>
-          <label><input type="checkbox" id="checkAll"> 전체선택</label>
+           <strong>전체관리</strong>
+           <label><input type="checkbox" id="checkAll"> 전체선택</label>
         </div>
         <button class="btn-add" onclick="openRegisterModal()">상품등록</button>
       </div>
@@ -159,7 +168,8 @@
                 <div class="product-item">
                   <input type="checkbox" name="pseq" value="${pvo.productno}">
                   
-                  <img src="<%= ctxPath%>${pvo.productimg}" 
+                  <%-- [수정] 이미지 경로에 /images/productimg/ 추가 --%>
+                  <img src="<%= ctxPath%>/images/productimg/${pvo.productimg}" 
                        onerror="this.src='<%= ctxPath%>/images/no_image.png'" 
                        alt="${pvo.productname}" style="width: 80px; height: 80px; object-fit: cover;">
                        
@@ -187,11 +197,18 @@
                 </div>
             </c:forEach>
           </div>
+          
+          <%-- 페이지바 출력 --%>
+          <div class="pagination">
+          	${requestScope.pageBar}
+          </div>
+          
       </form>
     </section>
   </div>
 </main>
 
+<%-- 모달 (등록/수정 공용) --%>
 <div id="productModal" class="modal-overlay">
   <div class="modal-window">
     <div class="modal-header">
@@ -200,7 +217,8 @@
     </div>
     
     <form name="productFrm" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="productno" id="modalProductNo"> <div class="modal-body">
+        <input type="hidden" name="productno" id="modalProductNo"> 
+        <div class="modal-body">
           <div class="form-group">
             <label>카테고리</label>
             <select name="fk_categoryno" id="modalCategory" class="input-text">
@@ -282,7 +300,8 @@ function goDelete() {
     }
     if(confirm("정말 삭제하시겠습니까? (관련 트랙 정보도 모두 삭제됩니다)")) {
         var frm = document.deleteFrm;
-        frm.action = "<%= ctxPath%>/admin/productDelete.lp";
+        // [수정] 컨트롤러 분기 처리를 위해 mode 파라미터 추가
+        frm.action = "<%= ctxPath%>/admin/admin_product.lp?mode=delete"; 
         frm.method = "POST";
         frm.submit();
     }
@@ -293,7 +312,8 @@ function goDeleteOne(pno) {
     if(confirm("이 상품을 삭제하시겠습니까?")) {
         var form = document.createElement("form");
         form.method = "POST";
-        form.action = "<%= ctxPath%>/admin/productDelete.lp";
+        // [수정] 컨트롤러 분기 처리를 위해 mode 파라미터 추가
+        form.action = "<%= ctxPath%>/admin/admin_product.lp?mode=delete";
         var input = document.createElement("input");
         input.type = "hidden";
         input.name = "pseq";
@@ -307,7 +327,7 @@ function goDeleteOne(pno) {
 // 등록 모달
 function openRegisterModal() {
     document.productFrm.reset();
-    document.getElementById("modalProductNo").value = ""; 
+    document.getElementById("modalProductNo").value = "";
     document.getElementById("trackContainer").innerHTML = '<div class="track-item"><input type="text" name="track_title" class="input-text" placeholder="1번 트랙 제목"></div>';
     
     document.getElementById("modalTitle").innerText = "상품 등록";
@@ -315,7 +335,8 @@ function openRegisterModal() {
     document.getElementById("currentImgText").style.display = "none";
     document.getElementById("trackSection").style.display = "block";
     
-    document.productFrm.action = "<%= ctxPath%>/admin/productRegister.lp";
+    // [수정] 컨트롤러 분기 처리를 위해 mode=register 추가
+    document.productFrm.action = "<%= ctxPath%>/admin/admin_product.lp?mode=register";
     document.getElementById('productModal').style.display = 'flex';
 }
 
@@ -344,7 +365,8 @@ function openEditModal(btn) {
     document.getElementById("currentImgText").style.display = "block";
     document.getElementById("trackSection").style.display = "none";
     
-    document.productFrm.action = "<%= ctxPath%>/admin/productEditEnd.lp";
+    // [수정] 컨트롤러 분기 처리를 위해 mode=edit 추가
+    document.productFrm.action = "<%= ctxPath%>/admin/admin_product.lp?mode=edit";
     document.getElementById('productModal').style.display = 'flex';
 }
 
