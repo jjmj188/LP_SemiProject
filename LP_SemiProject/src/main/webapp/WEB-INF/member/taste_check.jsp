@@ -9,7 +9,7 @@
   <meta charset="UTF-8">
   <title>취향 선택</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
   <link rel="stylesheet" href="../css/member/taste_check.css">
 </head>
 
@@ -25,6 +25,9 @@
   <span class="guide-text">
     이미지를 누르면 <strong>미리듣기</strong>를 할 수 있어요
   </span>
+<div class="selection-box">
+    <span id="selectedResult"></span>
+  </div>
   <!-- 🔍 테스트용 선택 결과 표시 -->
 <div id="selectedResult" style="margin-top:15px; font-size:14px; color:#555;"></div>
 </div>
@@ -73,101 +76,90 @@
 
 <script>
 $(function () {
-  let audio = new Audio();
-  let currentPlayingItem = null;
+	  let previewAudio = new Audio();
+	  let currentPreviewItem = null;
 
-  $(".preference-item").on("click", function () {
-    const $item = $(this);
-    const musicSrc = $item.data("music");
+	  // 1. 아이템 클릭 이벤트
+	  $(".preference-item").on("click", function () {
+	    const $item = $(this);
+	    const musicSrc = $item.data("music");
 
-    /* =========================
-       CASE 1️ 선택 + 재생 중 → 음악만 정지
-    ========================= */
-    if ($item.hasClass("active") && $item.hasClass("playing")) {
-      audio.pause();
-      audio.currentTime = 0;
-      $item.removeClass("playing spin");
-      currentPlayingItem = null;
-
-      updateSelectedResult(); // ✅ 추가
-      return;
-    }
-
-    /* =========================
-       CASE 2️ 선택 + 정지 상태 → 선택 해제
-    ========================= */
-    if ($item.hasClass("active") && !$item.hasClass("playing")) {
-      $item.removeClass("active");
-
-      updateSelectedResult(); // ✅ 추가
-      return;
-    }
-
-    /* =========================
-       CASE 3️ 선택 안 됨 → 선택 + 재생
-    ========================= */
-
-    // 다른 음악 재생 중이면 정지 (선택은 유지)
-    if (currentPlayingItem) {
-      currentPlayingItem.removeClass("playing spin");
-      audio.pause();
-      audio.currentTime = 0;
-    }
-
-    $item.addClass("active playing spin");
-    audio.src = musicSrc;
-    audio.play();
-
-    currentPlayingItem = $item;
-
-    updateSelectedResult(); // ✅ 추가
-  });
-});
-
-/* =========================
-   선택 결과 표시 함수
-========================= */
-function updateSelectedResult() {
-  let selected = [];
-
-  $(".preference-item.active").each(function () {
-    selected.push($(this).find(".preference-label").text());
-  });
-
-  if (selected.length === 0) {
-    $("#selectedResult").text("선택된 취향 없음");
-  } else {
-    $("#selectedResult").text("선택된 취향 : " + selected.join(", "));
-  }
-}
-
-$(function () {
-	  // ... 기존 오디오 관련 코드 생략 ...
-
-	  // 완료 버튼 클릭 이벤트 추가
-	  $("#submitBtn").on("click", function() {
-	    
-	    let selectedCategories = [];
-
-	    // active 클래스가 붙은 아이템들의 data-category 값을 가져옴
-	    $(".preference-item.active").each(function() {
-	        selectedCategories.push($(this).data("category"));
-	    });
-
-	    // 1개 이상 선택했는지 유효성 검사
-	    if(selectedCategories.length === 0) {
-	        alert("최소 1개 이상의 취향을 선택하셔야 합니다.");
-	        return;
+	    /* =====================================================
+	       CASE 1. 이미 선택됨 + 재생 중 -> 음악 정지 (선택은 유지)
+	       결과: spin(회전) 제거, active(그림자/확대) 유지
+	    ===================================================== */
+	    if ($item.hasClass("active") && $item.hasClass("spin")) {
+	      previewAudio.pause();
+	      previewAudio.currentTime = 0;
+	      $item.removeClass("spin"); // 회전만 멈춤
+	      currentPreviewItem = null;
+	      updateSelectedResult();
+	      return;
 	    }
 
-	    // 콤마(,)로 연결하여 hidden 필드인 #categoryList에 대입
-	    $("#categoryList").val(selectedCategories.join(","));
+	    /* =====================================================
+	       CASE 2. 이미 선택됨 + 정지 상태 -> 선택 완전 해제
+	       결과: active(그림자/확대) 제거
+	    ===================================================== */
+	    if ($item.hasClass("active") && !$item.hasClass("spin")) {
+	      $item.removeClass("active");
+	      updateSelectedResult();
+	      return;
+	    }
 
-	    // 폼 전송
-	    const frm = document.tasteFrm;
-	    frm.submit();
+	    /* =====================================================
+	       CASE 3. 새로 선택하거나 다른 곡 재생
+	    ===================================================== */
+	    // 기존에 재생 중이던 곡 회전 멈추기
+	    if (currentPreviewItem) {
+	      currentPreviewItem.removeClass("spin");
+	      previewAudio.pause();
+	    }
+
+	    // 상태 변경: active(확대/그림자)와 spin(5초 회전) 동시 부여
+	    $item.addClass("active spin");
+	    previewAudio.src = musicSrc;
+	    previewAudio.play().catch(e => {
+	      console.log("재생 차단 또는 파일 없음");
+	    });
+
+	    currentPreviewItem = $item;
+	    updateSelectedResult();
 	  });
+
+	  // 2. 저장 버튼 클릭
+	  $("#submitBtn").on("click", function () {
+	    let selectedCategoryNos = [];
+	    $(".preference-item.active").each(function () {
+	      selectedCategoryNos.push($(this).data("category"));
+	    });
+
+	    if (selectedCategoryNos.length === 0) {
+	      alert("최소 1개 이상 취향을 선택해주세요.");
+	      return;
+	    }
+
+	    $("#categoryList").val(selectedCategoryNos.join(","));
+	    $("#tasteForm").submit();
+	  });
+
+	  updateSelectedResult();
 	});
+
+	function updateSelectedResult() {
+	  let selectedCategories = [];
+	  $(".preference-item.active").each(function () {
+	    selectedCategories.push($(this).find(".preference-label").text());
+	  });
+
+	  if ($("#selectedResult").length > 0) {
+	    if (selectedCategories.length === 0) {
+	      $("#selectedResult").text("선택된 취향 없음");
+	    } else {
+	      $("#selectedResult").text("선택된 취향: " + selectedCategories.join(", "));
+	    }
+	  }
+	}
 </script>
 
 
