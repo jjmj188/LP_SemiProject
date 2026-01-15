@@ -268,19 +268,24 @@
 												원
 											</div>
 
-											<c:if test="${o.deliverystatus eq '배송완료'}">
+											
 												<c:choose>
 													<c:when test="${d.hasReview == 1}">
 														<button type="button" class="btn-review-done">작성완료</button>
 													</c:when>
 													<c:otherwise>
-														<button type="button" class="btn-review"
-															data-orderno="${o.orderno}"
-															data-productno="${d.productno}"
-															onclick="openReviewModal(this)">리뷰쓰기</button>
+														<button
+														  type="button"
+														  class="btn-review"
+														  data-orderno="${o.orderno}"
+														  data-productno="${d.productno}"
+														  data-deliverystatus="${fn:trim(o.deliverystatus)}"
+														  onclick="openReviewModal(this)"
+														>리뷰쓰기</button>
+
 													</c:otherwise>
 												</c:choose>
-											</c:if>
+											
 
 										</div>
 									</div>
@@ -340,12 +345,13 @@
 
 <script type="text/javascript">
 "use strict";
+
 //페이지 이동 함수
 function goPage(pageNo) {
-    const currentURL = window.location.href;
-    const newURL = new URL(currentURL);
-    newURL.searchParams.set('currentShowPageNo', pageNo); // currentShowPageNo를 페이지 번호로 업데이트
-    window.location.href = newURL.toString(); // 페이지 리로드
+  const currentURL = window.location.href;
+  const newURL = new URL(currentURL);
+  newURL.searchParams.set("currentShowPageNo", pageNo);
+  window.location.href = newURL.toString();
 }
 
 (function () {
@@ -371,7 +377,7 @@ function goPage(pageNo) {
 
   // ===== 배송지&송장 모달 =====
   function closeTrackingModal() {
-     const modal = document.getElementById("trackingModal");
+    const modal = document.getElementById("trackingModal");
     if (!modal) return;
 
     modal.classList.remove("open");
@@ -384,6 +390,7 @@ function goPage(pageNo) {
 
   async function openTrackingModal(btn) {
     if (!btn) return;
+
     const orderno = btn.dataset.orderno;
     if (!orderno) {
       alert("주문번호를 찾을 수 없습니다.");
@@ -391,10 +398,12 @@ function goPage(pageNo) {
     }
 
     if (!btn.id) btn.id = "btnTracking_" + orderno;
+
     const url =
       ctxPath +
       "/my_info/tracking_popup.lp?orderno=" +
       encodeURIComponent(orderno);
+
     const modal = document.getElementById("trackingModal");
     if (!modal) {
       alert("배송 모달 요소(#trackingModal)를 찾을 수 없습니다.");
@@ -412,11 +421,13 @@ function goPage(pageNo) {
     modal.dataset.lastBtnId = btn.id;
 
     body.innerHTML = '<div class="loading">불러오는 중...</div>';
+
     try {
       const res = await fetch(url, {
         method: "GET",
         headers: { "X-Requested-With": "XMLHttpRequest" },
       });
+
       const ct = (res.headers.get("content-type") || "").toLowerCase();
 
       // 서버가 JSON(에러) 내려주면 alert
@@ -429,16 +440,17 @@ function goPage(pageNo) {
 
       const html = await res.text();
       body.innerHTML = html;
+
       // 모달 내부 닫기 버튼(있다면) 바인딩
       const closeBtn = modal.querySelector("[data-action='close-tracking']");
       if (closeBtn) closeBtn.addEventListener("click", closeTrackingModal);
+
     } catch (e) {
       console.error(e);
       alert("배송 정보를 불러오지 못했습니다.");
       closeTrackingModal();
     }
   }
-
 
   // ===== 리뷰 모달 =====
   function closeReviewModal() {
@@ -454,9 +466,27 @@ function goPage(pageNo) {
   }
 
   async function openReviewModal(btn) {
-    if (!btn) return;
+	  if (!btn) return;
+
+	  // ✅ 버튼에 내려온 배송상태 읽기
+	  const rawStatus = btn.dataset.deliverystatus;
+
+	  // (디버깅용) 실제 값 확인
+	  console.log("deliverystatus(raw) =", rawStatus);
+
+	  // ✅ 공백 제거 + null 방어
+	  const status = (rawStatus || "").replace(/\s+/g, "");
+
+	  // ✅ "배송완료" 포함만 해도 통과 (예: 배송완료(수령))
+	  const isDelivered = status.includes("배송완료");
+
+	  if (!isDelivered) {
+	    alert("배송이 아직 도착이 안했습니다\n리뷰는 배송완료후 작성할 수 있습니다");
+	    return;
+	  }
 
     if (btn.disabled || btn.classList.contains("done")) return;
+
     const orderno = btn.dataset.orderno;
     const productno = btn.dataset.productno;
 
@@ -466,12 +496,14 @@ function goPage(pageNo) {
     }
 
     if (!btn.id) btn.id = "btnReview_" + orderno + "_" + productno;
+
     const url =
       ctxPath +
       "/my_info/review_write.lp?orderno=" +
       encodeURIComponent(orderno) +
       "&productno=" +
       encodeURIComponent(productno);
+
     const modal = document.getElementById("reviewModal");
     if (!modal) {
       alert("리뷰 모달 요소(#reviewModal)를 찾을 수 없습니다.");
@@ -489,11 +521,13 @@ function goPage(pageNo) {
     modal.dataset.lastBtnId = btn.id;
 
     body.innerHTML = '<div class="loading">불러오는 중...</div>';
+
     try {
       const res = await fetch(url, {
         method: "GET",
         headers: { "X-Requested-With": "XMLHttpRequest" },
       });
+
       const ct = (res.headers.get("content-type") || "").toLowerCase();
 
       if (ct.includes("application/json")) {
@@ -507,6 +541,7 @@ function goPage(pageNo) {
       body.innerHTML = html;
 
       bindReviewModalEvents();
+
     } catch (e) {
       console.error(e);
       alert("리뷰 창을 불러오지 못했습니다.");
@@ -517,6 +552,7 @@ function goPage(pageNo) {
   function bindReviewModalEvents() {
     const modal = document.getElementById("reviewModal");
     if (!modal) return;
+
     const form = modal.querySelector("form#reviewForm");
     if (!form) return;
 
@@ -532,6 +568,7 @@ function goPage(pageNo) {
         if (scoreEl) scoreEl.textContent = e.target.value + ".0";
       });
     });
+
     // 글자수
     const ta = modal.querySelector("#reviewContents");
     const cnt = modal.querySelector("#charCurrent");
@@ -545,6 +582,7 @@ function goPage(pageNo) {
     // submit 중복 바인딩 방지
     if (form.dataset.bound === "1") return;
     form.dataset.bound = "1";
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -558,7 +596,6 @@ function goPage(pageNo) {
       if (Number.isNaN(ratingVal) || ratingVal < 1 || ratingVal > 5) {
         alert("별점은 1~5점만 가능합니다.");
         return;
-      
       }
 
       if (ta && ta.value.length > 100) {
@@ -572,8 +609,7 @@ function goPage(pageNo) {
       try {
         const res = await fetch(form.action, {
           method: "POST",
-          headers: { 
-          "X-Requested-With": "XMLHttpRequest" },
+          headers: { "X-Requested-With": "XMLHttpRequest" },
           body: new FormData(form),
         });
 
@@ -602,6 +638,7 @@ function goPage(pageNo) {
         }
 
         closeReviewModal();
+
       } catch (err) {
         console.error(err);
         alert("처리 중 오류가 발생했습니다.");
@@ -611,6 +648,7 @@ function goPage(pageNo) {
     });
   }
 
+  // 전역 노출
   window.toggleOrderDetails = toggleOrderDetails;
   window.openTrackingModal = openTrackingModal;
   window.closeTrackingModal = closeTrackingModal;
@@ -619,6 +657,7 @@ function goPage(pageNo) {
 
 })();
 </script>
+
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
