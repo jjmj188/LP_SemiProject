@@ -45,9 +45,22 @@
 
     <main class="product-container">
 
+        <%-- [수정] 이미지 경로 자동 판별 로직 (변수 finalImgPath 설정) --%>
+        <c:set var="finalImgPath" value="" />
+        <c:choose>
+            <c:when test="${fn:contains(pDto.productimg, 'images')}">
+                <%-- DB에 이미 경로가 포함된 경우 --%>
+                <c:set var="finalImgPath" value="${pDto.productimg}" />
+            </c:when>
+            <c:otherwise>
+                <%-- DB에 파일명만 있는 경우 --%>
+                <c:set var="finalImgPath" value="/images/productimg/${pDto.productimg}" />
+            </c:otherwise>
+        </c:choose>
+
         <div class="product-image">
-            <%-- 수정된 부분: /images/productimg/ 경로 추가 --%>
-            <img src="<%= ctxPath %>/images/productimg/${pDto.productimg}" alt="${pDto.productname}">
+            <%-- [수정] 판별된 경로 사용 --%>
+            <img src="<%= ctxPath %>${finalImgPath}" alt="${pDto.productname}">
         </div>
 
         <div class="product-info">
@@ -139,12 +152,12 @@
     <div class="container-top">
         <div class="album">
           <div class="cover">
-             <%-- 앨범 커버 경로 수정 --%>
-             <img src="<%= ctxPath %>/images/productimg/${pDto.productimg}" alt="Album Cover">
+             <%-- [수정] 앨범 커버 경로 수정 --%>
+             <img src="<%= ctxPath %>${finalImgPath}" alt="Album Cover">
           </div>
           <div class="vinyl">
-             <%-- 바이닐(LP판) 커버 이미지 경로 수정 --%>
-             <div class="vinyl-cover" style="background-image: url('<%= ctxPath %>/images/productimg/${pDto.productimg}');"></div>
+             <%-- [수정] 바이닐(LP판) 커버 이미지 경로 수정 --%>
+             <div class="vinyl-cover" style="background-image: url('<%= ctxPath %>${finalImgPath}');"></div>
           </div>
        </div>
     </div>
