@@ -79,6 +79,37 @@ public class Admin_order extends AbstractController {
             super.setRedirect(false);
             super.setViewPage("/WEB-INF/jsonview.jsp");
         }
+        
+        // [기능 4] 배송지 주소 수정 (AJAX) - 이 부분을 추가하세요
+        else if("POST".equalsIgnoreCase(method) && "updateOrderAddress".equals(mode)) {
+            
+            // 1. JS에서 보낸 파라미터 받기
+            String orderno = request.getParameter("orderno");
+            String postcode = request.getParameter("postcode");
+            String address = request.getParameter("address");
+            String detailaddress = request.getParameter("detailaddress");
+            String extraaddress = request.getParameter("extraaddress");
+            
+            // 2. DAO로 넘길 Map 생성
+            Map<String, String> paraMap = new HashMap<>();
+            paraMap.put("orderno", orderno);
+            paraMap.put("postcode", postcode);
+            paraMap.put("address", address);
+            paraMap.put("detailaddress", detailaddress);
+            paraMap.put("extraaddress", extraaddress);
+            
+            // 3. DAO 메소드 호출 (이미 구현되어 있음)
+            int n = adao.updateOrderAddress(paraMap); 
+            
+            // 4. 결과 JSON 반환
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("result", n); 
+            
+            request.setAttribute("json", jsonObj.toString());
+            
+            super.setRedirect(false);
+            super.setViewPage("/WEB-INF/jsonview.jsp");
+        }
 
         // [참고] JS에 있는 "주소 수정(updateOrderAddress)" 로직은 현재 Java 파일에 없습니다.
         // 만약 주소 수정 기능도 구현 중이시라면, 이곳에 else if 블록을 추가해야 합니다.
