@@ -5,33 +5,33 @@ import org.json.JSONObject;
 import common.controller.AbstractController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession; // 세션 관리를 위해 추가
+import jakarta.servlet.http.HttpSession; 
 import admin.model.AdminDAO;
 import admin.model.InterAdminDAO;
-import admin.model.AdminVO; // 관리자 VO 객체 확인을 위해 필요
+import admin.model.AdminVO; 
 
 public class Admin_order extends AbstractController {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-    // =============================================================
-    // 관리자 로그인 여부 확인 (Security Check)
-    // =============================================================
-    HttpSession session = request.getSession();
-    AdminVO loginAdmin = (AdminVO) session.getAttribute("loginAdmin"); 
+        // =============================================================
+        // 관리자 로그인 여부 확인 (Security Check)
+        // =============================================================
+        HttpSession session = request.getSession();
+        AdminVO loginAdmin = (AdminVO) session.getAttribute("loginAdmin"); 
 
-    if (loginAdmin == null) {
-        String message = "관리자만 접근 가능합니다.";
-        String loc = request.getContextPath() + "/admin/admin_login.lp"; 
-        
-        request.setAttribute("message", message);
-        request.setAttribute("loc", loc);
-        
-        super.setRedirect(false);
-        super.setViewPage("/WEB-INF/msg.jsp");
-        return; // 로그인이 안 되어 있으면 아래 로직을 수행하지 않고 종료
-    }
+        if (loginAdmin == null) {
+            String message = "관리자만 접근 가능합니다.";
+            String loc = request.getContextPath() + "/admin/admin_login.lp"; 
+            
+            request.setAttribute("message", message);
+            request.setAttribute("loc", loc);
+            
+            super.setRedirect(false);
+            super.setViewPage("/WEB-INF/msg.jsp");
+            return; 
+        }
 
         // =============================================================
         // 2. 기존 주문/배송 관리 로직 수행
@@ -41,8 +41,8 @@ public class Admin_order extends AbstractController {
         
         InterAdminDAO adao = new AdminDAO();
         
-        // [기능 2] 배송 시작 처리 (AJAX)
-        if("POST".equalsIgnoreCase(method) && "updateDelivery".equals(mode)) {
+        // [수정됨] JS의 "mode": "updateDeliveryStart" 와 일치시킴
+        if("POST".equalsIgnoreCase(method) && "updateDeliveryStart".equals(mode)) {
             String orderno = request.getParameter("orderno");
             String invoice_no = request.getParameter("invoice_no");
             String delivery_company = request.getParameter("delivery_company");
@@ -65,7 +65,7 @@ public class Admin_order extends AbstractController {
             super.setViewPage("/WEB-INF/jsonview.jsp");
         }
         
-        // [추가 기능] 배송 완료 처리 (AJAX)
+        // [기능 3] 배송 완료 처리 (AJAX)
         else if("POST".equalsIgnoreCase(method) && "updateDeliveryEnd".equals(mode)) {
             String orderno = request.getParameter("orderno");
             
@@ -79,6 +79,9 @@ public class Admin_order extends AbstractController {
             super.setRedirect(false);
             super.setViewPage("/WEB-INF/jsonview.jsp");
         }
+
+        // [참고] JS에 있는 "주소 수정(updateOrderAddress)" 로직은 현재 Java 파일에 없습니다.
+        // 만약 주소 수정 기능도 구현 중이시라면, 이곳에 else if 블록을 추가해야 합니다.
         
         // [기능 1] 주문 전체 목록 조회 + 필터링 (기본 페이지 이동)
         else {
