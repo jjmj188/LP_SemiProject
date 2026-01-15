@@ -81,11 +81,11 @@
 
 <div class="input-box">
   <label>연락처</label>
-  <div class="hp-flex-container"> <input type="text" id="hp1" value="010" readonly style="width: 60px;">
+  <div class="hp-flex-container"> <input type="text" name="hp1" id="hp1" value="010" readonly style="width: 60px;">
     <span class="hp-dash">-</span>
-    <input type="text" id="hp2" maxlength="4" style="width: 70px;">
+    <input type="text" name="hp2" id="hp2" maxlength="4" style="width: 70px;">
     <span class="hp-dash">-</span>
-    <input type="text" id="hp3" maxlength="4" style="width: 70px;">
+    <input type="text" name="hp3" id="hp3" maxlength="4" style="width: 70px;">
   </div>
   <p class="error-msg" id="hp_error"></p>
 </div>
