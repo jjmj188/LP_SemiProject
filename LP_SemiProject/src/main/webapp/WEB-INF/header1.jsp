@@ -1,91 +1,123 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
-<%@ page import="admin.model.MemberVO" %>
-<%@ page import="admin.model.AdminVO" %>
-
 <%
-    String ctxPath = request.getContextPath();
-
-    // 1. 일반 회원 세션 가져오기
-    MemberVO loginUser = (MemberVO)session.getAttribute("loginUser");
-
-    // 2. 관리자 세션 가져오기 (Admin_login.java에서 저장한 이름 "loginAdmin")
-    AdminVO loginAdmin = (AdminVO)session.getAttribute("loginAdmin");
+	String ctxPath = request.getContextPath();
+	// /LP_SemiProject
 %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<header>
-    <div class="header-container">
-        <div class="logo">
-            <a href="<%= ctxPath %>/index.lp">
-                <img src="<%= ctxPath %>/images/logo.png" alt="VINYST" style="height: 50px;">
-            </a>
-        </div>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<%= ctxPath%>/css/common/header.css">
 
-        <nav>
-            <ul class="header-nav">
-                <li><a href="<%= ctxPath %>/index.lp">HOME</a></li>
-                
-                <li class="divider">|</li>
+<!-- 1. jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-                <%-- 
-                    [수정된 로직] 
-                    일반 회원(loginUser)도 없고, 관리자(loginAdmin)도 없을 때만 [LOGIN] 표시 
-                --%>
-                <% if(loginUser == null && loginAdmin == null) { %>
-                    
-                    <li><a href="<%= ctxPath %>/login/login.lp">LOGIN</a></li>
-                    
-                <% } else { %>
-                    
-                    <%-- 둘 중 하나라도 로그인 상태라면 [LOGOUT] 표시 --%>
-                    <li><a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a></li>
-                    
-                <% } %>
 
-                <li class="divider">|</li>
+   <!-- Font Awesome 6 Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
 
-                <li><a href="<%= ctxPath %>/cart/cart.lp">CART</a></li>
+</head>
+<body>
+	
+  <div class="bg-art" aria-hidden="true"></div>
 
-                <li class="divider">|</li>
+  <div class="wrap">
+  
+   <header class="topbar">
+<div class="logo">
+  <a href="<%= ctxPath%>/index.lp">
+    <img src="<%= ctxPath%>/images/logo.png" alt="홈으로 이동">
+  </a>
+</div>
 
-                <% if(loginAdmin != null) { %>
-                    
-                    <%-- 관리자 로그인 상태라면 [ADMIN] 또는 [MYPAGE]를 눌렀을 때 관리자 페이지로 이동 --%>
-                    <li><a href="<%= ctxPath %>/admin/admin_member.lp">ADMIN</a></li>
-                    
-                <% } else { %>
-                    
-                    <%-- 일반 회원이거나 비로그인 상태일 때 --%>
-                    <li><a href="<%= ctxPath %>/member/mypage.lp">MYPAGE</a></li>
-                    
-                <% } %>
-            </ul>
-        </nav>
-    </div>
+  <!-- PC 메뉴 -->
+ <nav class="navlinks" aria-label="Primary">
+  <a href="<%= ctxPath%>/index.lp">HOME</a> |
+
+  <c:if test="${empty sessionScope.loginuser || sessionScope.isLogin == false}">
+    <a href="<%= ctxPath %>/login/login.lp">LOGIN</a> |
+  </c:if>
+
+  <c:if test="${not empty sessionScope.loginuser && sessionScope.isLogin == true}">
+    <a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a> |
+    </c:if>
+    <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
+    <a href="<%= ctxPath%>/my_info/my_info.lp">MYPAGE</a>
+ 
+</nav>
+
+  <!-- 모바일 햄버거 버튼 -->
+  <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <!-- 모바일 드롭다운 -->
+  <nav class="navlinks-mobile" aria-label="Mobile Primary">
+    <a href="<%= ctxPath%>/index.lp">HOME</a>
+    
+  <!--  비로그인 -->
+  <c:if test="${empty sessionScope.loginuser || sessionScope.isLogin == false}">
+    <a href="<%= ctxPath%>/login/login.lp">LOGIN</a>
+  </c:if>
+
+  <!--  로그인 -->
+    <c:if test="${not empty sessionScope.loginuser && sessionScope.isLogin == true}">
+    <a href="<%= ctxPath%>/login/logout.lp">LOGOUT</a>
+  	</c:if>
+    <a href="<%= ctxPath%>/order/cart.lp">CART</a>
+    <a href="<%= ctxPath%>/my_info/my_info.lp">MY PROFILE</a>
+  </nav>
 </header>
 
-<style>
-    .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 50px;
+
+
+<!-- ✅ 스크립트는 CSS 텍스트 뒤에 붙이지 말고, body 끝쪽에 두는 게 안전 -->
+<script>
+  $(function () {
+    const $btn = $(".nav-toggle");
+    const $menu = $(".navlinks-mobile");
+
+    function closeMenu(){
+      $menu.removeClass("is-open");
+      $btn.attr("aria-expanded", "false");
+      $btn.find("i").removeClass("fa-xmark").addClass("fa-bars");
     }
-    .header-nav {
-        list-style: none;
-        display: flex;
-        gap: 15px;
-        font-family: sans-serif;
-        font-size: 14px;
-        color: #333;
+
+    function openMenu(){
+      $menu.addClass("is-open");
+      $btn.attr("aria-expanded", "true");
+      $btn.find("i").removeClass("fa-bars").addClass("fa-xmark");
     }
-    .header-nav a {
-        text-decoration: none;
-        color: inherit;
-        font-weight: 500;
-    }
-    .header-nav .divider {
-        color: #ccc;
-    }
-</style>
+
+    $btn.on("click", function (e) {
+      e.stopPropagation();
+      if ($menu.hasClass("is-open")) closeMenu();
+      else openMenu();
+    });
+
+    $(document).on("click", function () {
+      if ($menu.hasClass("is-open")) closeMenu();
+    });
+
+    $menu.on("click", function (e) {
+      e.stopPropagation();
+    });
+
+    $(document).on("keydown", function(e){
+      if(e.key === "Escape") closeMenu();
+    });
+
+    $(window).on("resize", function(){
+      if(window.innerWidth > 768) closeMenu();
+    });
+  });
+</script>
+   
