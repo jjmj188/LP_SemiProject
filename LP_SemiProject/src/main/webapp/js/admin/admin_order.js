@@ -25,10 +25,11 @@ function goDeliveryStart(orderno) {
     let regExp_invoice;
     let lengthMsg = "";
 
-    if (company === "CJ대한통운" || company === "한진택배") {
-        regExp_invoice = /^[0-9]{12}$/; [cite_start]// 12자리 숫자 [cite: 29]
-        lengthMsg = "12자리";
-    } else if (company === "우체국택배") {
+	if (company === "CJ대한통운" || company === "한진택배") {
+	    regExp_invoice = /^[0-9]{12}$/; // 12자리 숫자
+	    lengthMsg = "12자리";
+	}		
+	 else if (company === "우체국택배") {
         regExp_invoice = /^[0-9]{13}$/; // 13자리 숫자
         lengthMsg = "13자리";
     } else {

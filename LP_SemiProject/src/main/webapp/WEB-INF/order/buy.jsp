@@ -7,16 +7,13 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<!-- jQuery-->
 <script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 
-<!-- 다음 주소 API -->
 <script
 	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script
 	src="<%= ctxPath %>/13_daum_address_search/js/daum_address_search.js"></script>
 
-<!-- 아임포트 -->
 <script src="https://service.iamport.kr/js/iamport.payment-1.1.2.js"></script>
 
 <link rel="stylesheet" href="<%= ctxPath%>/css/order/buy.css">
@@ -38,8 +35,7 @@ $(function () {
       $("#requestText").val(val).prop("readonly", true);
     }
   }).trigger("change");
-
-
+  
   // =========================
   // 모드 판별(장바구니/바로구매)
   // =========================
@@ -113,14 +109,12 @@ $(function () {
   // 총결제금액 = 주문금액 - 할인금액 + 배송비
   // =========================
   const POINT_WON_RATE = 10;
-
   const elSumTotalPrice = document.getElementById("sumTotalPrice");
   const elBaseDiscount  = document.getElementById("baseDiscountAmount");
   const elDeliveryFee   = document.getElementById("deliveryFee");
 
   const uiDiscountAmount = document.getElementById("uiDiscountAmount");
   const uiFinalPay       = document.getElementById("uiFinalPay");
-
   const hiddenUsePoint          = document.getElementById("usePoint");
   const hiddenPointDiscountWon  = document.getElementById("pointDiscountWon");
   const hiddenFinalPayAmount    = document.getElementById("finalPayAmount");
@@ -129,7 +123,6 @@ $(function () {
     const sumTotalPrice = numberOnly(elSumTotalPrice ? elSumTotalPrice.value : 0);
     const baseDiscount  = numberOnly(elBaseDiscount ? elBaseDiscount.value : 0);
     const deliveryFee   = numberOnly(elDeliveryFee ? elDeliveryFee.value : 0);
-
     const usePoint = numberOnly(hiddenUsePoint ? hiddenUsePoint.value : 0);
     const pointDiscountWon = usePoint * POINT_WON_RATE;
 
@@ -162,7 +155,7 @@ $(function () {
   const input = document.getElementById("pointInput");
   const chkUseAllPoint = document.getElementById("chkUseAllPoint");
   const maxPoint = input ? Number(input.dataset.maxPoint || 0) : 0;
-
+  
   function normalizePoint(value) {
     const num = String(value).replace(/[^0-9]/g, "");
     return (num === "" ? "" : num) + " P";
@@ -186,12 +179,9 @@ $(function () {
     if (Number.isNaN(safe)) safe = 0;
     if (safe < 0) safe = 0;
     if (safe > maxPoint) safe = maxPoint;
-
     input.value = (safe === 0 ? "" : String(safe)) + " P";
-
     const pos = (safe === 0 ? "" : String(safe)).length;
     input.setSelectionRange(pos, pos);
-
     if (chkUseAllPoint) {
       chkUseAllPoint.checked = (maxPoint > 0 && safe === maxPoint);
     }
@@ -216,7 +206,6 @@ $(function () {
   if (input) {
     input.value = normalizePoint(input.value);
     syncHiddenUsePoint(getPointNumber());
-
     input.addEventListener("input", () => {
       const num = input.value.replace(/[^0-9]/g, "");
       input.value = normalizePoint(input.value);
@@ -226,11 +215,9 @@ $(function () {
 
       clampPoint(false);
     });
-
     input.addEventListener("blur", () => {
       clampPoint(true);
     });
-
     input.addEventListener("keydown", (e) => {
       const numLength = input.value.replace(/[^0-9]/g, "").length;
 
@@ -239,7 +226,6 @@ $(function () {
         e.preventDefault();
       }
     });
-
     input.addEventListener("click", () => {
       const numLength = input.value.replace(/[^0-9]/g, "").length;
       input.setSelectionRange(numLength, numLength);
@@ -258,22 +244,19 @@ $(function () {
   // 초기 1회 렌더
   // =========================
   recomputeAndRender();
-
-
+  
   // =========================
   // 구매하기 버튼 검증
   // =========================
   const btnBuy = document.getElementById("btnBuy");
-
   const requiredFields = [
     { el: document.getElementById("postcode"), name: "우편번호" },
     { el: document.getElementById("address"), name: "도로명 주소" },
     { el: document.getElementById("detailAddress"), name: "상세 주소" }
   ];
-
+  
   function validateBeforePay() {
     const direct = isDirectBuyMode();
-
     // 주문상품 존재 체크 (모드별)
     if (!direct) {
       const cartnoList = getCartnoList();
@@ -338,7 +321,6 @@ $(function () {
   // 결제 + 서버 주문 저장
   // =========================
   let paying = false;
-
   if (btnBuy) {
     btnBuy.addEventListener("click", function () {
       if (!validateBeforePay()) return;
@@ -353,7 +335,7 @@ $(function () {
       }
 
       if (!window.IMP) {
-        alert("아임포트 스크립트가 로드되지 않았습니다.");
+         alert("아임포트 스크립트가 로드되지 않았습니다.");
         paying = false;
         return;
       }
@@ -367,6 +349,7 @@ $(function () {
       //const payAmount = calc.finalPay;
       const payAmount = 10; // 테스트용
 
+      
       if (payAmount <= 0) {
         alert("결제금액이 올바르지 않습니다.");
         paying = false;
@@ -379,14 +362,12 @@ $(function () {
       const detailaddress = ($("#detailAddress").val() || "").trim();
       const extraaddress = ($("#extraAddress").val() || "").trim();
       const deliveryrequest = getFinalDeliveryRequest();
-
       // 구매자 정보
       const buyer_email = $('input[type="email"]').val() || "";
       const buyer_name = $('input[placeholder="이름 입력"]').val() || "";
       const buyer_tel = "010" + ($("#hp2").val() || "") + ($("#hp3").val() || "");
 
       const merchantUid = "ord_" + Date.now();
-
       const IMP = window.IMP;
       IMP.init("imp66663353");
 
@@ -431,7 +412,6 @@ $(function () {
           
           isDirectBuy: direct
         };
-
         if (direct) {
           payload.productno = directInfo.productno;
           payload.qty = directInfo.qty;
@@ -465,8 +445,39 @@ $(function () {
 <main class="buy-wrapper">
 	<div class="buy-container">
 
-		<!-- ================= LEFT ================= -->
 		<section class="buy-left">
+		
+            <%-- [추가] 주문 상품 정보 리스트 (시각적 확인용) --%>
+            <div class="buy-card" style="margin-bottom: 20px;">
+                <h3>주문 상품 정보</h3>
+                <div class="order-item-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <c:forEach var="item" items="${cartList}">
+                        <div class="order-item" style="display: flex; gap: 15px; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                            
+                            <%-- 이미지 경로 정규화 --%>
+                            <c:set var="simpleFileName" value="${item.productimg}" />
+                            <c:if test="${fn:contains(simpleFileName, 'images')}">
+                                <c:set var="simpleFileName" value="${fn:replace(simpleFileName, '/images/productimg/', '')}" />
+                                <c:set var="simpleFileName" value="${fn:replace(simpleFileName, 'images/productimg/', '')}" />
+                            </c:if>
+                            
+                            <div class="img-box" style="width: 60px; height: 60px; border-radius: 4px; overflow: hidden; border: 1px solid #ddd;">
+                                <img src="<%= ctxPath%>/images/productimg/${simpleFileName}" alt="${item.productname}" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            
+                            <div class="info-box">
+                                <p style="font-weight: bold; margin: 0 0 5px 0;">${item.productname}</p>
+                                <p style="font-size: 14px; color: #666; margin: 0;">
+                                    수량: ${item.qty}개 | 
+                                    ₩ <fmt:formatNumber value="${item.totalPrice}" pattern="#,###"/>
+                                </p>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+            <%-- [추가 끝] --%>
+		
 			<div class="buy-card">
 				<h3>주문자 / 배송 정보</h3>
 
@@ -496,7 +507,6 @@ $(function () {
 
 				<hr>
 
-				<!-- 포인트 -->
 				<div class="form-group">
 					<label class="title">포인트 사용</label> <input type="text"
 						class="point-input" value="0 P" id="pointInput"
@@ -512,7 +522,6 @@ $(function () {
 
 				<hr>
 
-				<!-- 주소 -->
 				<div class="form-group">
 					<label>주소</label>
 
@@ -536,7 +545,6 @@ $(function () {
 						value="${sessionScope.loginuser.extraaddress}">
 				</div>
 
-				<!-- 요청사항 -->
 				<div class="form-group">
 					<label>배송 요청사항</label> <select id="requestSelect">
 						<option value="">선택해주세요</option>
@@ -554,7 +562,6 @@ $(function () {
 			</div>
 		</section>
 
-		<!-- ================= RIGHT ================= -->
 		<aside class="buy-right">
 			<section class="summary-card">
 				<h3>결제 정보</h3>
@@ -613,26 +620,19 @@ $(function () {
 
 			<input type="hidden" id="ctxPath" value="<%=ctxPath%>">
 
-			<!-- 상품합계 -->
 			<input type="hidden" id="sumTotalPrice" value="${sumTotalPrice}">
 
-			<!-- 기존 할인금액(쿠폰/프로모션 등 서버 계산값) -->
 			<input type="hidden" id="baseDiscountAmount"
 				value="${discountAmount}">
 
-			<!-- 배송비 -->
 			<input type="hidden" id="deliveryFee" value="${deliveryFee}">
 
-			<!-- 적립포인트(표시용; 서버는 cartno로 재계산 권장) -->
 			<input type="hidden" id="sumTotalPoint" value="${sumTotalPoint}">
 
-			<!--  사용포인트(포인트 '점수') -->
 			<input type="hidden" id="usePoint" value="0">
 
-			<!--  포인트를 원화로 환산한 할인액(1P=10원) -->
 			<input type="hidden" id="pointDiscountWon" value="0">
 
-			<!--  최종 결제금액(원화) -->
 			<input type="hidden" id="finalPayAmount" value="${finalPayAmount}">
 
 			<input type="hidden" id="deliveryRequestFinal" value="">
@@ -642,4 +642,3 @@ $(function () {
 </main>
 
 <jsp:include page="/WEB-INF/footer1.jsp" />
-

@@ -6,6 +6,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/mypage_layout.css">
 <link rel="stylesheet"
@@ -128,7 +129,7 @@
       background: #222;
       color: #fff;
       border-color: #222;
-      cursor: default; 
+      cursor: default;
     }
 
     .pagebar button:not(.active):hover {
@@ -178,7 +179,16 @@
 						<div class="order-summary">
 
 							<div class="order-product">
-								<img src="<%=ctxPath%>${o.repProductimg}" alt="대표 상품">
+								
+								<%-- [수정] 대표 이미지 경로 정규화 --%>
+                                <c:set var="repImg" value="${o.repProductimg}" />
+                                <c:if test="${fn:contains(repImg, 'images')}">
+                                    <c:set var="repImg" value="${fn:replace(repImg, '/images/productimg/', '')}" />
+                                    <c:set var="repImg" value="${fn:replace(repImg, 'images/productimg/', '')}" />
+                                </c:if>
+                                
+								<img src="<%=ctxPath%>/images/productimg/${repImg}" alt="대표 상품">
+								
 								<div class="product-info">
 
 									<div class="product-name">
@@ -237,7 +247,16 @@
 
 								<c:forEach var="d" items="${o.orderDetailList}">
 									<div class="detail-item">
-										<img src="<%=ctxPath%>${d.productimg}" alt="상품">
+										
+										<%-- [수정] 상세 이미지 경로 정규화 --%>
+                                        <c:set var="detailImg" value="${d.productimg}" />
+                                        <c:if test="${fn:contains(detailImg, 'images')}">
+                                            <c:set var="detailImg" value="${fn:replace(detailImg, '/images/productimg/', '')}" />
+                                            <c:set var="detailImg" value="${fn:replace(detailImg, 'images/productimg/', '')}" />
+                                        </c:if>
+										
+										<img src="<%=ctxPath%>/images/productimg/${detailImg}" alt="상품">
+										
 										<div class="detail-info">
 											<p class="d-name">${d.productname}</p>
 											<p class="d-sub">수량: ${d.qty}개</p>
@@ -272,7 +291,6 @@
 					</div>
 				</c:forEach>
 
-				<!-- 페이지바 표시 부분 -->
 				<div class="pagebar">
 				    <ul class="pagination"
 				        style="margin: 0; list-style: none; display: flex; justify-content: center; padding: 0;">
@@ -286,7 +304,6 @@
 	</div>
 </main>
 
-<!-- ✅ 리뷰 모달 -->
 <div id="reviewModal" class="review-modal" aria-hidden="true">
 	<div class="backdrop" onclick="closeReviewModal()"></div>
 
@@ -302,7 +319,6 @@
 	</div>
 </div>
 
-<!-- ✅ 배송지 & 송장번호 모달 -->
 <div id="trackingModal" class="review-modal" aria-hidden="true">
 	<div class="backdrop" onclick="closeTrackingModal()"></div>
 
@@ -324,7 +340,6 @@
 
 <script type="text/javascript">
 "use strict";
-
 //페이지 이동 함수
 function goPage(pageNo) {
     const currentURL = window.location.href;
@@ -356,7 +371,7 @@ function goPage(pageNo) {
 
   // ===== 배송지&송장 모달 =====
   function closeTrackingModal() {
-    const modal = document.getElementById("trackingModal");
+     const modal = document.getElementById("trackingModal");
     if (!modal) return;
 
     modal.classList.remove("open");
@@ -369,7 +384,6 @@ function goPage(pageNo) {
 
   async function openTrackingModal(btn) {
     if (!btn) return;
-
     const orderno = btn.dataset.orderno;
     if (!orderno) {
       alert("주문번호를 찾을 수 없습니다.");
@@ -377,12 +391,10 @@ function goPage(pageNo) {
     }
 
     if (!btn.id) btn.id = "btnTracking_" + orderno;
-
     const url =
       ctxPath +
       "/my_info/tracking_popup.lp?orderno=" +
       encodeURIComponent(orderno);
-
     const modal = document.getElementById("trackingModal");
     if (!modal) {
       alert("배송 모달 요소(#trackingModal)를 찾을 수 없습니다.");
@@ -400,13 +412,11 @@ function goPage(pageNo) {
     modal.dataset.lastBtnId = btn.id;
 
     body.innerHTML = '<div class="loading">불러오는 중...</div>';
-
     try {
       const res = await fetch(url, {
         method: "GET",
         headers: { "X-Requested-With": "XMLHttpRequest" },
       });
-
       const ct = (res.headers.get("content-type") || "").toLowerCase();
 
       // 서버가 JSON(에러) 내려주면 alert
@@ -419,11 +429,9 @@ function goPage(pageNo) {
 
       const html = await res.text();
       body.innerHTML = html;
-
       // 모달 내부 닫기 버튼(있다면) 바인딩
       const closeBtn = modal.querySelector("[data-action='close-tracking']");
       if (closeBtn) closeBtn.addEventListener("click", closeTrackingModal);
-
     } catch (e) {
       console.error(e);
       alert("배송 정보를 불러오지 못했습니다.");
@@ -449,7 +457,6 @@ function goPage(pageNo) {
     if (!btn) return;
 
     if (btn.disabled || btn.classList.contains("done")) return;
-
     const orderno = btn.dataset.orderno;
     const productno = btn.dataset.productno;
 
@@ -459,14 +466,12 @@ function goPage(pageNo) {
     }
 
     if (!btn.id) btn.id = "btnReview_" + orderno + "_" + productno;
-
     const url =
       ctxPath +
       "/my_info/review_write.lp?orderno=" +
       encodeURIComponent(orderno) +
       "&productno=" +
       encodeURIComponent(productno);
-
     const modal = document.getElementById("reviewModal");
     if (!modal) {
       alert("리뷰 모달 요소(#reviewModal)를 찾을 수 없습니다.");
@@ -484,13 +489,11 @@ function goPage(pageNo) {
     modal.dataset.lastBtnId = btn.id;
 
     body.innerHTML = '<div class="loading">불러오는 중...</div>';
-
     try {
       const res = await fetch(url, {
         method: "GET",
         headers: { "X-Requested-With": "XMLHttpRequest" },
       });
-
       const ct = (res.headers.get("content-type") || "").toLowerCase();
 
       if (ct.includes("application/json")) {
@@ -514,7 +517,6 @@ function goPage(pageNo) {
   function bindReviewModalEvents() {
     const modal = document.getElementById("reviewModal");
     if (!modal) return;
-
     const form = modal.querySelector("form#reviewForm");
     if (!form) return;
 
@@ -530,7 +532,6 @@ function goPage(pageNo) {
         if (scoreEl) scoreEl.textContent = e.target.value + ".0";
       });
     });
-
     // 글자수
     const ta = modal.querySelector("#reviewContents");
     const cnt = modal.querySelector("#charCurrent");
@@ -544,7 +545,6 @@ function goPage(pageNo) {
     // submit 중복 바인딩 방지
     if (form.dataset.bound === "1") return;
     form.dataset.bound = "1";
-
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -558,6 +558,7 @@ function goPage(pageNo) {
       if (Number.isNaN(ratingVal) || ratingVal < 1 || ratingVal > 5) {
         alert("별점은 1~5점만 가능합니다.");
         return;
+      
       }
 
       if (ta && ta.value.length > 100) {
@@ -571,7 +572,8 @@ function goPage(pageNo) {
       try {
         const res = await fetch(form.action, {
           method: "POST",
-          headers: { "X-Requested-With": "XMLHttpRequest" },
+          headers: { 
+          "X-Requested-With": "XMLHttpRequest" },
           body: new FormData(form),
         });
 
@@ -582,7 +584,6 @@ function goPage(pageNo) {
         }
 
         const data = await res.json();
-
         if (!data || !data.ok) {
           alert(data && data.msg ? data.msg : "등록에 실패했습니다.");
           return;
@@ -621,9 +622,4 @@ function goPage(pageNo) {
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-
-
-
 <%-- <script src="<%=ctxPath%>/js/my_info/my_order.js"></script> --%>
-
-

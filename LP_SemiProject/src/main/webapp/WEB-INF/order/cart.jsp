@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <%
   String ctxPath = request.getContextPath();
 %>
 
-<!-- JS에서 ctxPath 읽을 수 있게 meta로 제공 (header1.jsp가 body를 열어도 안전) -->
 <meta name="ctxPath" content="<%= ctxPath %>" />
 
 <link rel="stylesheet" href="<%= ctxPath%>/css/order/cart.css">
@@ -35,7 +36,16 @@
                  data-price="${dto.totalPrice}"
                  data-point="${dto.totalPoint}">
 
-          <img src="<%= ctxPath%>${dto.productimg}" alt="${dto.productname}">
+          <%-- [수정] 이미지 경로 정규화 로직 적용 --%>
+          <c:set var="simpleFileName" value="${dto.productimg}" />
+          <c:if test="${fn:contains(simpleFileName, 'images')}">
+              <c:set var="simpleFileName" value="${fn:replace(simpleFileName, '/images/productimg/', '')}" />
+              <c:set var="simpleFileName" value="${fn:replace(simpleFileName, 'images/productimg/', '')}" />
+          </c:if>
+          
+          <%-- 정제된 파일명에 표준 경로 적용 --%>
+          <img src="<%= ctxPath%>/images/productimg/${simpleFileName}" alt="${dto.productname}">
+          <%-- [수정 끝] --%>
 
           <div class="item-info">
             <p class="item-name">${dto.productname}</p>

@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%
     String ctxPath = request.getContextPath();
@@ -28,6 +29,7 @@
     <section class="mypage-content">
       <h2>찜내역</h2>
 
+      
       <div class="wish-list" id="wishContainer">
 
         <c:if test="${not empty requestScope.wishList}">
@@ -36,8 +38,18 @@
                 <div class="wish-item" id="item-${item.productno}">
                   
                   <div class="wish-img">
-                    <a href="<%= ctxPath%>/productdetail.lp?productno=${item.productno}">
-                        <img src="<%= ctxPath%>${item.productimg}" alt="${item.productname}">
+                      <a href="<%= ctxPath%>/productdetail.lp?productno=${item.productno}">
+                        
+                        <%-- [수정] 이미지 경로 정규화 로직 적용 --%>
+                        <c:set var="wishImg" value="${item.productimg}" />
+                        <c:if test="${fn:contains(wishImg, 'images')}">
+                            <c:set var="wishImg" value="${fn:replace(wishImg, '/images/productimg/', '')}" />
+                            <c:set var="wishImg" value="${fn:replace(wishImg, 'images/productimg/', '')}" />
+                        </c:if>
+                        
+                        <%-- 정제된 파일명에 표준 경로 적용 --%>
+                        <img src="<%= ctxPath%>/images/productimg/${wishImg}" alt="${item.productname}">
+                        
                     </a>
                     
                     <button type="button" class="wish-heart active" onclick="removeWish('${item.productno}')">
@@ -110,7 +122,7 @@
                     const remainingItems = $("#wishContainer").find(".wish-item").length;
 
                     if(remainingItems === 0) {
-                        location.reload(); 
+                        location.reload();
                     }
                 } 
                 else {
@@ -181,7 +193,7 @@
       background: #222;
       color: #fff;
       border-color: #222;
-      cursor: default; 
+      cursor: default;
     }
 
     .pagebar button:not(.active):hover {

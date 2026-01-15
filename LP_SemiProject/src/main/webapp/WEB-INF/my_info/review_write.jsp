@@ -4,12 +4,14 @@
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%-- [수정 1] 문자열 처리 함수(fn) 라이브러리 추가 --%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
 <style>
   .review-wrap{
-   padding:0 6px; 
-   }
+   padding:0 6px;
+  }
   .product-box{ 
   display:flex; 
   gap:14px; 
@@ -17,23 +19,23 @@
   border-top:1px solid #eee; 
   border-bottom:1px solid #eee; 
   align-items:center; 
-  background:#fff; 
+  background:#fff;
   }
   .product-img{
    width:100px; 
    height:100px; 
    border:1px solid #e6e6e6; 
    background:#f5f5f5; 
-   flex:0 0 auto; 
-   }
+   flex:0 0 auto;
+  }
   .product-img img{
    width:100%;
     height:100%;
      object-fit:cover; 
      }
   .product-meta{
-   flex:1; 
-   }
+   flex:1;
+  }
   .product-name{
    margin:0 0 8px;
     font-size:15px; 
@@ -43,7 +45,7 @@
   display:flex; 
   gap:12px; 
   font-size:13px; 
-  color:#444; 
+  color:#444;
   }
   .badge{ 
   display:inline-flex; 
@@ -57,7 +59,7 @@
   .rating-row{ 
   display:flex; 
   justify-content:space-between; 
-  align-items:center; 
+  align-items:center;
   margin-bottom:14px; 
   }
 
@@ -69,15 +71,15 @@
   }
   #reviewForm input[type=radio]{ 
   display:none;
-   }
+  }
   #reviewForm label i{ 
   font-size:32px; 
   color:#e0e0e0; 
-  cursor:pointer; 
+  cursor:pointer;
   }
   #reviewForm label:hover i, #reviewForm label:hover ~ label i{
    color:rgba(250,208,0,.99);
-    }
+  }
   #reviewForm input[type=radio]:checked ~ label i{ 
   color:rgba(250,208,0,.99); 
   }
@@ -85,7 +87,7 @@
   .rating-text{ 
   font-size:15px; 
   min-width:90px; 
-  text-align:right; 
+  text-align:right;
   }
   #ratingScore{ 
   font-weight:800; 
@@ -98,7 +100,7 @@
   padding:12px; 
   border:1.5px solid #d3d3d3; 
   border-radius:8px; 
-  resize:none; 
+  resize:none;
   font-size:15px; 
   }
   .review-textarea-wrap{ 
@@ -109,7 +111,7 @@
   right:10px; 
   bottom:8px; 
   font-size:12px; 
-  color:#666; 
+  color:#666;
   }
 
   .btn-row{ 
@@ -122,7 +124,7 @@
   padding:10px 16px; 
   border-radius:10px; 
   font-size:14px; 
-  cursor:pointer; 
+  cursor:pointer;
   }
   .btn-cancel{ 
   background:#fff; 
@@ -131,13 +133,13 @@
   .btn-submit{ 
   background:#222; 
   color:#fff; 
-  border:1px solid #222; 
+  border:1px solid #222;
   }
 
   .review-title{ 
   margin:0 0 14px; 
   font-size:18px; 
-  font-weight:700; 
+  font-weight:700;
   }
 </style>
 
@@ -149,8 +151,17 @@
     <div class="product-img">
       <c:choose>
         <c:when test="${not empty prdImg}">
-          <img src="<%= ctxPath %>${prdImg}" alt="상품 이미지">
+          <%-- [수정 2] 이미지 경로 정규화 로직 적용 (index.jsp와 동일 방식) --%>
+          <c:set var="simplePrdImg" value="${prdImg}" />
+          <c:if test="${fn:contains(simplePrdImg, 'images')}">
+              <c:set var="simplePrdImg" value="${fn:replace(simplePrdImg, '/images/productimg/', '')}" />
+              <c:set var="simplePrdImg" value="${fn:replace(simplePrdImg, 'images/productimg/', '')}" />
+          </c:if>
+          
+          <%-- 표준 경로(/images/productimg/)를 강제로 붙여서 출력 --%>
+          <img src="<%= ctxPath %>/images/productimg/${simplePrdImg}" alt="상품 이미지">
         </c:when>
+        
         <c:otherwise>
           <img src="<%=ctxPath%>/images/sample_lp.png" alt="상품 이미지">
         </c:otherwise>
@@ -158,6 +169,7 @@
     </div>
 
     <div class="product-meta">
+   
       <p class="product-name"><c:out value="${prdName}" default="상품명" /></p>
       <div class="product-sub">
         <span class="badge">
@@ -175,6 +187,7 @@
     <p>별점으로 후기를 남겨주세요</p>
 
     <div class="rating-row">
+  
       <fieldset>
         <input type="radio" name="rating" value="5" id="rate1">
         <label for="rate1"><i class="fa-solid fa-star"></i></label>
@@ -188,6 +201,7 @@
         <input type="radio" name="rating" value="2" id="rate4">
         <label for="rate4"><i class="fa-solid fa-star"></i></label>
 
+    
         <input type="radio" name="rating" value="1" id="rate5">
         <label for="rate5"><i class="fa-solid fa-star"></i></label>
       </fieldset>
@@ -204,6 +218,7 @@
     </div>
 
     <div class="btn-row">
+      
       <button type="button" class="btn btn-cancel" data-action="close-review">취소하기</button>
       <button type="submit" class="btn btn-submit">등록하기</button>
     </div>
