@@ -81,7 +81,7 @@ $(function () {
     const musicSrc = $item.data("music");
 
     /* =========================
-       CASE 1️⃣ 선택 + 재생 중 → 음악만 정지
+       CASE 1️ 선택 + 재생 중 → 음악만 정지
     ========================= */
     if ($item.hasClass("active") && $item.hasClass("playing")) {
       audio.pause();
@@ -94,7 +94,7 @@ $(function () {
     }
 
     /* =========================
-       CASE 2️⃣ 선택 + 정지 상태 → 선택 해제
+       CASE 2️ 선택 + 정지 상태 → 선택 해제
     ========================= */
     if ($item.hasClass("active") && !$item.hasClass("playing")) {
       $item.removeClass("active");
@@ -104,7 +104,7 @@ $(function () {
     }
 
     /* =========================
-       CASE 3️⃣ 선택 안 됨 → 선택 + 재생
+       CASE 3️ 선택 안 됨 → 선택 + 재생
     ========================= */
 
     // 다른 음악 재생 중이면 정지 (선택은 유지)
@@ -137,7 +137,7 @@ function updateSelectedResult() {
   if (selected.length === 0) {
     $("#selectedResult").text("선택된 취향 없음");
   } else {
-    $("#selectedResult").text("선택된 취향 테스트용: " + selected.join(", "));
+    $("#selectedResult").text("선택된 취향 : " + selected.join(", "));
   }
 }
 

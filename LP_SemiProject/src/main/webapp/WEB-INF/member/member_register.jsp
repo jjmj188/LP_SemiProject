@@ -72,7 +72,7 @@
 
 <div class="input-box">
   <label>이메일</label>
-  <input type="text" name="email" id="email" maxlength="60">
+  <input type="text" name="email" id="email" maxlength="60" placeholder="vinyst@naver.com 네이버 메일만 가능합니다.">
   <div class="check-row">
     <button type="button" class="check-btn" id="emailcheck">이메일 중복확인</button>
     <p class="error-msg" id="email_error"></p>

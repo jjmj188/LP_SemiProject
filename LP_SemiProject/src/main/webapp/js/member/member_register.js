@@ -57,9 +57,9 @@ $(function(){
 
     $("#userid").on("blur", function() {
         const val = $(this).val().trim();
-        const reg = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/;
+        const reg = /^(?=.*[a-z])(?=.*\d)[a-z\d]{8,15}$/;
         if(val === "") setValidation("#userid", false, "아이디를 입력해 주세요.");
-        else if(!reg.test(val)) setValidation("#userid", false, "특수문자를 제외한 8~15자의 영문 소문자, 숫자를 조합해 주세요.");
+        else if(!reg.test(val)) setValidation("#userid", false, "특수문자 및 대문자를 제외한 8~15자의 영문 소문자, 숫자를 조합해 주세요.");
         else if(!b_idcheck_click) setValidation("#userid", true, "중복 확인을 진행해 주세요.");
     });
 
@@ -79,10 +79,10 @@ $(function(){
     });
 
     $("#email").on("blur", function() {
-        const reg = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+        const reg =/^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@naver\.com$/i;
         const val = $(this).val().trim();
         if(val === "") setValidation("#email", false, "이메일 주소를 입력해 주세요.");
-        else if(!reg.test(val)) setValidation("#email", false, "올바른 이메일 형식을 입력해 주세요.");
+        else if(!reg.test(val)) setValidation("#email", false, "올바른 이메일 형식을 입력해 주세요.(네이버 메일만 가능)");
         else if(!b_emailcheck_click) setValidation("#email", true, "이메일 중복 확인을 진행해 주세요.");
     });
 
@@ -91,10 +91,17 @@ $(function(){
     ====================================================== */
     $("#idcheck").click(function(){
         const userid = $("#userid").val().trim();
-        if(!/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/.test(userid)) {
-            setValidation("#userid", false, "형식에 맞는 아이디를 먼저 입력해 주세요.");
-            return;
-        }
+		if(userid === "") {
+		        setValidation("#userid", false, "아이디를 입력해 주세요.");
+		        return;
+		    }
+
+		    // 2순위: 정규식 체크 (대문자 제외, 소문자+숫자 조합 8~15자)
+		    const idreg = /^(?=.*[a-z])(?=.*\d)[a-z\d]{8,15}$/;
+		    if(!idreg.test(userid)) {
+		        setValidation("#userid", false, "특수문자 및 대문자를 제외한 8~15자의 영문 소문자, 숫자를 조합해 주세요.");
+		        return;
+		    }
         $.ajax({
             url: ctxPath + "/member/idDuplicateCheck.lp",
             type: "post", data: { userid }, dataType: "json",
@@ -105,14 +112,30 @@ $(function(){
                 } else {
                     b_idcheck_click = true;
                     setValidation("#userid", true, "사용 가능한 아이디입니다.", true);
-                }
+					
+				}
             }
         });
     });
-
+	
+	//중복확인 후 아이디 input값이 변했을 경우 
+	$("#userid").on("input", function() {
+	    b_idcheck_click = false; 
+	});
+	
+	//이메일 중복 확인 
     $("#emailcheck").click(function(){
+		const reg =/^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@naver\.com$/i;
         const email = $("#email").val().trim();
-        if(email === "") { setValidation("#email", false, "이메일을 입력해 주세요."); return; }
+        if(email === "") { 
+			setValidation("#email", false, "이메일을 입력해 주세요."); 
+			return;
+		 }else if(!reg.test(email)){
+			setValidation("#email", false, "올바른 이메일 형식을 입력해 주세요.(네이버 메일만 가능)");
+					        return;
+		 }
+		 
+		 
         $.ajax({
             url: ctxPath + "/member/emailDuplicateCheck.lp",
             type: "post", data: { email }, dataType: "json",
@@ -123,11 +146,15 @@ $(function(){
                 } else {
                     b_emailcheck_click = true;
                     setValidation("#email", true, "사용 가능한 이메일입니다.", true);
+					
                 }
             }
         });
     });
-
+	//중복확인 후 이메일 input값이 변했을 경우 
+		$("#email").on("input", function() {
+		    b_emailcheck_click = false; 
+		});
     /* ======================================================
        4. 기타 필드 (연락처, 생년월일, 성별)
     ====================================================== */
