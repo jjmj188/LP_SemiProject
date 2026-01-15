@@ -223,11 +223,29 @@ function goRegister() {
 		    $("#birthday").removeClass("input-error");
 		    $("#birthday_error").hide();
 		}
-		// 3. 우편번호/주소 체크 (여기가 추가된 부분입니다)
-		    if($("#postcode").val() === "" || $("#address").val() === "") {
-		        $("#postcode, #address,#detailAddress").addClass("input-error"); // 테두리 빨갛게
-		        $("#address_error").text("우편번호 찾기를 진행해 주세요.").css("color", "red").show();
+		/* ======================================================
+		       [수정 핵심] 주소/상세주소 체크
+		    ====================================================== */
+		    const postcode = $("#postcode").val().trim();
+		    const address = $("#address").val().trim();
+		    const detailAddress = $("#detailAddress").val().trim(); // HTML ID와 대소문자 일치시킴
+
+		    if(postcode === "" || address === "" || detailAddress === "") {
+		        // 빈 항목에 빨간 테두리 추가
+		        if(postcode === "") $("#postcode").addClass("input-error");
+		        if(address === "") $("#address").addClass("input-error");
+		        if(detailAddress === "") $("#detailAddress").addClass("input-error");
+
+		        // 구체적인 에러 메시지 출력
+		        if(postcode === "" || address === "") {
+		            $("#address_error").text("우편번호 찾기를 진행해 주세요.").css("color", "red").show();
+		        } else {
+		            $("#address_error").text("상세 주소를 입력해 주세요.").css("color", "red").show();
+		        }
 		        canSubmit = false;
+		    } else {
+		        $("#postcode, #address, #detailAddress").removeClass("input-error");
+		        $("#address_error").hide();
 		    }
 
     if($(".input-error").length > 0) canSubmit = false;

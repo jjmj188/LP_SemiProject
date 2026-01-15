@@ -1,161 +1,200 @@
-/* =====================
-   WRAPPER / CONTAINER
-===================== */
+/* =====================================================
+   0. RESET + BASE
+===================================================== */
+
+/* =====================================================
+   1. HEADER (header1.jsp 기준)
+===================================================== 
+.topbar {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90px;                  
+  padding: 0 24px;
+  background: #fff !important;
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  z-index: 1000;
+}*/
+
+/* =====================================================
+   2. MAIN WRAPPER (헤더 고정 대응)
+===================================================== */
 .taste-wrapper {
-  padding: 80px 0 100px;   /* 🔥 전체를 아래로 */
-  background: #ffffff;
-}
-
-.taste-container {
-  max-width: 1200px;
+  min-height: calc(100vh - 90px - 120px); /* header + footer 고려 */
+  padding-top: 70px;                     /* 🔥 핵심 */
+  padding-bottom: 100px;
   margin: 0 auto;
-  min-height: 720px;
-  background: #fff;
-  border:red 0px solid;
+  width: min(var(--container), calc(100% - 48px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* =====================
-   TITLE
-===================== */
+/* =====================================================
+   3. CONTENT CONTAINER
+===================================================== */
+.taste-container {
+  width: 100%;
+  background: transparent;
+  
+  box-shadow: none;
+
+}
+
+/* =====================================================
+   4. TITLE / GUIDE
+===================================================== */
 .taste-title {
   text-align: center;
-  margin-bottom: 20px;
   font-size: 22px;
   font-weight: 700;
+  margin-bottom: 20px;
 }
 
-/* =====================
-   GUIDE
-===================== */
 .taste-guide {
   text-align: center;
-  margin-bottom: 90px; /* 🔥 카드 더 아래로 */
-}
-
-.guide-text {
-  font-size: 14px;
   color: #666;
+  margin-bottom: 10px;
 }
 
-/* =====================
-   GRID
-===================== */
+/* =====================================================
+   5. 선택 결과 영역 (밀림 방지)
+===================================================== */
+.selection-box {
+  height: 32px;
+  line-height: 32px;
+  margin: 16px 0 26px;
+  text-align: center;
+}
+
+#selectedResult {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* =====================================================
+   6. LP GRID
+===================================================== */
 .preference-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 140px);
-  gap: 42px;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  gap: 50px 40px;
 }
 
-/* =====================
-   ITEM
-===================== */
 .preference-item {
+  width: 140px;
   text-align: center;
   cursor: pointer;
-  user-select: none;
 }
 
-/* =====================
-   LP IMAGE
-===================== */
 .img-wrap {
-  width: 120px;
-  height: 120px;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   margin: 0 auto;
+  overflow: hidden;
   background: #fff;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
 }
 
 .img-wrap img {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
   object-fit: cover;
 }
 
-/* hover */
-.preference-item:hover .img-wrap {
-  transform: scale(1.07);
-}
-
-/* =====================
-   ACTIVE (선택)
-===================== */
+/* 선택 효과 */
+/* 선택되었을 때(active) 그림자를 더 크고 진하게 변경 */
 .preference-item.active .img-wrap {
-  transform: scale(1.18);
-  box-shadow:
-    0 0 0 3px rgba(255,255,255,0.9),
-    0 0 22px rgba(230, 233, 200, 0.65),
-    0 0 36px rgba(210, 215, 185, 0.45),
-    0 14px 28px rgba(0,0,0,0.28);
+ transform: scale(1.12); /* 너무 과하지 않게 확대 */
+  
+  /* 1. 회색 느낌을 주는 옅은 테두리 제거 
+     2. 묵직한 하단 그림자만 남겨서 입체감 강조 */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); 
+  border-color: #333; /* 완전 검정보다는 짙은 회색이 더 고급스러움 */
+  background: #fff;   /* 배경을 다시 흰색으로 (검은 여백 방지) */
 }
 
-/* =====================
-   SPIN (LP 효과 강화)
-===================== */
+/* 회전 */
 .preference-item.spin .img-wrap {
-  animation: spinAlbum 2.8s linear infinite;
+  animation: spinAlbum 5s linear infinite;
 }
 
 @keyframes spinAlbum {
-  0% {
-    transform: rotate(0deg) scale(1.18);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
-  }
-  50% {
-    transform: rotate(180deg) scale(1.18);
-    box-shadow: 0 18px 34px rgba(0,0,0,0.38);
-  }
-  100% {
-    transform: rotate(360deg) scale(1.18);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
-  }
+  from { transform: rotate(0deg) scale(1.12); }
+  to   { transform: rotate(360deg) scale(1.12); }
 }
 
-/* =====================
-   LABEL
-===================== */
 .preference-label {
-  margin-top: 14px;
-  font-weight: 600;
-  font-size: 14px;
+  margin-top: 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
 }
 
-/* =====================
-   BUTTON
-===================== */
+/* =====================================================
+   7. SUBMIT BUTTON
+===================================================== */
 .taste-btn-wrap {
   margin-top: 80px;
   text-align: center;
 }
 
 .taste-btn {
-  padding: 14px 50px;
-  font-size: 15px;
-  background: #111;
-  color: #fff;
-  border: none;
+  width: 180px;
+  height: 48px;
   border-radius: 10px;
+  border: none;
+  background: var(--btn);
+  color: var(--btnText);
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all .2s ease;
 }
 
 .taste-btn:hover {
   background: #000;
+  transform: translateY(-2px);
+}
+#selectedResult {
+  font-size: 14px;
+  color: #999;           /* 기본은 연하게 */
+  transition: color 0.2s ease;
 }
 
-/* =====================
-   RESPONSIVE
-===================== */
-@media (max-width: 1199px) {
-  .preference-grid {
-    grid-template-columns: repeat(3, 140px);
+/* 선택된 취향 있을 때 강조 */
+#selectedResult.has-selection {
+  color: #222;           /* 진하게 */
+  font-weight: 600;
+}
+/* =====================================================
+   8. FOOTER (footer1.jsp 기준)
+===================================================== */
+footer {
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #eee;
+  padding: 40px 0;
+  margin-top: auto;
+}
+
+/* =====================================================
+   9. MOBILE
+===================================================== */
+@media (max-width: 768px) {
+  .taste-wrapper {
+    padding-top: 120px;
+    padding-bottom: 80px;
   }
-}
 
-@media (max-width: 767px) {
   .preference-grid {
-    grid-template-columns: repeat(2, 140px);
+    gap: 32px 24px;
   }
 }
