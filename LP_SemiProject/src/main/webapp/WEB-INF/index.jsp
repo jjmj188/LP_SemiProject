@@ -158,18 +158,30 @@
     <div class="carousel-window">
       <div class="carousel-track">
 
-		<c:if test="${not empty requestScope.newProductList}">
+        <c:if test="${not empty requestScope.newProductList}">
             <c:forEach var="np" items="${requestScope.newProductList}">
+                
                 <a class="carousel-item" href="<%= ctxPath%>/productdetail.lp?productno=${np.productno}">
                   
-                  <%-- [수정] 1. 경로 정규화 (혹시 모를 경로 중복 제거 후 다시 붙임) --%>
+                  <%-- 이미지 경로 정규화 --%>
                   <c:set var="simpleFileName" value="${np.productimg}" />
                   <c:if test="${fn:contains(simpleFileName, 'images')}">
                       <c:set var="simpleFileName" value="${fn:replace(simpleFileName, '/images/productimg/', '')}" />
                       <c:set var="simpleFileName" value="${fn:replace(simpleFileName, 'images/productimg/', '')}" />
                   </c:if>
-                  <img src="<%= ctxPath%>/images/productimg/${simpleFileName}" alt="${np.productname}" />
                   
+                  <div style="position: relative; width: 240px; height: 240px; border-radius: 10px; overflow: hidden;">
+                      
+                      <img src="<%= ctxPath%>/images/productimg/${simpleFileName}" alt="${np.productname}" 
+                           style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+
+                      <c:if test="${np.stock == 0}">
+                          <div class="sold-out-box">
+                              일시품절
+                          </div>
+                      </c:if>
+                  </div>
+                
                   <div class="ci-text">
                     <p class="ci-name">${np.productname}</p>
                     <p class="ci-price">₩ <fmt:formatNumber value="${np.price}" pattern="#,###"/></p>
@@ -177,7 +189,7 @@
                 </a>
             </c:forEach>
         </c:if>
-	
+    
       </div>
     </div>
 

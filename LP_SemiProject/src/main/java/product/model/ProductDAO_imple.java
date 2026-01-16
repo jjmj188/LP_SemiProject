@@ -290,9 +290,9 @@ public class ProductDAO_imple implements ProductDAO {
 			conn = ds.getConnection();
 			
 			// 등록일 내림차순으로 정렬 후 상위 10개 SELECT
-			String sql = " SELECT productno, productname, productimg, price "
+			String sql = " SELECT productno, productname, productimg, price, stock "
 					   + " FROM ( "
-					   + "    SELECT productno, productname, productimg, price "
+					   + "    SELECT productno, productname, productimg, price, stock "
 					   + "    FROM tbl_product "
 					   + "    ORDER BY registerday DESC " // 최신순
 					   + " ) "
@@ -308,6 +308,8 @@ public class ProductDAO_imple implements ProductDAO {
 				pdto.setProductname(rs.getString("productname"));
 				pdto.setProductimg(rs.getString("productimg"));
 				pdto.setPrice(rs.getInt("price"));
+				
+				pdto.setStock(rs.getInt("stock"));
 				
 				newProductList.add(pdto);
 			}
