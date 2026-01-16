@@ -297,7 +297,12 @@
                             <c:set var="simpleFileName" value="${fn:replace(simpleFileName, 'images/productimg/', '')}" />
                         </c:if>
                         <img src="<%= ctxPath%>/images/productimg/${simpleFileName}" alt="${p.productname}">
-
+						
+						<c:if test="${p.stock == 0}">
+                            <div class="sold-out-box">
+                                일시품절
+                            </div>
+                        </c:if>
                     </a>
                     <p class="main-product-name">${p.productname}</p>
                     <p class="price">
@@ -457,6 +462,54 @@
         z-index: 9999; 
         transform: translate(-48%, -48%); /* 살짝 오른쪽 아래 */
     }
+    
+    .popup-link-btn {
+        display: block;           /* 한 줄 꽉 차게 */
+        width: 100%;
+        margin-top: 20px;         /* 위쪽 설명글과 간격 */
+        padding: 12px 0;
+        background-color: #222;   /* 짙은 회색/검정 배경 */
+        color: #fff;              /* 흰색 글씨 */
+        text-align: center;
+        border-radius: 6px;       /* 모서리 둥글게 */
+        text-decoration: none;    /* 밑줄 제거 */
+        font-weight: 600;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+
+    .popup-link-btn:hover {
+        background-color: #000;   /* 마우스 올리면 더 진하게 */
+        color: #fff;
+    }
+    
+    /* [수정] 이미지를 감싸는 a태그 (기준점 역할) */
+	.product > a {
+	    display: block;
+	    position: relative; /* 중요: 이 박스를 기준으로 안쪽 요소들이 배치됨 */
+	    overflow: hidden;   /* 이미지가 둥글게 깎이면 덮개도 같이 깎이도록 설정 */
+	    border-radius: 8px; /* 기존 이미지 둥근 모서리와 동일하게 */
+	}
+	
+	/* [추가] 일시품절 덮개 스타일 */
+	.sold-out-box {
+	    position: absolute; /* 기준점(a태그) 안에서 붕 띄움 */
+	    top: 0;
+	    left: 0;
+	    width: 100%;       /* 너비 꽉 채움 */
+	    height: 100%;      /* 높이 꽉 채움 */
+	    
+	    background-color: rgba(0, 0, 0, 0.6); /* 검정색 배경 (60% 투명) */
+	    color: #ffffff;    /* 글자색 흰색 */
+	    
+	    display: flex;     /* 글자를 정중앙에 놓기 위함 */
+	    justify-content: center;
+	    align-items: center;
+	    
+	    font-size: 18px;   /* 글자 크기 */
+	    font-weight: 700;  /* 굵게 */
+	    z-index: 10;       /* 이미지보다 위에 올라오도록 */
+	}
 </style>
 
 <div id="popup_delivery" class="main-popup">
@@ -495,6 +548,9 @@
             기다리시던 한정판 바이닐이 입고되었습니다.<br>
             품절되기 전에 만나보세요.
         </p>
+        <a href="<%= ctxPath%>/productdetail.lp?productno=75" class="popup-link-btn">
+            해당 상품 보러가기
+        </a>
     </div>
 
     <div class="popup-footer">
