@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 
 <% String ctxPath = request.getContextPath(); %>
 
@@ -10,17 +11,19 @@
 <meta charset="UTF-8">
 <title>관리자 - 주문/배송 관리</title>
 
+<%-- CSS --%>
 <link rel="stylesheet" href="<%= ctxPath%>/css/admin/admin_layout.css">
 <link rel="stylesheet" href="<%= ctxPath%>/css/admin/admin_order.css">
 
+<%-- JS --%>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="<%= ctxPath%>/js/admin/admin_order.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 <script>
     const ctxPath = "<%= ctxPath %>";
-
-    // 택배사 선택 시 입력창의 maxlength를 동적으로 변경하는 함수
+    
+    // JS 함수: updateMaxLength (기존 코드 유지)
     function updateMaxLength(orderno) {
         const company = $("#company_" + orderno).val();
         const $invoiceInput = $("#invoice_" + orderno);
@@ -67,7 +70,16 @@
                   onclick="location.href='<%= ctxPath %>/admin/admin_order.lp?status=배송완료'">배송완료</button>
       </div>
 
-      <table class="order-table">
+<table class="order-table">
+        <colgroup>
+            <col width="8%">  <%-- 주문번호 --%>
+            <col width="8%">  <%-- 받는 분 --%>
+            <col width="25%"> <%-- 배송지/연락처 --%>
+            <col width="30%"> <%-- 주문상품 --%>
+            <col width="10%"> <%-- 결제금액 --%>
+            <col width="8%">  <%-- 상태 --%>
+            <col width="11%"> <%-- 배송 정보 입력 --%>
+        </colgroup>
         <thead>
             <tr>
                 <th>주문번호</th>
@@ -79,6 +91,7 @@
                 <th>배송 정보 입력</th>
             </tr>
         </thead>
+       
         <tbody>
             <c:if test="${empty requestScope.orderList}">
                 <tr><td colspan="7" style="padding:50px; color:#777;">주문 내역이 없습니다.</td></tr>
@@ -88,33 +101,91 @@
                 <tr>
                     <td>${map.orderno}</td>
                     <td>
-                        <%-- [수정] 받는 분 이름을 모든 상태에서 텍스트로 출력 --%>
                         <strong>${map.name}</strong>
-                        <%-- js에서 참조하기 위한 hidden 필드 --%>
                         <input type="hidden" id="receiver_${map.orderno}" value="${map.name}">
                     </td>
-                    <td class="addr-info">
-                        [${map.postcode}] ${map.address} ${map.detailaddress} ${map.extraaddress}
-                        <button type="button" class="btn-addr-edit" 
-                                onclick="openAddrModal('${map.orderno}', '${map.postcode}', '${map.address}', '${map.detailaddress}', '${map.extraaddress}')">수정</button>
+                    
+                    <td class="addr-info" style="text-align: left;">
+                        [${map.postcode}] ${map.address}<br>
+                        ${map.detailaddress} ${map.extraaddress}<br>
+                        <%-- [수정] 복호화된 연락처 표시 --%>
+                        <span style="font-size:12px; color:#888;">${map.mobile}</span>
+                        <div style="margin-top:5px;">
+                            <button type="button" class="btn-addr-edit" 
+                                    onclick="openAddrModal('${map.orderno}', '${map.postcode}', '${map.address}', '${map.detailaddress}', '${map.extraaddress}')">수정</button>
+                        </div>
                     </td>
-                    <td>${map.productname}</td>
-                    <td><fmt:formatNumber value="${map.totalprice}" pattern="#,###" />원</td>
+                    
+                    <%-- [수정] 주문상품 리스트 및 이미지 처리 --%>
+                    <td style="text-align: left; padding: 10px;">
+                        <c:set var="items" value="${fn:split(map.product_info, '~~')}" />
+                        
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <c:forEach var="itemStr" items="${items}">
+                                <c:set var="info" value="${fn:split(itemStr, '^^')}" />
+                                <%-- info[0]:이미지, info[1]:이름, info[2]:수량, info[3]:가격 --%>
+                                
+                                <div style="display:flex; align-items:center; border-bottom:1px dashed #eee; padding-bottom:5px;">
+                                    
+                                    <%-- [이미지 경로 자동 보정 로직] --%>
+                                    <c:set var="imgVal" value="${fn:trim(info[0])}" />
+                                    <c:choose>
+                                        <%-- 1. DB 값이 비어있는 경우: 기본 이미지 --%>
+                                        <c:when test="${empty imgVal}">
+                                             <div style="width:40px; height:40px; background:#eee; border-radius:4px; margin-right:10px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999;">No Img</div>
+                                        </c:when>
+                                        <%-- 2. /images 로 시작하는 경우 (절대경로) --%>
+                                        <c:when test="${fn:startsWith(imgVal, '/images')}">
+                                            <img src="${pageContext.request.contextPath}${imgVal}" 
+                                                 width="40" height="40" 
+                                                 style="object-fit:cover; border-radius:4px; margin-right:10px; border:1px solid #ddd; background:#f8f8f8;">
+                                        </c:when>
+                                        <%-- 3. 파일명만 있는 경우 (상대경로) -> 앞에 경로 붙여줌 --%>
+                                        <c:otherwise>
+                                            <img src="${pageContext.request.contextPath}/images/productimg/${imgVal}" 
+                                                 width="40" height="40" 
+                                                 style="object-fit:cover; border-radius:4px; margin-right:10px; border:1px solid #ddd; background:#f8f8f8;">
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
+                                    <div style="flex:1;">
+                                        <div style="font-size:13px; font-weight:bold; color:#333; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:280px;">
+                                            ${info[1]}
+                                        </div>
+                                        <div style="font-size:12px; color:#666;">
+                                            <fmt:formatNumber value="${info[3]}" pattern="#,###" />원 
+                                            <span style="color:#d9534f; font-weight:bold; margin-left:5px;">(x${info[2]})</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </td>
+                    
+                    <%-- [결제금액 및 총 수량] --%>
+                    <td>
+                        <div style="font-weight:bold; color:#333;">
+                            <fmt:formatNumber value="${map.totalprice}" pattern="#,###" />원
+                        </div>
+                        <div style="font-size:12px; color:#d9534f; font-weight:bold; margin-top:3px;">
+                            (총 ${map.total_qty}개)
+                        </div>
+                    </td>
+                    
+                    <%-- 상태 --%>
                     <td>
                         <c:if test="${map.deliverystatus eq '배송준비중'}"><span class="badge st-ready">준비중</span></c:if>
                         <c:if test="${map.deliverystatus eq '배송중'}"><span class="badge st-ship">배송중</span></c:if>
                         <c:if test="${map.deliverystatus eq '배송완료'}"><span class="badge st-done">완료</span></c:if>
                     </td>
+                    
+                    <%-- 배송 정보 입력 --%>
                     <td>
                         <c:choose>
                             <c:when test="${map.deliverystatus eq '배송준비중'}">
-                                <%-- [수정] 키보드 입력 차단을 위한 onkeydown, onfocus, tabindex 추가 --%>
                                 <select id="company_${map.orderno}" class="select-courier" 
                                         onchange="updateMaxLength('${map.orderno}')"
-                                        onkeydown="return false;"
-                                        onfocus="this.blur()"
-                                        tabindex="-1"
-                                        style="cursor: pointer;">
+                                        onkeydown="return false;" onfocus="this.blur()" tabindex="-1" style="cursor: pointer;">
                                     <option value="">택배사 선택</option>
                                     <option value="CJ대한통운">CJ대한통운</option>
                                     <option value="한진택배">한진택배</option>
@@ -143,8 +214,9 @@
   </div>
 </main>
 
+<%-- 주소 수정 모달 --%>
 <div id="addrModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; justify-content:center; align-items:center;">
-    <div class="modal-content" style="background:white; padding:25px; width:400px;">
+    <div class="modal-content" style="background:white; padding:25px; width:400px; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); border-radius:8px;">
         <h3>배송지 정보 수정</h3>
         <div class="modal-body">
             <input type="hidden" id="modal_orderno">

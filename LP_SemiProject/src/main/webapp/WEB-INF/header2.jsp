@@ -23,40 +23,42 @@
   <div class="wrap">
   
    <header class="topbar">
-  <div class="logo">
-    <img src="<%= ctxPath%>/images/logo.png" alt="Logo">
-  </div>
+      <div class="logo">
+        <a href="<%= ctxPath%>/index.lp">
+            <img src="<%= ctxPath%>/images/logo.png" alt="Logo">
+        </a>
+      </div>
 
-  <nav class="navlinks" aria-label="Primary">
-    <a href="<%= ctxPath%>/index.lp">HOME</a> |
-    
-    <% if (!isLogined) { %>
-      <a href="<%= ctxPath %>/login/login.lp">LOGIN</a> |
-    <% } else { %>
-      <a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a> |
-    <% } %>
+      <nav class="navlinks" aria-label="Primary">
+        <a href="<%= ctxPath%>/index.lp">HOME</a> |
+        
+        <% if (!isLogined) { %>
+          <a href="<%= ctxPath %>/login/login.lp">LOGIN</a> |
+        <% } else { %>
+          <a href="<%= ctxPath %>/login/logout.lp">LOGOUT</a> |
+        <% } %>
 
-    <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
-    <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MYPAGE</a>
-  </nav>
+        <a href="<%= ctxPath%>/order/cart.lp">CART</a> |
+        <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MYPAGE</a>
+      </nav>
 
-  <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
-    <i class="fa-solid fa-bars"></i>
-  </button>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+      </button>
 
-  <nav class="navlinks-mobile" aria-label="Mobile Primary">
-    <a href="<%= ctxPath%>/index.lp">HOME</a>
-    
-    <% if (!isLogined) { %>
-      <a href="<%= ctxPath%>/login/login.lp">LOGIN</a>
-    <% } else { %>
-      <a href="<%= ctxPath%>/login/logout.lp">LOGOUT</a>
-    <% } %>
-  
-    <a href="<%= ctxPath%>/order/cart.lp">CART</a>
-    <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MY PROFILE</a>
-  </nav>
-</header>
+      <nav class="navlinks-mobile" aria-label="Mobile Primary">
+        <a href="<%= ctxPath%>/index.lp">HOME</a>
+        
+        <% if (!isLogined) { %>
+          <a href="<%= ctxPath%>/login/login.lp">LOGIN</a>
+        <% } else { %>
+          <a href="<%= ctxPath%>/login/logout.lp">LOGOUT</a>
+        <% } %>
+      
+        <a href="<%= ctxPath%>/order/cart.lp">CART</a>
+        <a href="<%= ctxPath%>/my_info/my_inquiry.lp">MY PROFILE</a>
+      </nav>
+   </header>
 
 <script>
   $(function () {
@@ -80,19 +82,15 @@
       if ($menu.hasClass("is-open")) closeMenu();
       else openMenu();
     });
-
     $(document).on("click", function () {
       if ($menu.hasClass("is-open")) closeMenu();
     });
-
     $menu.on("click", function (e) {
       e.stopPropagation();
     });
-
     $(document).on("keydown", function(e){
       if(e.key === "Escape") closeMenu();
     });
-
     $(window).on("resize", function(){
       if(window.innerWidth > 768) closeMenu();
     });

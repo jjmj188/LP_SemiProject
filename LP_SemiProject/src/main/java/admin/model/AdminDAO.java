@@ -472,8 +472,8 @@ public class AdminDAO implements InterAdminDAO {
         }
         return productList;
     }
-
-    // [수정된 13번] 주문 및 배송 전체 목록 조회 (필터링 + 정렬 포함)
+        
+    // 13. 주문 및 배송 전체 목록 조회
     @Override
     public List<Map<String, String>> getOrderList(Map<String, String> paraMap) throws SQLException {
         List<Map<String, String>> orderList = new ArrayList<>();
@@ -482,31 +482,35 @@ public class AdminDAO implements InterAdminDAO {
             
             String status = paraMap.get("status"); // 필터링 상태값
             
-            // [수정] JOIN -> LEFT JOIN (배송정보 없어도 주문은 보이게)
+            // [SQL 수정]
+            // LISTAGG를 사용하여 상품정보(이미지,이름,수량,가격)를 하나의 문자열로 묶음
             String sql = " SELECT O.orderno, M.name, M.mobile, M.email, "
                        + "        M.postcode, M.address, M.detailaddress, M.extraaddress, " 
-                       + "        O.totalprice, nvl(D.deliverystatus, '배송준비중') AS deliverystatus "
+                       + "        O.totalprice, nvl(D.deliverystatus, '배송준비중') AS deliverystatus, "
+                       + "        ( SELECT LISTAGG(P.productimg || '^^' || P.productname || '^^' || OD.qty || '^^' || OD.unitprice, '~~') "
+                       + "                 WITHIN GROUP (ORDER BY OD.orderdetailno) "
+                       + "          FROM tbl_orderdetail OD "
+                       + "          JOIN tbl_product P ON OD.fk_productno = P.productno "
+                       + "          WHERE OD.fk_orderno = O.orderno ) AS product_info, "
+                       + "        ( SELECT SUM(OD.qty) FROM tbl_orderdetail OD WHERE OD.fk_orderno = O.orderno ) AS total_qty "
                        + " FROM tbl_order O "
                        + " JOIN tbl_member M ON O.fk_userid = M.userid "
                        + " LEFT JOIN tbl_delivery D ON O.orderno = D.fk_orderno ";
             
-            // [필터링 로직 추가]
+            // [필터링 로직]
             if(status != null && !status.isEmpty()) {
                 if("배송준비중".equals(status)) {
-                    // 배송준비중: 상태값이 '배송준비중' 이거나 NULL인 경우
                     sql += " WHERE D.deliverystatus = '배송준비중' OR D.deliverystatus IS NULL ";
                 } else {
-                    // 배송중, 배송완료 등
                     sql += " WHERE D.deliverystatus = ? ";
                 }
             }
             
-            // [수정] 최신순 정렬 (DESC)
+            // 최신순 정렬
             sql += " ORDER BY O.orderno DESC ";
             
             pstmt = conn.prepareStatement(sql);
             
-            // 위치홀더 값 바인딩
             if(status != null && !status.isEmpty() && !"배송준비중".equals(status)) {
                 pstmt.setString(1, status);
             }
@@ -517,15 +521,42 @@ public class AdminDAO implements InterAdminDAO {
                 Map<String, String> map = new HashMap<>();
                 map.put("orderno", rs.getString("orderno"));
                 map.put("name", rs.getString("name"));
-                map.put("mobile", rs.getString("mobile"));
-                map.put("email", rs.getString("email"));
+                
+                // 연락처, 이메일 복호화 로직
+                try {
+                    String mobile = rs.getString("mobile");
+                    if(mobile != null) {
+                        map.put("mobile", aes.decrypt(mobile)); // 복호화 시도
+                    } else {
+                        map.put("mobile", "");
+                    }
+                } catch (Exception e) {
+                    map.put("mobile", rs.getString("mobile")); // 실패시 원본 저장
+                }
+                
+                try {
+                    String email = rs.getString("email");
+                    if(email != null) {
+                        map.put("email", aes.decrypt(email));
+                    } else {
+                        map.put("email", "");
+                    }
+                } catch (Exception e) {
+                    map.put("email", rs.getString("email"));
+                }
+
                 map.put("postcode", rs.getString("postcode"));
                 map.put("address", rs.getString("address"));
                 map.put("detailaddress", rs.getString("detailaddress"));
                 map.put("extraaddress", rs.getString("extraaddress"));
+                
                 map.put("totalprice", rs.getString("totalprice"));
                 map.put("deliverystatus", rs.getString("deliverystatus"));
-                map.put("productname", "LP 상품"); 
+                
+                // 상품 정보 및 총 수량
+                map.put("product_info", rs.getString("product_info")); 
+                map.put("total_qty", rs.getString("total_qty"));       
+                
                 orderList.add(map);
             }
         } finally {
