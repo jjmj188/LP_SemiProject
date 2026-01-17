@@ -594,9 +594,13 @@ $(function () {
 				</div>
 
 				<div class="action-buttons">
-					<button class="cart"
-						onclick="location.href='<%= ctxPath%>/order/cart.lp'">더
-						담으러가기</button>
+					<c:if test="${not isDirectBuy}">
+					  <button class="cart"
+					    onclick="location.href='<%= ctxPath%>/order/cart.lp'">
+					    더 담으러가기
+					  </button>
+					</c:if>
+
 					<button type="button" class="buy" id="btnBuy">구매하기</button>
 				</div>
 			</section>
