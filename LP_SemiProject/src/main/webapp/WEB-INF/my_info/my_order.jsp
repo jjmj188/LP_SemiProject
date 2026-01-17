@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+  pageEncoding="UTF-8"%>
 <%
   String ctxPath = request.getContextPath();
 %>
@@ -9,344 +9,309 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/mypage_layout.css">
-<link rel="stylesheet"
-	href="<%=ctxPath%>/css/my_info/my_inquiry_list.css">
+<link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_inquiry_list.css">
 <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_order.css">
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
 
 <style>
 .price-row {
-	display: flex;
-	align-items: baseline;
-	gap: 10px;
-	flex-wrap: wrap;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
 }
-
 .price-original {
-	color: #9aa0a6;
-	text-decoration: line-through;
-	text-decoration-thickness: 1px;
-	text-decoration-color: #9aa0a6;
+  color: #9aa0a6;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: #9aa0a6;
 }
+.price-discounted { font-weight: 700; }
 
-.price-discounted {
-	font-weight: 700;
-}
-
-/* ===== 리뷰 모달 ===== */
+/* ===== 리뷰 모달(공용 모달 스타일) ===== */
 .review-modal {
-	position: fixed;
-	inset: 0;
-	z-index: 9999;
-	display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
 }
-
-.review-modal.open {
-	display: block;
-}
-
+.review-modal.open { display: block; }
 .review-modal .backdrop {
-	position: absolute;
-	inset: 0;
-	background: rgba(0, 0, 0, .45);
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
 }
-
 .review-modal .panel {
-	position: relative;
-	width: min(640px, calc(100vw - 24px));
-	max-height: calc(100vh - 24px);
-	overflow: auto;
-	margin: 12px auto;
-	background: #fff;
-	border-radius: 14px;
-	box-shadow: 0 12px 34px rgba(0, 0, 0, .25);
+  position: relative;
+  width: min(640px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  margin: 12px auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .25);
 }
-
 .review-modal .panel-head {
-	position: sticky;
-	top: 0;
-	background: #fff;
-	border-bottom: 1px solid #eee;
-	padding: 12px 14px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-
 .review-modal .panel-title {
-	margin: 0;
-	font-size: 16px;
-	font-weight: 700;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
 }
-
 .review-modal .btn-x {
-	border: 0;
-	background: transparent;
-	cursor: pointer;
-	font-size: 22px;
-	line-height: 1;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
 }
-
-.review-modal .panel-body {
-	padding: 12px 14px 18px;
-}
-
+.review-modal .panel-body { padding: 12px 14px 18px; }
 .review-modal .loading {
-	padding: 22px 0;
-	text-align: center;
-	color: #666;
+  padding: 22px 0;
+  text-align: center;
+  color: #666;
 }
 
-
-    /* PAGE BAR 스타일 */
-    .pagebar {
-      margin-top: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .pagebar button {
-      min-width: 36px;
-      height: 36px;
-      padding: 0 10px;
-      margin: 0 3px;
-      border: 1px solid #ddd;
-      background: #fff;
-      font-size: 14px;
-      color: #222;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .pagebar .page-num {
-      font-weight: 500;
-    }
-
-    .pagebar .page-num.active {
-      background: #222;
-      color: #fff;
-      border-color: #222;
-      cursor: default;
-    }
-
-    .pagebar button:not(.active):hover {
-      background: #222;
-      color: #fff;
-      border-color: #222;
-    }
+/* PAGE BAR 스타일 */
+.pagebar {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+.pagebar button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  margin: 0 3px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 14px;
+  color: #222;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.pagebar .page-num { font-weight: 500; }
+.pagebar .page-num.active {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+  cursor: default;
+}
+.pagebar button:not(.active):hover {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
 </style>
-
 
 <jsp:include page="/WEB-INF/header1.jsp"></jsp:include>
 
 <main class="mypage-wrapper">
-	<div class="mypage-container">
+  <div class="mypage-container">
 
-		<aside class="mypage-menu">
-			<h3>마이페이지</h3>
-			<a href="<%=ctxPath%>/my_info/my_info.lp">프로필 수정</a> <a
-				href="<%=ctxPath%>/my_info/my_inquiry.lp">문의내역</a> <a
-				href="<%=ctxPath%>/my_info/my_wish.lp">찜내역</a> <a
-				href="<%=ctxPath%>/my_info/my_order.lp" class="active">구매내역</a> <a
-				href="<%=ctxPath%>/my_info/my_taste.lp">취향선택</a>
-		</aside>
+    <aside class="mypage-menu">
+      <h3>마이페이지</h3>
+      <a href="<%=ctxPath%>/my_info/my_info.lp">프로필 수정</a>
+      <a href="<%=ctxPath%>/my_info/my_inquiry.lp">문의내역</a>
+      <a href="<%=ctxPath%>/my_info/my_wish.lp">찜내역</a>
+      <a href="<%=ctxPath%>/my_info/my_order.lp" class="active">구매내역</a>
+      <a href="<%=ctxPath%>/my_info/my_taste.lp">취향선택</a>
+    </aside>
 
-		<section class="mypage-content">
-			<h2>구매내역</h2>
+    <section class="mypage-content">
+      <h2>구매내역</h2>
 
-			<div class="order-list">
+      <div class="order-list">
 
-				<c:if test="${empty orderList}">
-					<div style="padding: 20px;">구매내역이 없습니다.</div>
-				</c:if>
+        <c:if test="${empty orderList}">
+          <div style="padding: 20px;">구매내역이 없습니다.</div>
+        </c:if>
 
-				<c:forEach var="o" items="${orderList}">
+        <c:forEach var="o" items="${orderList}">
 
-					<fmt:parseNumber var="totalpriceNum"
-						value="${empty o.totalprice ? 0 : o.totalprice}"
-						integerOnly="true" />
-					<fmt:parseNumber var="usepointNum"
-						value="${empty o.usepoint ? 0 : o.usepoint}" integerOnly="true" />
+          <fmt:parseNumber var="totalpriceNum"
+            value="${empty o.totalprice ? 0 : o.totalprice}" integerOnly="true" />
+          <fmt:parseNumber var="usepointNum"
+            value="${empty o.usepoint ? 0 : o.usepoint}" integerOnly="true" />
 
-					<c:set var="pointDiscountWon" value="${usepointNum * 10}" />
-					<c:set var="discountedPrice"
-						value="${totalpriceNum - pointDiscountWon}" />
+          <c:set var="pointDiscountWon" value="${usepointNum * 10}" />
+          <c:set var="discountedPrice" value="${totalpriceNum - pointDiscountWon}" />
 
-					<div class="order-card">
-						<div class="order-summary">
+          <div class="order-card">
+            <div class="order-summary">
 
-							<div class="order-product">
-								
-								<%-- [수정] 대표 이미지 경로 정규화 --%>
-                                <c:set var="repImg" value="${o.repProductimg}" />
-                                <c:if test="${fn:contains(repImg, 'images')}">
-                                    <c:set var="repImg" value="${fn:replace(repImg, '/images/productimg/', '')}" />
-                                    <c:set var="repImg" value="${fn:replace(repImg, 'images/productimg/', '')}" />
-                                </c:if>
-                                
-								<img src="<%=ctxPath%>/images/productimg/${repImg}" alt="대표 상품">
-								
-								<div class="product-info">
+              <div class="order-product">
 
-									<div class="product-name">
-										<p class="name">상품명 : ${o.repProductname}</p>
-										<c:if test="${o.moreCount > 0}">
-											<span class="more-count">외 ${o.moreCount}건</span>
-										</c:if>
-									</div>
+                <%-- 대표 이미지 경로 정규화 --%>
+                <c:set var="repImg" value="${o.repProductimg}" />
+                <c:if test="${fn:contains(repImg, 'images')}">
+                  <c:set var="repImg" value="${fn:replace(repImg, '/images/productimg/', '')}" />
+                  <c:set var="repImg" value="${fn:replace(repImg, 'images/productimg/', '')}" />
+                </c:if>
 
-									<p class="meta">총 수량 : ${o.totalQty}개</p>
+                <img src="<%=ctxPath%>/images/productimg/${repImg}" alt="대표 상품">
 
-									<p class="price">
-										<span class="price-row">총 가격 : <c:choose>
-												<c:when test="${usepointNum > 0}">
-													<span class="price-original"> <fmt:formatNumber
-															value="${totalpriceNum}" pattern="#,###" />원
-													</span>
-													<span class="price-discounted"> <fmt:formatNumber
-															value="${discountedPrice}" pattern="#,###" />원
-													</span>
-												</c:when>
-												<c:otherwise>
-													<span class="price-discounted"> <fmt:formatNumber
-															value="${totalpriceNum}" pattern="#,###" />원
-													</span>
-												</c:otherwise>
-											</c:choose>
-										</span>
-									</p>
+                <div class="product-info">
+                  <div class="product-name">
+                    <p class="name">상품명 : ${o.repProductname}</p>
+                    <c:if test="${o.moreCount > 0}">
+                      <span class="more-count">외 ${o.moreCount}건</span>
+                    </c:if>
+                  </div>
 
-								</div>
-							</div>
+                  <p class="meta">총 수량 : ${o.totalQty}개</p>
 
-							<div class="order-point">
-								<span>적립포인트: <fmt:formatNumber value="${o.totalpoint}"
-										pattern="#,###" />p
-								</span>
-								<button class="btn-toggle" type="button"
-									onclick="toggleOrderDetails(this)">펼치기 ▼</button>
-							</div>
+                  <p class="price">
+                    <span class="price-row">총 가격 :
+                      <c:choose>
+                        <c:when test="${usepointNum > 0}">
+                          <span class="price-original">
+                            <fmt:formatNumber value="${totalpriceNum}" pattern="#,###" />원
+                          </span>
+                          <span class="price-discounted">
+                            <fmt:formatNumber value="${discountedPrice}" pattern="#,###" />원
+                          </span>
+                        </c:when>
+                        <c:otherwise>
+                          <span class="price-discounted">
+                            <fmt:formatNumber value="${totalpriceNum}" pattern="#,###" />원
+                          </span>
+                        </c:otherwise>
+                      </c:choose>
+                    </span>
+                  </p>
+                </div>
+              </div>
 
-							<div class="order-status">
-								<p class="date">${o.orderdate}</p>
-								<p class="status-text">${o.deliverystatus}</p>
+              <div class="order-point">
+                <span>적립포인트:
+                  <fmt:formatNumber value="${o.totalpoint}" pattern="#,###" />p
+                </span>
+                <button class="btn-toggle" type="button" onclick="toggleOrderDetails(this)">펼치기 ▼</button>
+              </div>
 
-								<button class="btn-toggle" type="button"
-									data-orderno="${o.orderno}" onclick="openTrackingModal(this)">
-									배송지 & 송장번호</button>
+              <div class="order-status">
+                <p class="date">${o.orderdate}</p>
+                <p class="status-text">${o.deliverystatus}</p>
+                <button class="btn-toggle" type="button"
+                  data-orderno="${o.orderno}" onclick="openTrackingModal(this)">
+                  배송지 & 송장번호
+                </button>
+              </div>
 
-							</div>
+            </div>
 
-						</div>
+            <div class="order-details" aria-hidden="true">
+              <div class="detail-list">
 
-						<div class="order-details" aria-hidden="true">
-							<div class="detail-list">
+                <c:forEach var="d" items="${o.orderDetailList}">
+                  <div class="detail-item">
 
-								<c:forEach var="d" items="${o.orderDetailList}">
-									<div class="detail-item">
-										
-										<%-- [수정] 상세 이미지 경로 정규화 --%>
-                                        <c:set var="detailImg" value="${d.productimg}" />
-                                        <c:if test="${fn:contains(detailImg, 'images')}">
-                                            <c:set var="detailImg" value="${fn:replace(detailImg, '/images/productimg/', '')}" />
-                                            <c:set var="detailImg" value="${fn:replace(detailImg, 'images/productimg/', '')}" />
-                                        </c:if>
-										
-										<img src="<%=ctxPath%>/images/productimg/${detailImg}" alt="상품">
-										
-										<div class="detail-info">
-											<p class="d-name">${d.productname}</p>
-											<p class="d-sub">수량: ${d.qty}개</p>
-										</div>
+                    <%-- 상세 이미지 경로 정규화 --%>
+                    <c:set var="detailImg" value="${d.productimg}" />
+                    <c:if test="${fn:contains(detailImg, 'images')}">
+                      <c:set var="detailImg" value="${fn:replace(detailImg, '/images/productimg/', '')}" />
+                      <c:set var="detailImg" value="${fn:replace(detailImg, 'images/productimg/', '')}" />
+                    </c:if>
 
-										<div class="detail-actions">
-											<div class="detail-price">
-												<fmt:formatNumber value="${d.lineprice}" pattern="#,###" />
-												원
-											</div>
+                    <img src="<%=ctxPath%>/images/productimg/${detailImg}" alt="상품">
 
-											
-												<c:choose>
-													<c:when test="${d.hasReview == 1}">
-														<button type="button" class="btn-review-done">작성완료</button>
-													</c:when>
-													<c:otherwise>
-														<button
-														  type="button"
-														  class="btn-review"
-														  data-orderno="${o.orderno}"
-														  data-productno="${d.productno}"
-														  data-deliverystatus="${fn:trim(o.deliverystatus)}"
-														  onclick="openReviewModal(this)"
-														>리뷰쓰기</button>
+                    <div class="detail-info">
+                      <p class="d-name">${d.productname}</p>
+                      <p class="d-sub">수량: ${d.qty}개</p>
+                    </div>
 
-													</c:otherwise>
-												</c:choose>
-											
+                    <div class="detail-actions">
+                      <div class="detail-price">
+                        <fmt:formatNumber value="${d.lineprice}" pattern="#,###" />원
+                      </div>
 
-										</div>
-									</div>
-								</c:forEach>
+                      <c:choose>
+                        <c:when test="${d.hasReview == 1}">
+                          <button type="button" class="btn-review-done">작성완료</button>
+                        </c:when>
 
-							</div>
-						</div>
-					</div>
-				</c:forEach>
+                        <c:otherwise>
+                          <!-- 리뷰 버튼은 그대로 -->
+                          <button type="button" class="btn-review"
+                            data-orderno="${o.orderno}"
+                            data-productno="${d.productno}"
+                            data-deliverystatus="${fn:trim(o.deliverystatus)}"
+                            onclick="openReviewModal(this)">리뷰쓰기</button>
 
-				<div class="pagebar">
-				    <ul class="pagination"
-				        style="margin: 0; list-style: none; display: flex; justify-content: center; padding: 0;">
-				    ${requestScope.pageBar}
-				    </ul>
-				</div>
+                          <!-- ❌ 반품요청(삭제됨) -->
+                        </c:otherwise>
+                      </c:choose>
 
+                    </div>
+                  </div>
+                </c:forEach>
 
-			</div>
-		</section>
-	</div>
+              </div>
+            </div>
+          </div>
+        </c:forEach>
+
+        <div class="pagebar">
+          <ul class="pagination"
+            style="margin: 0; list-style: none; display: flex; justify-content: center; padding: 0;">
+            ${requestScope.pageBar}
+          </ul>
+        </div>
+
+      </div>
+    </section>
+  </div>
 </main>
 
+<!-- 리뷰 모달 -->
 <div id="reviewModal" class="review-modal" aria-hidden="true">
-	<div class="backdrop" onclick="closeReviewModal()"></div>
+  <div class="backdrop" onclick="closeReviewModal()"></div>
 
-	<div class="panel" role="dialog" aria-modal="true" aria-label="리뷰 작성">
-		<div class="panel-head">
-			<p class="panel-title">리뷰 작성</p>
-			<button type="button" class="btn-x" onclick="closeReviewModal()"
-				aria-label="닫기">×</button>
-		</div>
-		<div class="panel-body">
-			<div class="loading">불러오는 중...</div>
-		</div>
-	</div>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="리뷰 작성">
+    <div class="panel-head">
+      <p class="panel-title">리뷰 작성</p>
+      <button type="button" class="btn-x" onclick="closeReviewModal()" aria-label="닫기">×</button>
+    </div>
+    <div class="panel-body">
+      <div class="loading">불러오는 중...</div>
+    </div>
+  </div>
 </div>
 
+<!-- 배송지 & 송장번호 모달 -->
 <div id="trackingModal" class="review-modal" aria-hidden="true">
-	<div class="backdrop" onclick="closeTrackingModal()"></div>
+  <div class="backdrop" onclick="closeTrackingModal()"></div>
 
-	<div class="panel" role="dialog" aria-modal="true"
-		aria-label="배송지 & 송장번호">
-		<div class="panel-head">
-			<p class="panel-title">배송지 & 송장번호</p>
-			<button type="button" class="btn-x" onclick="closeTrackingModal()"
-				aria-label="닫기">×</button>
-		</div>
-		<div class="panel-body">
-			<div class="loading">불러오는 중...</div>
-		</div>
-	</div>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="배송지 & 송장번호">
+    <div class="panel-head">
+      <p class="panel-title">배송지 & 송장번호</p>
+      <button type="button" class="btn-x" onclick="closeTrackingModal()" aria-label="닫기">×</button>
+    </div>
+    <div class="panel-body">
+      <div class="loading">불러오는 중...</div>
+    </div>
+  </div>
 </div>
 
+<!-- ❌ 반품요청 모달(cancelModal) 삭제됨 -->
 
 <jsp:include page="/WEB-INF/footer1.jsp" />
 
 <script type="text/javascript">
 "use strict";
 
-//페이지 이동 함수
+// 페이지 이동 함수
 function goPage(pageNo) {
   const currentURL = window.location.href;
   const newURL = new URL(currentURL);
@@ -370,14 +335,15 @@ function goPage(pageNo) {
     if (!details) return;
 
     const isOpen = orderCard.classList.toggle("open");
-
     details.setAttribute("aria-hidden", String(!isOpen));
     btn.textContent = isOpen ? "접기 ▲" : "펼치기 ▼";
   }
 
-  // ===== 배송지&송장 모달 =====
-  function closeTrackingModal() {
-    const modal = document.getElementById("trackingModal");
+  // =========================
+  // 공통: 모달 close 유틸
+  // =========================
+  function resetModal(modalId) {
+    const modal = document.getElementById(modalId);
     if (!modal) return;
 
     modal.classList.remove("open");
@@ -386,6 +352,67 @@ function goPage(pageNo) {
 
     const body = modal.querySelector(".panel-body");
     if (body) body.innerHTML = '<div class="loading">불러오는 중...</div>';
+  }
+
+  // =========================
+  // 공통: 모달 open(fetch) 유틸
+  // =========================
+  async function openModalWithFetch(opts) {
+    const modal = document.getElementById(opts.modalId);
+    if (!modal) {
+      alert(opts.errModalNotFound || "모달 요소를 찾을 수 없습니다.");
+      return;
+    }
+
+    const body = modal.querySelector(".panel-body");
+    if (!body) {
+      alert(opts.errBodyNotFound || "모달 본문(.panel-body)을 찾을 수 없습니다.");
+      return;
+    }
+
+    if (opts.btn && !opts.btn.id) opts.btn.id = opts.btnId || ("btn_" + Date.now());
+
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    modal.dataset.lastBtnId = (opts.btn && opts.btn.id) ? opts.btn.id : "";
+
+    body.innerHTML = '<div class="loading">불러오는 중...</div>';
+
+    try {
+      const res = await fetch(opts.url, {
+        method: "GET",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
+
+      const ct = (res.headers.get("content-type") || "").toLowerCase();
+
+      if (ct.includes("application/json")) {
+        const data = await res.json();
+        alert((data && data.msg) ? data.msg : (opts.errFetchFail || "정보를 불러올 수 없습니다."));
+        opts.onClose && opts.onClose();
+        return;
+      }
+
+      const html = await res.text();
+      body.innerHTML = html;
+
+      if (opts.closeActionSelector) {
+        const closeBtn = modal.querySelector(opts.closeActionSelector);
+        if (closeBtn && opts.onClose) closeBtn.addEventListener("click", opts.onClose);
+      }
+
+    } catch (e) {
+      console.error(e);
+      alert(opts.errFetchFail || "정보를 불러오지 못했습니다.");
+      opts.onClose && opts.onClose();
+    }
+  }
+
+  // =========================
+  // 배송지&송장 모달
+  // =========================
+  function closeTrackingModal() {
+    resetModal("trackingModal");
   }
 
   async function openTrackingModal(btn) {
@@ -397,93 +424,39 @@ function goPage(pageNo) {
       return;
     }
 
-    if (!btn.id) btn.id = "btnTracking_" + orderno;
+    const url = ctxPath + "/my_info/tracking_popup.lp?orderno=" + encodeURIComponent(orderno);
 
-    const url =
-      ctxPath +
-      "/my_info/tracking_popup.lp?orderno=" +
-      encodeURIComponent(orderno);
-
-    const modal = document.getElementById("trackingModal");
-    if (!modal) {
-      alert("배송 모달 요소(#trackingModal)를 찾을 수 없습니다.");
-      return;
-    }
-
-    const body = modal.querySelector(".panel-body");
-    if (!body) {
-      alert("배송 모달 본문(.panel-body)을 찾을 수 없습니다.");
-      return;
-    }
-
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-    modal.dataset.lastBtnId = btn.id;
-
-    body.innerHTML = '<div class="loading">불러오는 중...</div>';
-
-    try {
-      const res = await fetch(url, {
-        method: "GET",
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      });
-
-      const ct = (res.headers.get("content-type") || "").toLowerCase();
-
-      // 서버가 JSON(에러) 내려주면 alert
-      if (ct.includes("application/json")) {
-        const data = await res.json();
-        alert(data && data.msg ? data.msg : "배송 정보를 불러올 수 없습니다.");
-        closeTrackingModal();
-        return;
-      }
-
-      const html = await res.text();
-      body.innerHTML = html;
-
-      // 모달 내부 닫기 버튼(있다면) 바인딩
-      const closeBtn = modal.querySelector("[data-action='close-tracking']");
-      if (closeBtn) closeBtn.addEventListener("click", closeTrackingModal);
-
-    } catch (e) {
-      console.error(e);
-      alert("배송 정보를 불러오지 못했습니다.");
-      closeTrackingModal();
-    }
+    await openModalWithFetch({
+      modalId: "trackingModal",
+      btn: btn,
+      btnId: "btnTracking_" + orderno,
+      url: url,
+      closeActionSelector: "[data-action='close-tracking']",
+      onClose: closeTrackingModal,
+      errModalNotFound: "배송 모달 요소(#trackingModal)를 찾을 수 없습니다.",
+      errBodyNotFound: "배송 모달 본문(.panel-body)을 찾을 수 없습니다.",
+      errFetchFail: "배송 정보를 불러오지 못했습니다.",
+    });
   }
 
-  // ===== 리뷰 모달 =====
+  // =========================
+  // 리뷰 모달
+  // =========================
   function closeReviewModal() {
-    const modal = document.getElementById("reviewModal");
-    if (!modal) return;
-
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-    modal.dataset.lastBtnId = "";
-
-    const body = modal.querySelector(".panel-body");
-    if (body) body.innerHTML = '<div class="loading">불러오는 중...</div>';
+    resetModal("reviewModal");
   }
 
   async function openReviewModal(btn) {
-	  if (!btn) return;
+    if (!btn) return;
 
-	  // ✅ 버튼에 내려온 배송상태 읽기
-	  const rawStatus = btn.dataset.deliverystatus;
+    const rawStatus = btn.dataset.deliverystatus;
+    const status = (rawStatus || "").replace(/\s+/g, "");
+    const isDelivered = status.includes("배송완료");
 
-	  // (디버깅용) 실제 값 확인
-	  console.log("deliverystatus(raw) =", rawStatus);
-
-	  // ✅ 공백 제거 + null 방어
-	  const status = (rawStatus || "").replace(/\s+/g, "");
-
-	  // ✅ "배송완료" 포함만 해도 통과 (예: 배송완료(수령))
-	  const isDelivered = status.includes("배송완료");
-
-	  if (!isDelivered) {
-	    alert("배송이 아직 도착이 안했습니다\n리뷰는 배송완료후 작성할 수 있습니다");
-	    return;
-	  }
+    if (!isDelivered) {
+      alert("배송이 아직 도착이 안했습니다\n리뷰는 배송완료후 작성할 수 있습니다");
+      return;
+    }
 
     if (btn.disabled || btn.classList.contains("done")) return;
 
@@ -504,49 +477,19 @@ function goPage(pageNo) {
       "&productno=" +
       encodeURIComponent(productno);
 
-    const modal = document.getElementById("reviewModal");
-    if (!modal) {
-      alert("리뷰 모달 요소(#reviewModal)를 찾을 수 없습니다.");
-      return;
-    }
+    await openModalWithFetch({
+      modalId: "reviewModal",
+      btn: btn,
+      btnId: "btnReview_" + orderno + "_" + productno,
+      url: url,
+      closeActionSelector: "[data-action='close-review']",
+      onClose: closeReviewModal,
+      errModalNotFound: "리뷰 모달 요소(#reviewModal)를 찾을 수 없습니다.",
+      errBodyNotFound: "리뷰 모달 본문(.panel-body)을 찾을 수 없습니다.",
+      errFetchFail: "리뷰 창을 불러오지 못했습니다.",
+    });
 
-    const body = modal.querySelector(".panel-body");
-    if (!body) {
-      alert("리뷰 모달 본문(.panel-body)을 찾을 수 없습니다.");
-      return;
-    }
-
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-    modal.dataset.lastBtnId = btn.id;
-
-    body.innerHTML = '<div class="loading">불러오는 중...</div>';
-
-    try {
-      const res = await fetch(url, {
-        method: "GET",
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      });
-
-      const ct = (res.headers.get("content-type") || "").toLowerCase();
-
-      if (ct.includes("application/json")) {
-        const data = await res.json();
-        alert(data && data.msg ? data.msg : "리뷰 창을 열 수 없습니다.");
-        closeReviewModal();
-        return;
-      }
-
-      const html = await res.text();
-      body.innerHTML = html;
-
-      bindReviewModalEvents();
-
-    } catch (e) {
-      console.error(e);
-      alert("리뷰 창을 불러오지 못했습니다.");
-      closeReviewModal();
-    }
+    bindReviewModalEvents();
   }
 
   function bindReviewModalEvents() {
@@ -556,11 +499,9 @@ function goPage(pageNo) {
     const form = modal.querySelector("form#reviewForm");
     if (!form) return;
 
-    // cancel 버튼
     const btnCancel = modal.querySelector("[data-action='close-review']");
     if (btnCancel) btnCancel.addEventListener("click", closeReviewModal);
 
-    // 별점 표시
     const scoreEl = modal.querySelector("#ratingScore");
     const ratingRadios = modal.querySelectorAll('input[name="rating"]');
     ratingRadios.forEach((radio) => {
@@ -569,7 +510,6 @@ function goPage(pageNo) {
       });
     });
 
-    // 글자수
     const ta = modal.querySelector("#reviewContents");
     const cnt = modal.querySelector("#charCurrent");
     if (ta && cnt) {
@@ -579,7 +519,6 @@ function goPage(pageNo) {
       });
     }
 
-    // submit 중복 바인딩 방지
     if (form.dataset.bound === "1") return;
     form.dataset.bound = "1";
 
@@ -648,17 +587,18 @@ function goPage(pageNo) {
     });
   }
 
+  // =========================
   // 전역 노출
+  // =========================
   window.toggleOrderDetails = toggleOrderDetails;
+
   window.openTrackingModal = openTrackingModal;
   window.closeTrackingModal = closeTrackingModal;
+
   window.openReviewModal = openReviewModal;
   window.closeReviewModal = closeReviewModal;
 
 })();
 </script>
 
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<%-- <script src="<%=ctxPath%>/js/my_info/my_order.js"></script> --%>
