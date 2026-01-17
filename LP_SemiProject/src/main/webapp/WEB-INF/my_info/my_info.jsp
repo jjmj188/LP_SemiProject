@@ -21,16 +21,6 @@
 <script src="<%= ctxPath %>/13_daum_address_search/js/daum_address_search.js"></script>
 <script src="<%= ctxPath %>/js/my_info/my_edit.js"></script>
 
-
-
-
-<link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
-
-
-
-<link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
-
-
  <link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
  <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_info.css">
 </head>

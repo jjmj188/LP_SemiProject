@@ -8,7 +8,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<link rel="stylesheet" href="<%=ctxPath%>/css/my_info/mypage_layout.css">
+<link rel="stylesheet" href="<%= ctxPath%>/css/my_info/mypage_layout.css">
 <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_inquiry_list.css">
 <link rel="stylesheet" href="<%=ctxPath%>/css/my_info/my_order.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
@@ -119,13 +119,13 @@
 <main class="mypage-wrapper">
   <div class="mypage-container">
 
-    <aside class="mypage-menu">
-      <h3>마이페이지</h3>
-      <a href="<%=ctxPath%>/my_info/my_info.lp">프로필 수정</a>
-      <a href="<%=ctxPath%>/my_info/my_inquiry.lp">문의내역</a>
-      <a href="<%=ctxPath%>/my_info/my_wish.lp">찜내역</a>
-      <a href="<%=ctxPath%>/my_info/my_order.lp" class="active">구매내역</a>
-      <a href="<%=ctxPath%>/my_info/my_taste.lp">취향선택</a>
+      <aside class="mypage-menu">
+      <h3>마이페이지</h3>  
+      <a href="<%= ctxPath%>/my_info/my_info.lp"  >프로필 수정</a>
+      <a href="<%= ctxPath%>/my_info/my_inquiry.lp">문의내역</a>
+      <a href="<%= ctxPath%>/my_info/my_wish.lp" >찜내역</a>
+      <a href="<%= ctxPath%>/my_info/my_order.lp" class="active">구매내역</a>
+      <a href="<%= ctxPath%>/my_info/my_taste.lp" >취향선택</a>
     </aside>
 
     <section class="mypage-content">

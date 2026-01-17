@@ -209,41 +209,73 @@
   font-size: 14px;
 }
 
-/* 긴 텍스트가 있을 때 스크롤 처리 */
 .modal-content {
   max-height: 400px;
   overflow-y: auto;
 }
 
-/* 작은 화면에서 폰트 크기 조정 */
-@media (max-width: 600px) {
-  .modal-content {
-    padding: 15px;
-    font-size: 12px;
+@media (max-width: 767px) {
+
+  /* 폼이 화면 끝에 붙지 않게 */
+  .inquiry-form {
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
   }
 
-  .modal-content p {
+  .form-group input,
+  .form-group textarea {
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+
+  .hp-row {
+    flex-wrap: wrap;
+    gap: 10px;
+    line-height: normal;
+  }
+
+  .hp-row input {
+    width: 30%;
+    min-width: 90px;
+    padding: 10px 8px;
+    box-sizing: border-box;
+  }
+
+  .privacy-box {
+    padding: 16px;
+    font-size: 12.5px;
+  }
+
+  .form-bottom {
+    flex-direction: column;
+    gap: 14px;
+    align-items: stretch;
+  }
+
+  .agree-check {
     font-size: 13px;
   }
-}
 
+  .btn-submit {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 14px;
+    text-align: center;
+  }
 
-/* 이전/다음 */
-.pagebar .page-btn {
+  .pagebar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 
-  align-items: center;
-  justify-content: center;
-}
+  .pagebar button {
+    min-width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
 
-/* hover */
-.pagebar button:not(:disabled):hover {
-  background: #222;
-  color: #fff;
-  border-color: #222;
-}
-
-/* 비활성 */
-.pagebar button:disabled {
-  opacity: 0.4;
-  cursor: default;
+  .td-ellipsis {
+    max-width: 220px;
+  }
 }

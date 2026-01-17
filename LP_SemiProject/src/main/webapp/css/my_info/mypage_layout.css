@@ -1,20 +1,10 @@
-/* =====================
-   기본
-===================== */
-body {
-  margin: 0;
-  background: #ddd;
-  color: #222;
-  font-family: Arial, sans-serif;
-
-}
+@charset "UTF-8";
 
 /* =====================
    마이페이지 공통 레이아웃
 ===================== */
 .mypage-wrapper {
   padding: 60px 0;
-   
 }
 
 .mypage-container {
@@ -24,19 +14,18 @@ body {
   display: flex;
   gap: 30px;
 
-  min-height: 720px;   /* ⭐ 모든 페이지 높이 기준 */
+  min-height: 720px;
   background: #ffffff;
-  border: 0px solid rgb(255, 255, 255);
 }
 
 /* =====================
-   왼쪽 메뉴 (공통)
+   왼쪽 메뉴
 ===================== */
 .mypage-menu {
   width: 220px;
   background: #fff;
   border: 1px solid #ddd;
-  flex-shrink: 0;      /* ⭐ 줄어들지 않게 */
+  flex-shrink: 0;
 }
 
 .mypage-menu h3 {
@@ -62,35 +51,104 @@ body {
 }
 
 /* =====================
-   오른쪽 콘텐츠 영역 (공통)
+   가운데 요약 영역(박스 배치만)
+===================== */
+.mypage-info {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =====================
+   오른쪽 콘텐츠 영역(박스 틀만)
 ===================== */
 .mypage-content {
   flex: 1;
   background: #ffffff;
   border: 1px solid #ddd;
-
   padding: 40px 60px;
-  overflow-y: auto;
-}
-
-.mypage-content h2 {
-  margin: 0 0 50px;
-  font-size: 20px;
+  box-sizing: border-box;
 }
 
 /* =====================
-   반응형 (공통)
+   태블릿 (768 ~ 1023px)
 ===================== */
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .mypage-container {
-    flex-direction: column;
+    gap: 20px;
   }
 
   .mypage-menu {
-    display: none;
+    width: 180px;
+  }
+
+  .mypage-info {
+    width: 220px;
   }
 
   .mypage-content {
-    padding: 20px;
+    padding: 30px 40px;
+  }
+}
+
+/* =====================
+   모바일 (767px)
+===================== */
+@media (max-width: 767px) {
+
+  .mypage-wrapper {
+    padding: 20px 0;
+  }
+
+  .mypage-container {
+    flex-direction: column;
+    min-height: auto;
+    gap: 14px;
+  }
+
+  .mypage-menu {
+    display: flex;             
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+    background: #fff;
+    overflow-x: auto;           
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mypage-menu h3 {
+    display: none;              
+  }
+
+  .mypage-menu a {
+    flex: 0 0 auto;             
+    padding: 12px 14px;
+    border: 0;
+    border-bottom: 2px solid transparent;  
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .mypage-menu a:hover {
+    background: #f7f7f7;
+    font-weight: normal;
+  }
+
+  .mypage-menu a.active {
+    background: #fff;
+    font-weight: bold;
+    border-bottom-color: #222;   
+  }
+
+  .mypage-info {
+    width: auto;
+    padding: 0 16px;
+  }
+
+  .mypage-content {
+    border-left: none;
+    border-right: none;
+    padding: 20px 16px;
   }
 }

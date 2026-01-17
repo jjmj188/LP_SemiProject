@@ -151,6 +151,45 @@
 
 @media (max-width: 767px) {
   .wish-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .wish-img img {
+    border-radius: 10px;
+  }
+
+  /* 하트 버튼: 터치 영역 확보 */
+  .wish-heart {
+    width: 40px;
+    height: 40px;
+    right: 8px;
+    top: 8px;
+  }
+
+  .wish-heart i {
+    font-size: 18px;
+  }
+
+  /* 상품명 가독성 */
+  .wish-title {
+    font-size: 13px;
+    line-height: 1.35;
+    word-break: keep-all;
+  }
+
+  /* 페이지바 */
+  .pagebar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pagebar button {
+    min-width: 34px;
+    height: 34px;
+    font-size: 13px;
   }
 }
+
+
+

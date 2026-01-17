@@ -1,123 +1,49 @@
 @charset "UTF-8";
 
-/* =====================
-   기본
-===================== */
+/* 페이지 기본(여기는 layout.css에 넣지 말고, 전용에 두는 게 덜 꼬임) */
 body {
   margin: 0;
   background: #fafafa;
- 
- 
+  color: #222;
+  font-family: Arial, sans-serif;
 }
 
 /* =====================
-   마이페이지 레이아웃 (기준 유지)
+   가운데 요약 박스(포인트/리뷰)
 ===================== */
-.mypage-wrapper {
-  padding: 60px 0;
-}
-
-.mypage-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  gap: 30px;
-  background: #fff;
-   
-}
-
-/* =====================
-   왼쪽 메뉴
-===================== */
-.mypage-menu {
-  width: 220px;
-  border: 1px solid #ddd;
-  flex-shrink: 0;
-}
-
-.mypage-menu h3 {
-  margin: 0;
-  padding: 20px;
-  border-bottom: 1px solid #ddd;
-}
-
-.mypage-menu a {
-  display: block;
-  padding: 14px 20px;
-  border-bottom: 1px solid #eee;
-  text-decoration: none;
-  color: #333;
-}
-
-.mypage-menu a.active {
-  background: #f5f5f5;
-  font-weight: bold;
-}
-
-/* =====================
-   가운데 요약 영역 (포인트 / 리뷰)
-===================== */
-/* 가운데 요약 영역 */
-.mypage-info {
-  width: 240px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  /* 아래 코드를 추가하면 내용이 부족해도 영역이 아래로 꽉 찹니다 */
-  height: 100%; 
-}
-
 .info-box {
   border: 1px solid #ddd;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  background: #fff;
 }
 
-/* 보유 포인트 숫자 정렬 */
-.point {
-  font-size: 32px;      /* 기존 36px에서 박스 크기에 맞춰 살짝 조절 가능 */
-  font-weight: bold;
-  text-align: center;   /* 1. 가로 중앙 정렬 */
-  padding: 20px 0;      /* 2. 위아래 여백을 주어 세로 중앙 효과 */
-  color: #222;
-  display: flex;        /* 3. 더 확실한 중앙 정렬을 위해 flex 사용 */
-  justify-content: center; 
-  align-items: center;
-}
-
-/* 추가로 "보유 포인트" 글자도 가운데로 보내고 싶다면 */
 .info-box h4 {
-  text-align: center;   /* 제목도 가운데로 */
-  margin-bottom: 10px;
-}
-/* 리뷰 리스트가 담긴 박스 */
-.info-box.review-box {
-  flex: 1; /* 남은 공간을 다 차지하게 함 */
-  display: flex;
-  flex-direction: column;
-  padding: 0; /* 내부 여백을 0으로 해야 iframe이 꽉 찹니다 */
+  text-align: center;
+  margin: 0 0 10px;
 }
 
-/* 리뷰 iframe 높이 보정 */
+/* 보유 포인트 */
+.point {
+  font-size: 32px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+/* 리뷰 iframe */
 .mypage-info iframe {
   width: 100%;
-  height: 100%; /* 부모 박스 높이에 맞춤 */
-  min-height: 550px; /* 🔥 왼쪽 메뉴바 길이에 맞춰 숫자를 조절하세요 (예: 550~600px) */
+  height: 350px;     /* JSP에서 height=350 줬으니 일단 동일 */
   border: none;
 }
 
 /* =====================
-   오른쪽 콘텐츠 (프로필 수정)
+   오른쪽 콘텐츠(프로필 수정)
 ===================== */
-.mypage-content {
-  flex: 1;
-  border: 1px solid #ddd;
-  padding: 40px 60px;
-  box-sizing: border-box;
- 
-}
-
 .mypage-content h2 {
   margin-top: 0;
   margin-bottom: 24px;
@@ -126,7 +52,7 @@ body {
 }
 
 /* =====================
-   폼 공통
+   폼
 ===================== */
 .form-group {
   margin-bottom: 22px;
@@ -144,31 +70,31 @@ body {
   padding: 10px;
   border: 1px solid #ccc;
   box-sizing: border-box;
-  margin-bottom: 10px; /* 🔥 input 붙어있던 문제 해결 */
+  margin-bottom: 10px;
 }
 
-/* =====================
-   이메일 중복확인
-===================== */
-.form-group button {
-  margin-top: 6px;
-  padding: 6px 14px;
+/* 이메일 줄 */
+.email-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#btnEmailCheck {
+  padding: 8px 14px;
   font-size: 13px;
   background: #fff;
   border: 1px solid #bbb;
   cursor: pointer;
 }
 
-
-
-/* 결과 메시지 오른쪽 표시 */
 #emailCheckResult {
   font-size: 13px;
-  white-space: nowrap;   /* 줄바꿈 방지 */
+  white-space: nowrap;
 }
-/* =====================
-   휴대폰
-===================== */
+
+/* 휴대폰 */
 .hp-row {
   display: flex;
   align-items: center;
@@ -179,7 +105,7 @@ body {
   width: 80px;
   text-align: center;
   padding: 8px;
-  margin-bottom: 0; /* input 간격 예외 */
+  margin-bottom: 0;
 }
 
 .hyphen {
@@ -187,43 +113,33 @@ body {
   color: #666;
 }
 
-/* =====================
-   주소
-===================== */
+/* 주소 */
 .zipcode-row {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
-  /* border: 2px solid red; (확인 후 제거) */
 }
 
 .zipcode-row input,
 .zipcode-row .btn-outline {
-  /* 1. 높이를 동일하게 설정 (예: 40px) */
-  height: 40px; 
-  
-  /* 2. 테두리와 패딩이 높이에 영향을 주지 않도록 설정 */
-  box-sizing: border-box; 
-  
-  /* 3. 텍스트 수직 중앙 정렬 */
-  display: flex;
-  align-items: center;
-  
-  /* 기존 스타일 유지 */
-  margin: 0; 
-  padding: 0 12px; /* 좌우 여백만 조절 */
+  height: 40px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 12px;
 }
 
 .zipcode-row input {
   width: 160px;
-  border: 1px solid #ddd; /* 통일감을 위해 보더 추가 */
+  border: 1px solid #ddd;
   border-radius: 4px;
 }
 
 .zipcode-row .btn-outline {
   cursor: pointer;
-  white-space: nowrap; /* 글자가 줄바꿈되지 않게 */
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
 }
 
@@ -240,72 +156,71 @@ body {
   transition: all 0.25s ease;
 }
 
-/* 저장 */
 .btn-dark {
   background: #222;
   color: #fff;
   border: 1px solid #222;
 }
-
 .btn-dark:hover {
   background: #000;
   transform: translateY(-1px);
 }
 
-/* 회원탈퇴 */
 .btn-delete {
   background: #fff;
   color: #c00;
   border: 1px solid #c00;
 }
-
 .btn-delete:hover {
   background: #c00;
   color: #fff;
   transform: translateY(-1px);
 }
 
-/* 중립 */
 .btn-outline {
   background: #fff;
   color: #333;
   border: 1px solid #bbb;
 }
-
 .btn-outline:hover {
   background: #f0f0f0;
   border-color: #888;
 }
 
-/* =====================
-   버튼 영역
-===================== */
 .button-area {
   margin-top: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
+@media (max-width: 767px) {
 
+  .mypage-info {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    padding: 0 16px;         
+    box-sizing: border-box;
+  }
 
-.hp-row {
-  display: flex;         /* 요소들을 가로로 배치 */
-  align-items: center;   /* 인풋과 하이픈의 높낮이를 중앙으로 맞춤 */
-  gap: 8px;              /* 요소 사이의 간격 (적절히 조절하세요) */
-}
+  .mypage-info .info-box {
+    flex: 1;
+    padding: 14px;
+  }
 
-.hp-row input {
-  width: 80px;           /* 인풋 너비 적절히 조절 */
-  text-align: center;    /* 숫자 가운데 정렬 */
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+  .point {
+    font-size: 22px;
+    padding: 12px 0;
+  }
 
-.hyphen {
-    font-weight: bold;
-  color: #666;
-  position: relative;
-  top: 1px; 
+  .mypage-info iframe {
+    height: 160px;            
+  }
+
+  .info-box h4 {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
 }
