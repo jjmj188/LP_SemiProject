@@ -776,6 +776,10 @@ main{
   .taste-card img {
     width: 160px;
   }
+  .main-line{
+    bottom: 100px;
+
+  }
 }
 
 /* =====================
@@ -839,3 +843,4 @@ main{
   color: #fff;
   border-color: #000;
 }
+
