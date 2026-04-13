@@ -15,9 +15,7 @@ LP 음반 쇼핑몰
 
 ### 📄 화면 설계서
 
-👉 [화면 설계서 보러가기](
-
-)
+👉 [화면 설계서 보러가기](https://www.figma.com/design/pS0Gdf28nlCShPr8SblEsL/3%ED%8C%80-Lp-%EC%82%AC%EC%9D%B4%ED%8A%B8?node-id=0-1&p=f&t=JjNshnIt1ukzVcje-0)
 
 <br />
 <br />
