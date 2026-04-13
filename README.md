@@ -32,13 +32,6 @@ LP 음반 쇼핑몰
 <img src="https://img.shields.io/badge/Java-007396?style=flat&logo=java&logoColor=white"/>
 </div>
 
-### Infra
-<div>
-<img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white"/>
-<img src="https://img.shields.io/badge/AmazonAWS-232F3E?style=flat&logo=amazonaws&logoColor=white"/>
-<img src="https://img.shields.io/badge/Jenkins-D24939?style=flat&logo=jenkins&logoColor=white"/>
-</div>
-
 ### Tools
 <div>
 <img src="https://img.shields.io/badge/Notion-000000?style=flat&logo=notion&logoColor=white"/>
