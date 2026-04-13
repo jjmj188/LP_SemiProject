@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- logo -->
-<img src="" width="400"/>
+<img src="https://github.com/jjmj188/LP_SemiProject/blob/main/LP_SemiProject/src/main/webapp/images/logo.png" width="400"/>
 
 ## VINYST 음반 추천 · 판매 플랫폼
 LP 음반 쇼핑몰
